@@ -1,0 +1,26 @@
+<!-- include header -->
+<%- include("include/_header") %>
+<!--/ include header -->
+
+<!-- main -->
+<main>
+  <div class="main">
+    <div class="login-box">
+      <h3>Verification</h3>
+      <form action="/register_verify" method="POST">
+        
+        <div class="input-box">
+          <label for="email">Email</label><br>
+          <input type="email" name="email" placeholder="example@gmail.com" required><br>
+          <button class="btn" type="submit">SEND OTP</button>
+        </div>
+  
+      </form>
+    </div>
+  </div>
+</main>
+<!--/ main -->
+
+<!-- footer -->
+<%- include("include/_footer") %>
+<!--/ footer -->

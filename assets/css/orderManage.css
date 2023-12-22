@@ -1,0 +1,23 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  background-color: #F9F9F9;
+  padding: 20px;
+  border-radius: 30px;
+}
+
+.container-head{
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+}
+
+.container-head .sec{
+  width:100%
+}
+
+.itemImage img{
+  width: 20vw;
+  margin: 20px;
+}

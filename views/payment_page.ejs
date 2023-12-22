@@ -1,0 +1,244 @@
+<!-- include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
+
+  <!-- main site -->
+  <main>
+
+    <div class="cart">
+      <div class="cart-head">
+        <h5>Payment</h5>
+      </div>
+
+      <form action="/api/placeOrder?place=cart" method="POST">
+        <div class="cart-body">
+          <div class="cart-products-sec">
+  
+            <div class="delivery-sec">
+              <div class="delivery-head">
+                <h5>Delivery Address</h5>
+              </div>
+              <div class="delivery-body">
+                <div class="delivery-address">
+                  <div>
+                    <% for(let i=0 ; i<address.length ; i++){ %>
+                      <% if(address[i].default===true){ %>
+                        <p>
+                          Name : <%= address[i].name %> &emsp;
+                          Phone : <%= address[i].phone %> <br>
+                          Address : <%= address[i].address %> <br>
+                          District : <%= address[i].district %> &emsp;
+                          PIN : <%= address[i].pincode %>
+                        </p>
+                        <input class="addressId" type="text" name="aId" value=<%= address[i]._id %>>
+                        
+                      <% } %>
+                    <% } %>
+                  </div>
+  
+                  <div>
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      change
+                    </button>
+  
+                  </div>
+  
+                </div>
+              </div>
+            </div>
+  
+  
+  
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Change Address</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+  
+                  <form action="/api/changeAddress" method="POST">
+                    <div class="modal-body">
+                      <div class="address-page">
+                        <% for(let i=0 ; i<address.length ; i++){ %>
+                          <div class="address-body">
+                            <p>
+                              Name : <%= address[i].name %> &emsp;
+                                Phone : <%= address[i].phone %> <br>
+                                  Address : <%= address[i].address %> <br>
+                                    District : <%= address[i].district %> &emsp;
+                                      PIN : <%= address[i].pincode %>
+                            </p>
+  
+                            <div>
+                              <input type="radio" name="address" class="address-interactions address-radio"
+                                value="<%= address[i]._id %>" <%=(address[i].default===true)?"checked":"" %> >
+                            </div>
+                          </div>
+                          <% } %>
+                      </div>
+  
+                    </div>
+                    <div class="modal-footer">
+  
+                      <!-- Button trigger modal2 -->
+                      <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">
+                        Add Address
+                      </button>
+  
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                  </form>
+  
+                </div>
+              </div>
+            </div>
+  
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+  
+  
+                  <div class="add-address-sec">
+                    <form action="/api/addAddress?main=false" method="POST">
+                      <div class="add-address-body">
+                        <div>
+                          <label for="name">Name</label><br>
+                          <input type="text" name="name" class="name" required>
+                        </div>
+  
+                        <div>
+                          <label for="phone">Phone</label><br>
+                          <input type="number" name="phone" class="phone" required>
+                        </div>
+  
+                      </div>
+  
+                      <div class="add-address-body">
+                        <div>
+                          <label for="address">Address</label><br>
+                          <input type="text" name="address" class="address" required>
+                        </div>
+  
+                      </div>
+  
+                      <div class="add-address-body">
+                        <div>
+                          <label for="name">District</label><br>
+                          <input type="text" name="district" class="district" required>
+                        </div>
+  
+                        <div>
+                          <label for="phone">PIN</label><br>
+                          <input type="number" name="pincode" class="pincode" required>
+                        </div>
+  
+                      </div>
+  
+                      <div>
+                        <button class="btn" type="submit">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+  
+                </div>
+              </div>
+            </div>
+  
+            <div class="items position-relative mb-3">
+              <div class="d-flex payOptions align-items-center gap-3">
+                <input
+                  class="pay"
+                  name="payMethod"
+                  value="OP"
+                  type="radio"
+                  id="onlinePayement"
+                />
+                <h2 class="m-0">Online/Card Payements</h2>
+              </div>
+            </div>
+  
+            <div class="items position-relative mb-3">
+              <div class="d-flex payOptions align-items-center gap-3">
+                <input
+                  class="pay"
+                  name="payMethod"
+                  value="COD"
+                  type="radio"
+                  id="COD"
+                />
+                <h2 class="m-0">Cash On Delivery (COD)</h2>
+              </div>
+            </div>
+  
+          </div>
+  
+          <div class="cart-details-sec">
+            <div class="cart-details">
+              <div class="cart-details-head">
+                <h5>Order Summary</h5>
+              </div>
+  
+              <div class="cart-details-body">
+                <div class="details-title-sec">
+                  <p class="details-title">Subtotal</p>
+                  <p><span id="totalmrp"><%= details.mrpTotal %></span></p>
+                </div>
+  
+                <div></div>
+  
+                <div class="details-title-sec">
+                  <p class="details-title">Shipping</p>
+                  <p class="green">Free</p>
+                </div>
+  
+                <div class="details-title-sec">
+                  <p class="details-title">Discount</p>
+                  <p class="green" id="discount"><%= details.totalDiscount %></p>
+                </div>
+  
+                <div class="details-title-sec">
+                  <p class="details-title">Coupun Discount</p>
+                  <p class="green">0</p>
+                </div>
+              </div>
+  
+              <div class="cart-details-footer">
+                <div class="details-title-sec">
+                  <p class="details-title"><span>Total</span></p>
+                  <p>₹<span id="total"><%= details.total %></span></p>
+                </div>
+              </div>
+            </div>
+            
+  
+            <div class="checkout">
+              
+              <button type="submit" class="btn">Place Order</button>
+              
+            </div>
+  
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </main>
+
+  
+
+  <!--/ main site -->
+
+  <!-- footer -->
+  <%- include("include/_footer") %>
+    <!--/ footer -->

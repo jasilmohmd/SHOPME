@@ -1,0 +1,122 @@
+<!-- include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
+
+  <!-- main site -->
+  <main>
+
+    <div class="cart">
+      <div class="cart-head">
+        <h5>Order</h5>
+      </div>
+
+      <div class="cart-body">
+        <div class="cart-products-sec">
+          <% if(cart===false){ %>
+            <div>No Products</div>
+            <% } else { %>
+              <% for(let i=0 ; i<cart.length ; i++){ %>
+                <div class="cart-product">
+                  <div class="cart-product-left">
+                    <img src="<%= cart[i].productDetails[0].image[0] %>" alt="image">
+                    <div class="cart-product-details">
+                      <h6>
+                        <%= cart[i].productDetails[0].pName %>
+                      </h6>
+
+                      <div class="cart-product-qty">
+                        Qty:
+                        <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
+                          <% for(let j=1 ; j<=5 ; j++){ %>
+                            <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
+                                <%= j %>
+                            </option>
+                            <% } %>
+                        </select>
+                      </div>
+
+                      <p id="price">
+                        <%= (cart[i].productDetails[0].lastPrice) %>
+                      </p>
+                      <p id="mrp">
+                        <%= (cart[i].productDetails[0].firstPrice) %>
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="cart-product-right">
+                    <a href="/api/removeFromCart/<%= cart[i].productDetails[0]._id %>">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                        viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                        <path
+                          d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+                <% } %>
+
+
+                  <div class="coupon-sec">
+                    <input type="text" class="coupon-input" placeholder="Enter Coupon Code">
+                    <button class="coupon-btn">APPLY</button>
+                  </div>
+                  <% } %>
+        </div>
+
+        <div class="cart-details-sec">
+          <div class="cart-details">
+            <div class="cart-details-head">
+              <h5>Order Summary</h5>
+            </div>
+
+            <div class="cart-details-body">
+              <div class="details-title-sec">
+                <p class="details-title">Subtotal</p>
+                <p><span id="totalmrp">0</span></p>
+              </div>
+
+              <div class="details-title-sec">
+                <p class="details-title">Shipping</p>
+                <p class="green">Free</p>
+              </div>
+
+              <div class="details-title-sec">
+                <p class="details-title">Discount</p>
+                <p class="green" id="discount">0</p>
+              </div>
+
+              <div class="details-title-sec">
+                <p class="details-title">Coupun Discount</p>
+                <p class="green">0</p>
+              </div>
+            </div>
+
+            <div class="cart-details-footer">
+              <div class="details-title-sec">
+                <p class="details-title"><span>Total</span></p>
+                <p>₹<span id="total">0</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout">
+            <a href="/payment_page">
+              <button class="btn">Proceed to Payment</button>
+            </a>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/cartPrice.js"></script>
+  <script src="/js/qtyUpdate.js"></script>
+
+  <!--/ main site -->
+
+  <!-- footer -->
+  <%- include("include/_footer") %>
+    <!--/ footer -->

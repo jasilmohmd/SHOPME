@@ -1,0 +1,12 @@
+.payOptions h2{
+  color: #000;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+.pay{
+  width: 1.25rem;
+  height: 1.25rem;
+}
+

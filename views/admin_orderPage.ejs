@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="/css/admin_dash.css">
+  <link rel="stylesheet" href="/css/productManage.css">
+  <link rel="stylesheet" href="/css/orderManage.css">
+
+	<title>AdminHub</title>
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+	<%- include("include/_admin_sidebar") %>
+	<!-- SIDEBAR -->
+
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="#" class="profile">
+				<img src="img/people.png">
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left">
+					<h1>Manage Order</h1>
+				</div>
+				
+			</div>
+
+			
+      <div class="container">
+        <div class="container-head">
+          <div class="sec">
+            <h4>Order Details</h4>
+            <p>Order Id : <%= order[0]._id %>
+            </p>
+            <p>PaymentMethod : <%= order[0].paymentMethod %>
+            </p>
+            <p>Order Date : <%= order[0].orderDate %></p>
+            <br>
+            <h4>User Details</h4>
+            <p>User : <%= order[0].userDetails[0].name %>
+            </p>
+            <p>Email : <%= order[0].userDetails[0].email %>
+            </p>
+            <p>Phone : <%= order[0].userDetails[0].phone %>
+            </p>
+          </div>
+          <div class="sec">
+            <h4>Delivery Address</h4>
+            <p>Name : <%= order[0].address.name %></p>
+            <p>Address : <%= order[0].address.address %></p>
+            <p>Phone : <%= order[0].address.phone %></p>
+            <p>district : <%= order[0].address.district %></p>
+            <p>PIN : <%= order[0].address.pincode %></p>
+          </div>
+        </div>
+        <br>
+        <h4>Order Items</h4>
+        <div class="container-body">
+          <% for(let i=0 ; i<order[0].orderItems.length ; i++){ %>
+            <a href="/admin/order-item/?id=<%= order[0]._id %>&pId=<%= order[0].orderItems[i].productId %>">
+              
+              <div class="product-box">
+                  
+                <div class="product">
+                  <div class="image">
+                
+                    <img src="<%= order[0].orderItems[i].image[0] %>">
+                    
+                  </div>
+                  <div class="details">
+                    <p>Product Name : <%= order[0].orderItems[i].pName %></p>
+                    <p>Category: <%= order[0].orderItems[i].category %></p>
+                    <p>Price : <%= order[0].orderItems[i].price %></p>
+                    <p>Quantity: <%= order[0].orderItems[i].quantity %></p>
+                  </div>
+                </div>
+
+                <div class="interactions">
+                  <select name="status" id="status">
+
+                  </select>
+                </div>
+                    
+              </div>
+              
+              
+            </a>
+          <% } %>
+        </div>
+      </div>
+      
+			
+
+		</main>
+		<!-- MAIN -->
+
+	</section>
+	<!-- CONTENT -->
+	
+</body>
+</html>

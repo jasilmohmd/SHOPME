@@ -1,0 +1,144 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  margin: 10px;
+  background-color: #F9F9F9;
+  padding: 20px;
+  border-radius: 30px;
+}
+
+.btn{
+  background-color: #1f1f14;
+  padding: 8px 20px;
+  color: #F9F9F9;
+  border-radius: 20px;
+}
+
+.btn-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+}
+
+.input-box{
+  display: flex;
+  gap: 30px;
+  margin: 10px 0px;
+  
+}
+
+.description{
+  height: 50px;
+  width: 70vw;
+}
+
+.container input,
+.container textarea,
+.container select{
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 5px;
+  background-color: #eee;
+}
+
+.image-upload{
+  width: 100%;
+  height: 150px;
+  border-radius: 5px;
+  border: 2px dashed #d5d5e1;
+  color: #c8c9dd;
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+  background: #dfe3f259;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  margin-top: 20px;
+  padding: 30px;
+}
+
+.select{
+  color: #5256ad;
+  margin-left: 7px;
+  cursor: pointer;
+
+}
+
+.image-upload input{
+  display: none;
+
+}
+
+.image-upload.dragover {
+  border-style: solid ;
+  font-size: 2rem;
+  color: #c8c9dd;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.34);
+
+}
+
+.container1,
+.container2{
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  position: relative;
+  height: auto;
+  margin-top: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.container1 .image,
+.container2 .image{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.15);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 7px;
+  margin-right: 7px;
+}
+
+.container1 .image:nth-child(4n) ,
+.container2 .image:nth-child(4n){
+  margin-right: 0;
+}
+
+.container1 .image img,
+.container2 .image img{
+  height: 100%;
+  object-fit: cover;
+}
+
+.container1 .image span,
+.container1 .image a,
+.container2 .image span,
+.container2 .image a{
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+  background-color: #941414;
+  border-radius: 20px;
+  padding: 0px 6px;
+}
+
+.container1 .image span:hover,
+.container1 .image a:hover,
+.container2 .image span:hover,
+.container2 .image a:hover {
+  opacity: 0.8;
+}

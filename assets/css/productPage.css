@@ -1,0 +1,160 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.page{
+  display: flex;
+  flex-direction: column;
+}
+
+.main-sec{
+  display: flex;
+  width: 100%;
+  margin: 20px 25px;
+}
+
+.image-sec{
+  display: flex;
+  width: 50vw;
+  margin: 50px 15px;
+}
+
+.side-image{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.side-image img{
+  width: 10vw;
+  margin: 20px 10px;
+  filter: drop-shadow(5px 5px 10px #aaa9a9);
+}
+
+.main-image{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-image img{
+  width: 35vw;
+  margin: 20px 10px;
+}
+
+.details-sec{
+  padding: 30px 40px;
+  margin: 50px 0px;
+  box-shadow: 10px 10px 30px -10px #aaa9a9;
+  width: 40vw;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* .product-details p{
+  margin: 0px;
+} */
+
+.product-name{
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.subTitle{
+  margin-top: -10px;
+  color: #b5b5b5;
+  font-size: 1.1rem;
+}
+
+.lastPrice{
+  margin-top: -10px;
+  font-weight: 500;
+  font-size: 1.2rem;
+}
+
+.firstPrice{
+  margin-top: -25px;
+  color: #b5b5b5;
+  text-decoration: line-through;
+}
+
+.stock{
+  color: green;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.descriptionHead{
+  font-weight: 500;
+
+}
+
+.description{
+  margin-top: -10px;
+}
+
+.btn{
+  font-weight: 300;
+  padding: 5px 20px;
+}
+
+.product-interactions{
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 10px;
+}
+
+.product-interactions button{
+  font-size: 1.2rem;
+  border-radius: 40px;
+}
+
+.review-sec{
+  padding: 30px;
+  box-shadow: 10px 10px 30px -10px #aaa9a9;
+  border-radius: 30px;
+  margin: 30px 25px;
+}
+
+.review-sec h3{
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.review-sec p{
+  margin: 0;
+}
+.review-head{
+  font-weight: 500;
+}
+
+.userName{
+  
+  color: #b5b5b5;
+  font-size: 0.75rem;
+}
+
+@media (max-width:1073px) {
+  .main-sec{
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .details-sec{
+    width: 90vw;
+  }
+  .image-sec{
+    width: 90vw;
+  }
+  .side-image img{
+    width: 20vw;
+  }
+  .main-image img{
+    width: 70vw;
+  }
+}

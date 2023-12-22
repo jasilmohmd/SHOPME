@@ -1,0 +1,155 @@
+.cart p{
+  margin: 0;
+  padding: 0;
+}
+
+.cart{
+  margin: 30px 25px;
+}
+.cart-head{
+  border-top: 1px solid #bdbdbd;
+  border-left: 1px solid #bdbdbd;
+  border-right: 1px solid #bdbdbd;
+  border-bottom: 1px solid #bdbdbd;
+  padding: 10px;
+}
+.cart-body{
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  border-left: 1px solid #bdbdbd;
+  border-right: 1px solid #bdbdbd;
+  border-bottom: 1px solid #bdbdbd;
+}
+
+.cart-products-sec{
+  width: 45%;
+}
+
+.cart-product{
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #bdbdbd;
+  margin: 10px 0px;
+  font-size: 0.8rem;
+}
+
+.cart-product-left{
+  display: flex;
+  padding: 10px;
+  
+}
+
+.cart-product-right{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+}
+
+.cart-product img{
+  width: 85px;
+}
+
+.cart-details-sec{
+  width: 45%;
+}
+
+.cart-details-head{
+  border: 1px solid #bdbdbd;
+  padding: 10px;
+}
+
+.cart-details-body{
+  border: 1px solid #bdbdbd;
+  border-top: 0;
+  padding: 10px;
+}
+
+.cart-details-footer{
+  border: 1px solid #bdbdbd;
+  border-top: 0;
+  padding: 10px;
+}
+.cart-details-sec span{
+  font-weight: 600;
+}
+.cart-details-sec .green{
+  color: green;
+}
+.cart-details-body p{
+  font-size: 0.9rem;
+}
+
+.cart-details-footer p{
+  font-size: 1.2rem;
+}
+
+.details-title-sec{
+  display: flex;
+  justify-content: space-between;
+}
+
+.checkout{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.checkout button{
+  margin: 20px 0 0 0;
+}
+
+.coupon-sec{
+  display: flex;
+  gap: 0;
+  font-size: 0.75rem;
+}
+
+.coupon-input{
+  margin: 0;
+  width: 60%;
+  padding: 10px;
+  border: 1px solid #bdbdbd;
+}
+
+.coupon-btn{
+  margin: 0;
+  padding: 10px 15px;
+  border: 1px solid #bdbdbd;
+  border-left: 0;
+  font-weight: 600;
+}
+
+.delivery-sec{
+  margin: 10px 0 20px 0;
+}
+
+.delivery-head{
+  border: 1px solid #bdbdbd;
+  padding: 10px;
+}
+
+.delivery-body{
+  border: 1px solid #bdbdbd;
+  border-top: 0;
+  padding: 20px;
+  font-size: 0.7rem;
+}
+
+.delivery-address{
+  border: 1px solid #bdbdbd;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.delivery-address button{
+  margin: 20px;
+  font-size: 0.5rem;
+  padding: 5px 10px;
+}
+
+.addressId{
+  display: none;
+}

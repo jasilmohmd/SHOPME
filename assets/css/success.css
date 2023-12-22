@@ -1,0 +1,12 @@
+
+.success{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.success p{
+  font-weight: 700;
+  font-size: 1.5rem;
+}

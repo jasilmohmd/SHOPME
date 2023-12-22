@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Boxicons -->
+	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="/css/admin_dash.css">
+	<link rel="stylesheet" href="/css/addProduct.css">
+
+	<title>AdminHub</title>
+</head>
+<body>
+
+
+	<!-- SIDEBAR -->
+	<%- include("include/_admin_sidebar") %>
+	<!-- SIDEBAR -->
+
+
+
+	<!-- CONTENT -->
+	<section id="content">
+		<!-- NAVBAR -->
+		<nav>
+			
+			<a href="#" class="notification">
+				<i class='bx bxs-bell' ></i>
+				<span class="num">8</span>
+			</a>
+			<a href="#" class="profile">
+				<img src="img/people.png">
+			</a>
+		</nav>
+		<!-- NAVBAR -->
+
+		<!-- MAIN -->
+		<main>
+			<div class="head-title">
+				<div class="left">
+					<h1>Add Product</h1>
+				</div>
+				
+			</div>
+
+			<form action="/admin/add-product" method="POST" enctype="multipart/form-data">
+				<div class="container">
+					<div class="input-box">
+						<div>
+							<label for="pName">Product Name</label>
+							<input type="text" name="pName" required>
+						</div>
+						
+						<div>
+							<label for="bName">Brand Name</label>
+							<input type="text" name="bName" required>
+						</div>
+
+						<div>
+							<label for="category">Category</label>
+							<select name="category" id="category">
+							<% for(let i=0 ; i<category.length ; i++){ %>
+							<option value="<%= category[i].cName %>"><%= category[i].cName %></option>
+							<% } %>
+							</select>
+						</div>
+					</div>
+	
+					<div class="input-box">
+						<div>
+							<label for="subTitle">SubTitle</label>
+							<input type="text" name="subTitle" required>
+						</div>
+	
+						<div>
+							<label for="descriptionHead">Description Heading</label>
+							<input type="text" name="descriptionHead">
+						</div>
+					</div>
+	
+					<div class="input-box">
+						<div>
+							<label for="description">Description</label>
+							<textarea name="description" rows="5" cols="50" class="description" required></textarea>
+						</div>
+					</div>
+	
+					<div class="input-box">
+						<div>
+							<label for="firstPrice">First Price</label>
+							<input class="firstPrice" type="number" name="firstPrice" required>
+						</div>
+	
+						<div>
+							<label for="lastPrice">Last Price</label>
+							<input class="lastPrice" type="number" name="lastPrice" required>
+						</div>
+	
+						<div>
+							<label for="discount">Discount</label>
+							<input class="discount" type="number" name="discount" required>
+						</div>
+					</div>
+	
+					<div class="input-box">
+						<div>
+							<label for="colour">Colour</label>
+							<input type="text" name="colour" required>
+						</div>
+	
+						<div>
+							<label for="inStock">In Stock</label>
+							<input type="number" name="inStock" required>
+						</div>
+					</div>
+	
+					<div class="input-box">
+						<div>
+							<label for="image">Image Upload</label>
+							<div class="image-upload">
+								<span class="inner">Drag & drop images here or 
+									<span class="select">Browse</span></span>
+								<input type="file" name="pImage" required multiple>
+							</div>
+						</div>
+	
+						<div>
+							<input type="radio" name="new" value="1">
+							<label for="new">Newly launched</label>
+						</div>
+					</div>
+
+					<div class="container1">
+						
+					</div>
+	
+					<div class="btn-container">
+						<button class="btn submit-btn">Submit</button>
+					</div>
+	
+				</div>
+			</form>
+
+		</main>
+		<!-- MAIN -->
+
+	</section>
+	<!-- CONTENT -->
+	
+
+	<script src="/js/admin_css.js"></script>
+	<script src="/js/admin_imageUploadMultiple.js"></script>
+	<script src="/js/admin_addProduct"></script>
+</body>
+</html>

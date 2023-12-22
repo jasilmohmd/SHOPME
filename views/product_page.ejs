@@ -1,0 +1,82 @@
+<!-- include header -->
+  <%- include("include/_header") %>
+<!--/ include header -->
+
+<!-- main site -->
+<main>
+
+  <div class="page">
+    <div class="main-sec">
+      <div class="image-sec">
+        <div class="side-image">
+          <div>
+            <img src="<%= product.image[0] %>">
+          </div>
+          <div>
+            <img src="<%= product.image[1] %>">
+          </div>
+          <div>
+            <img src="<%= product.image[2] %>">
+          </div>
+        </div>
+        <div class="main-image">
+          <img src="<%= product.image[0] %>">
+        </div>
+      </div>
+    
+      <div class="details-sec">
+        <div class="product-details">
+          <h3 class="product-name">
+            <%= product.pName %>
+          </h3>
+          <p class="subTitle">
+            <%= product.subTitle %>
+          </p>
+          
+          <p class="lastPrice">
+            ₹<%= product.lastPrice %>
+          </p>
+          <p class="firstPrice">
+            ₹<%= product.firstPrice %>
+          </p>
+  
+          <p class="stock">In Stock</p>
+          
+          <p class="descriptionHead">
+            <%= product.descriptionHead %>
+          </p>
+          <p class="description">
+            &emsp;<%= product.description %>
+          </p>
+        </div>
+  
+        <div class="product-interactions">
+          <form action="/api/addToCart/<%= product._id %>" method="POST">
+            <button class="btn addToCart" type="submit">Add to cart</button>
+          </form>
+          
+          <a href="">
+            <button class="btn buyNow">Buy Now</button>
+          </a>
+        </div>
+        
+      </div>
+    </div>
+  
+    <div class="review-sec">
+      <h3>Ratings & Reviews.</h3>
+      <div class="reviews">
+        <hr>
+        <h5 class="review-head">Great Product</h5>
+        <p class="review-content">Great camera , Loved it.</p>
+        <p class="userName">username@gmail.com</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+<!--/ main site -->
+
+<!-- footer -->
+  <%- include("include/_footer") %>
+<!--/ footer -->

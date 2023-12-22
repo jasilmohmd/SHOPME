@@ -1,0 +1,39 @@
+<!-- include header -->
+<%- include("include/_admin_header") %>
+<!--/ include header -->
+
+<!-- main -->
+<main>
+  <div class="main">
+    <div class="login-box">
+      <h3>Admin Login</h3>
+      <% if(messages.error) {%>
+        <%= messages.error  %>
+        <% } %>
+      <form action="/admin/admin-login" method="POST">
+        <div>
+          <div class="input-box">
+            <label for="email">Email</label><br>
+            <input type="email" name="email" placeholder="example@gmail.com" required>
+          </div>
+          
+          <div class="input-box">
+            <label for="password">password</label><br>
+            <input type="password" name="password" placeholder="******" required><br>
+            <a href="#">forgot password</a>
+          </div>
+        </div>
+        
+        <button class="btn" type="submit">LOGIN</button>
+  
+        <!-- <a href="/register_verify">Create Account</a> -->
+  
+      </form>
+    </div>
+  </div>
+</main>
+<!--/ main -->
+
+<!-- footer -->
+<%- include("include/_footer") %>
+<!--/ footer -->

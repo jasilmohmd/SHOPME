@@ -1,0 +1,32 @@
+<!-- include header -->
+<%- include("include/_header") %>
+<!--/ include header -->
+
+<!-- main -->
+<main>
+  <div class="main">
+    <div class="login-box">
+      <h3>Verification</h3>
+      <form action="/register_verify2" method="POST">
+        
+        <div class="no-email">
+          <label for="email">Email</label><br>
+          <input type="email" name="email" placeholder="example@gmail.com" required value=<%= email %>><br>
+        </div>
+  
+        <div class="input-box">
+          <label for="otp">OTP</label><br>
+          <input type="number" name="otp" placeholder="654321" required><br>
+          <a href="/resentOTP">Resend OTP</a>
+          <button class="btn" type="submit">SUBMIT</button>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</main>
+<!--/ main -->
+
+<!-- footer -->
+<%- include("include/_footer") %>
+<!--/ footer -->

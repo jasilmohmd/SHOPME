@@ -1,0 +1,66 @@
+<!-- include header -->
+  <%- include("include/_header") %>
+<!--/ include header -->
+
+<!-- main site -->
+<main>
+
+  <div class="account">
+    <div class="account-head">
+      <p>
+        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+        Update Address
+      </p>
+      <hr>
+    </div>
+
+    <div class="add-address-sec">
+      <form action="/api/updateAddress/<%= index %>" method="POST">
+        <div class="add-address-body">
+          <div>
+            <label for="name">Name</label><br>
+            <input type="text" name="name" class="name" required value="<%= address.name %>">
+          </div>
+          
+          <div>
+            <label for="phone">Phone</label><br>
+            <input type="number" name="phone" class="phone" required value="<%= address.phone %>">
+          </div>
+          
+        </div>
+  
+        <div class="add-address-body">
+          <div>
+            <label for="address">Address</label><br>
+            <input type="text" name="address" class="address" required value="<%= address.address %>">
+          </div>
+          
+        </div>
+  
+        <div class="add-address-body">
+          <div>
+            <label for="name">District</label><br>
+            <input type="text" name="district" class="district" required value="<%= address.district %>">
+          </div>
+          
+          <div>
+            <label for="phone">PIN</label><br>
+            <input type="number" name="pincode" class="pincode" required value="<%= address.pincode %>">
+          </div>
+          
+        </div>
+  
+        <div>
+          <button class="btn" type="submit">Submit</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+</main>
+<!--/ main site -->
+
+<!-- footer -->
+  <%- include("include/_footer") %>
+<!--/ footer -->

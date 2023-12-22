@@ -1,0 +1,68 @@
+<!-- include header -->
+  <%- include("include/_header_nav") %>
+<!--/ include header -->
+
+<!-- main site -->
+<main>
+
+  <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner" data-bs-interval="10000">
+      <div class="carousel-item active">
+        <img src="/img/hero_endframe__e0ajd2ayxqc2_large.jpg" class="d-block w-100 object-fit-cover" style="height: 70vh;">
+      </div>
+      <div class="carousel-item" data-bs-interval="10000">
+        <img src="/img/images-global-appear-a-black-1.png.webp" class="d-block w-100 object-fit-cover" style="height: 70vh;">
+      </div>
+      <div class="carousel-item">
+        <img src="/img/DM3-web-3.avif" class="d-block w-100 object-fit-cover" style="height: 70vh;">
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <div class="offer">
+    <p>use code <span>SRK10</span> to get</p>
+    <h3>Additional 10% Discount</h3>
+  </div>
+
+  <div class="products">
+    <h3>Popular Products.</h3>
+
+    <div id="products-row" class="row">
+      <% for(let i=0; i<product.length ; i++){ %>
+      <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+        <a href="/product_page?id=<%= product[i]._id %>">
+          <div id="product" class="card">
+            <img src="<%= product[i].image[0] %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= product[i].pName %></h5>
+              <p class="price">₹<%= product[i].lastPrice %></p>
+              <p class="mrp">₹<%= product[i].firstPrice %></p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <% } %>
+
+    </div>
+
+  </div>
+
+</main>
+<!--/ main site -->
+
+<!-- footer -->
+  <%- include("include/_footer") %>
+<!--/ footer -->

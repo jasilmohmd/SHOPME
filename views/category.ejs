@@ -1,0 +1,41 @@
+<!-- include header -->
+  <%- include("include/_header_nav") %>
+<!--/ include header -->
+
+<!-- main site -->
+<main>
+
+  <div class="products">
+
+    <% if(product.length<1){ %>
+    <div class="no-products">
+      <p>No products</p>
+    </div>
+    <% } %>
+
+    <div id="products-row" class="row">
+      <% for(let i=0; i<product.length ; i++){ %>
+      <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+        <a href="/product_page?id=<%= product[i]._id %>">
+          <div id="product" class="card">
+            <img src="<%= product[i].image[0] %>">
+            <div class="card-body">
+              <h5 class="card-title"><%= product[i].pName %></h5>
+              <p class="price">₹<%= product[i].lastPrice %></p>
+              <p class="mrp">₹<%= product[i].firstPrice %></p>
+            </div>
+          </div>
+        </a>
+      </div>
+      <% } %>
+
+    </div>
+
+  </div>
+
+</main>
+<!--/ main site -->
+
+<!-- footer -->
+  <%- include("include/_footer") %>
+<!--/ footer -->

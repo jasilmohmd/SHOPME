@@ -1,0 +1,46 @@
+<!-- include header -->
+<%- include("include/_header") %>
+<!--/ include header -->
+
+<!-- main -->
+<main>
+  <div class="main">
+    <div class="login-box">
+      <h3>Create Account</h3>
+      <form action="/register" method="POST">
+        <div>
+  
+          <div>
+            <label for="name">Name</label><br>
+            <input type="name" name="name" placeholder="John Doe" required>
+          </div>
+  
+          <div class="no-email">
+            <label for="email">Email</label><br>
+            <input type="email" name="email" placeholder="example@gmail.com" required value=<%= email %>>
+          </div>
+  
+          <div>
+            <label for="phone">Phone</label><br>
+            <input type="number" name="phone" placeholder="9876543210" required>
+          </div>
+          
+          <div >
+            <label for="password">Password</label><br>
+            <input type="password" name="password" placeholder="******" required><br>
+          </div>
+        </div>
+        
+        <button class="btn" type="submit">REGISTER</button>
+  
+        <a href="/">Sign in</a>
+  
+      </form>
+    </div>
+  </div>
+</main>
+<!--/ main -->
+
+<!-- footer -->
+<%- include("include/_footer") %>
+<!--/ footer -->
