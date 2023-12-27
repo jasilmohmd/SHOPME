@@ -97,9 +97,16 @@
                 </div>
 
                 <div class="interactions">
-                  <select name="status" id="status">
-
-                  </select>
+                  <form action="/admin/api/updateOrder?id=<%= order[0]._id %>&pId=<%= order[0].orderItems[i].productId %>" method="POST">
+                    <label for="status">Status : </label>
+                    <select name="status" id="status">
+                      <option <%= order[0].orderItems[i].orderStatus === "pending"? "selected":"" %> value="pending">Pending</option>
+                      <option <%= order[0].orderItems[i].orderStatus === "shipped"? "selected":"" %> value="shipped">Shipped</option>
+                      <option <%= order[0].orderItems[i].orderStatus === "delivered"? "selected":"" %> value="delivered">Delivered</option>
+                      <option <%= order[0].orderItems[i].orderStatus === "cancelled"? "selected":"" %> value="cancelled">Cancel</option>
+                    </select>
+                    <button class="btn" type="submit">Submit</button>
+                  </form>
                 </div>
                     
               </div>

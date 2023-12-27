@@ -17,6 +17,21 @@
   width:100%
 }
 
+.container-head.sec form,
+.interactions form{
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  gap: 10px;
+}
+
+.container-head .sec button,
+.interactions button{
+  font-size: 0.6rem;
+  padding: 4px 10px;
+  font-weight: 100;
+}
+
 .itemImage img{
   width: 20vw;
   margin: 20px;

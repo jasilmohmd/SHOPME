@@ -116,4 +116,7 @@ route.get("/api/orders", order.find);
 //get order items
 route.get("/api/orderItem", order.findItem); 
 
+//update order status
+route.post("/api/updateOrder", order.update);
+
 module.exports = route

@@ -88,18 +88,21 @@ exports.find = (req,res) => {
   if (req.query.id) {
     const id = req.query.id;
 
+    console.log(id);
+
     orderDb.aggregate([
-      {
-        $match: {
-          _id: id
-        }
-      },
+      
       {
         $lookup: {
           from: "userdbs",
           localField: "userId",
           foreignField: "_id",
           as: "userDetails"
+        }
+      },
+      {
+        $match: {
+          _id: new ObjectId(id)
         }
       }
     ])
@@ -108,6 +111,7 @@ exports.find = (req,res) => {
           res.status(404).send({ message: "user not found with id "+ id })
         }
         else{
+          console.log(data);
           res.send(data)
         }
       })
@@ -170,4 +174,25 @@ exports.findItem = async (req,res) => {
     }
       
 
+}
+
+exports.update = async (req,res) => {
+  const id = req.query.id;
+  const pId = req.query.pId;
+
+  try{
+    await orderDb.updateOne({_id: id, "orderItems.productId": pId},{$set: 
+      {
+        "orderItems.$.orderStatus": req.body.status
+      }
+    });
+
+    const referer = req.get("Referer")
+
+    res.redirect(referer);
+
+  }catch(err){
+    console.log(err);
+    res.send("internal server error")
+  }
 }

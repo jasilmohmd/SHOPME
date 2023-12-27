@@ -59,6 +59,18 @@
             <p>Price : <%= items.price %></p>
             <p>MRP : <%= items.mrp %></p>
             <p>Discount : <%= items.discount %></p>
+						<br>
+						<h4>Order Item Manage</h4>
+						<form action="/admin/api/updateOrder?id=<%= id %>&pId=<%= items.productId %>" method="POST">
+							<label for="status">Status : </label>
+							<select name="status" id="status">
+								<option <%= items.orderStatus === "pending"? "selected":"" %> value="pending">Pending</option>
+								<option <%= items.orderStatus === "shipped"? "selected":"" %> value="shipped">Shipped</option>
+								<option <%= items.orderStatus === "delivered"? "selected":"" %> value="delivered">Delivered</option>
+								<option <%= items.orderStatus === "cancelled"? "selected":"" %> value="cancelled">Cancel</option>
+							</select>
+							<button class="btn" type="submit">Submit</button>
+						</form>
           </div>
           <div class="sec">
             <p>Subtitle: <%= items.subTitle %></p>

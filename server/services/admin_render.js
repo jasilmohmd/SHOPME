@@ -155,7 +155,7 @@ exports.orderManage =(req,res) => {
 exports.orderPage =(req,res) => {
   const id = req.query.id;
   // Make a get request to /api/orders
-  axios.get(`http://localhost:${PORT}/admin/api/orders?${id}`)
+  axios.get(`http://localhost:${PORT}/admin/api/orders?id=${id}`)
     .then(function (response) {
       res.render("admin_orderPage", { order: response.data });
     })
@@ -171,7 +171,7 @@ exports.orderItem =(req,res) => {
   axios.get(`http://localhost:${PORT}/admin/api/orderItem?id=${id}&pId=${pId}`)
     .then(function (response) {
       console.log(response.data);
-      res.render("admin_orderItem", { items: response.data });
+      res.render("admin_orderItem", { items: response.data , id});
     })
     .catch(err => {
       res.send(err);

@@ -83,6 +83,7 @@ a{
 .interactions{
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 10px;
   margin: 10px 20px;
 }

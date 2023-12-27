@@ -52,6 +52,11 @@
 					
 				</div>
 				<div class="container-body">
+					<% if(order==false||order.length<1){ %>
+						<div style="display: flex; justify-content: center;" class="product-box">
+							<p>No Orders</p>
+						</div>
+					<% } %>
 					<% for(let i=0 ; i<order.length ; i++){ %>
 						<a href="/admin/order-page?id=<%= order[i]._id %>">
 							<div class="product-box">

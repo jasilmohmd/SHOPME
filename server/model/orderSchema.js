@@ -65,7 +65,7 @@ const orderSchema = new Schema({
     ],
     orderStatus:{
       type: String,
-      default:"Ordered",
+      default:"pending",
       required: true
     }
   }],
@@ -99,7 +99,7 @@ const orderSchema = new Schema({
       required: true
     }
   }
-})
+},{timestamps : true})
 
 const orderDb = mongoose.model("order", orderSchema);
 
