@@ -59,8 +59,8 @@ exports.categoryPage = (req,res) => {
 }
 
 exports.myAccount = (req,res) => {
-
-  axios.get(`http://localhost:${PORT}/api/user`,{ params: { id: req.query.id}})
+  const id = req.session.passport.user;
+  axios.get(`http://localhost:${PORT}/api/user?id=${id}`)
   .then(function(response){
     res.render("my_account",{user: response.data});
   })
@@ -139,6 +139,33 @@ exports.paymentPage = (req,res) => {
 
 exports.orderPlaced = (req,res) => {
   res.render("orderPlaced")
+}
+
+exports.ordersPage = (req,res) => {
+  const uId = req.session.passport.user;
+  axios.get(`http://localhost:${PORT}/api/showOrders/${uId}`,)
+  .then(function(response){
+    console.log(response.data);
+    res.render("orders_page",{orders: response.data});
+  })
+  .catch(err =>{
+      res.send(err);
+  })
+
+}
+
+exports.orderDetails = (req,res) => {
+  const uId = req.session.passport.user;
+  const oId = req.query.oId;
+  axios.get(`http://localhost:${PORT}/api/showOrders/${uId}/${oId}`,)
+  .then(function(response){
+    console.log(response.data);
+    res.render("orderDetails_page",{order: response.data});
+  })
+  .catch(err =>{
+      res.send(err);
+  })
+
 }
 
 //Register verification user page

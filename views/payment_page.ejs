@@ -10,7 +10,7 @@
         <h5>Payment</h5>
       </div>
 
-      <form action="/api/placeOrder?place=cart" method="POST">
+      <form class="pay-form" >
         <div class="cart-body">
           <div class="cart-products-sec">
   
@@ -163,6 +163,7 @@
                   value="OP"
                   type="radio"
                   id="onlinePayement"
+                  required
                 />
                 <h2 class="m-0">Online/Card Payements</h2>
               </div>
@@ -176,6 +177,7 @@
                   value="COD"
                   type="radio"
                   id="COD"
+                  required
                 />
                 <h2 class="m-0">Cash On Delivery (COD)</h2>
               </div>
@@ -217,6 +219,7 @@
                 <div class="details-title-sec">
                   <p class="details-title"><span>Total</span></p>
                   <p>₹<span id="total"><%= details.total %></span></p>
+                  <input type="hidden" name="amount" value="<%= details.total %>">
                 </div>
               </div>
             </div>
@@ -234,8 +237,67 @@
     </div>
 
   </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    
+        $(document).ready(()=>{ 
+          
+          $(".pay-form").submit((e)=>{
 
-  
+            e.preventDefault();
+
+            var formData = $('.pay-form').serialize();
+            console.log(formData);
+
+            $.ajax({
+              url: "/api/placeOrder?place=cart",
+              type: "POST",
+              data: formData,
+              success: (res)=>{
+                if(res.orders){
+                  
+                  
+                  var options = {
+                    "key": res.key_id,
+                    "amount": res.orders.amount,
+                    "currency": res.orders.currency,
+                    "name": res.orderId,
+                    "order_id": res.orders.id,
+                    "handler": function(response){
+                      alert("Payment Succeeded");
+                    },
+                    "prefill": {
+                        "name": "",
+                        "email": "example@gmail.com",
+                        "contact": "9000090000"
+                    },
+                    "theme": {
+                      color: "#2300a3"
+                    }
+
+                  }
+
+                  
+                  var razorpayObject = new Razorpay(options);
+                  razorpayObject.on("payment.failed", function (response) {
+                    alert("Payment Failed!")
+                  });
+
+                  razorpayObject.open();
+                  
+
+                  
+                  
+                }else{
+                  alert(res.msg)
+                }
+              }
+            })
+          })
+        })
+      
+  </script>
 
   <!--/ main site -->
 

@@ -38,13 +38,13 @@ route.get("/category_page", middleware.isBlocked, middleware.checkAuthenticated,
 route.get("/my_account", middleware.isBlocked, middleware.checkAuthenticated, services.myAccount);
 
 //addresses page render
-route.get("/address_page", services.addressPage);
+route.get("/address_page",middleware.isBlocked, middleware.checkAuthenticated, services.addressPage);
 
 //add address page render
-route.get("/add-address-page", services.addAddressPage);
+route.get("/add-address-page",middleware.isBlocked, middleware.checkAuthenticated, services.addAddressPage);
 
 //update address page render
-route.get("/update-address/:index" , services.updateAddress)
+route.get("/update-address/:index" ,middleware.isBlocked, middleware.checkAuthenticated, services.updateAddress)
 
 //cart page render
 route.get("/cart_page", middleware.isBlocked, middleware.checkAuthenticated, services.cartPage);
@@ -56,7 +56,13 @@ route.get("/checkout_page", middleware.isBlocked, middleware.checkAuthenticated,
 route.get("/payment_page", middleware.isBlocked, middleware.checkAuthenticated, services.paymentPage);
 
 //order placed
-route.get("/orderPlaced",middleware.isBlocked, middleware.checkAuthenticated, services.orderPlaced)
+route.get("/orderPlaced",middleware.isBlocked, middleware.checkAuthenticated, services.orderPlaced);
+
+//orders page render
+route.get("/orders_page",middleware.isBlocked, middleware.checkAuthenticated, services.ordersPage);
+
+//order details page render
+route.get("/orderDetails_page",middleware.isBlocked, middleware.checkAuthenticated, services.orderDetails);
 
 //Register verify render
 route.get("/register_verify", middleware.checkNotAuthenticated, services.registerVerify);
@@ -142,6 +148,12 @@ route.get("/api/makeDefault/:index", address.makeDefault)
 route.post("/api/updateAddress/:index", address.updateAddress)
 
 //place order
-route.post("/api/placeOrder", order.placeOrder)
+route.post("/api/placeOrder", order.placeOrder);
+
+//show all orders
+route.get("/api/showOrders/:uId", order.showOrders);
+
+//show an order
+route.get("/api/showOrders/:uId/:oId", order.showOrders);
 
 module.exports = route

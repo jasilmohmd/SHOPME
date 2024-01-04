@@ -80,31 +80,33 @@ exports.showAddresses = async (req,res) => {
   const uId = req.params.uId;
   const index = req.params.index;
 
-  if(index){
-
-    const user = await addressDb.findOne({ userId: uId });
-
-    const address = user.addresses[index];
-
-    res.send(address);
-
-  } else {
+  
 
     try{
 
-      let user = await addressDb.findOne({userId: uId});
-      
-      let address
+      if(index){
 
-      if(user===null){
-        res.send(false);
-      }else {
-        address = user.addresses;
+        const user = await addressDb.findOne({ userId: uId });
+    
+        const address = user.addresses[index];
+    
         res.send(address);
-      }
+    
+      } else {
+
+        let user = await addressDb.findOne({userId: uId});
+        
+        let address
+
+        if(user===null){
+          res.send(false);
+        }else {
+          address = user.addresses;
+          res.send(address);
+        }
 
       
-      
+      }
       
   
     }catch(err){
@@ -112,7 +114,7 @@ exports.showAddresses = async (req,res) => {
       res.send("internal server error")
     }
 
-  }
+  
 
   
 }

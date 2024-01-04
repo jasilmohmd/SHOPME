@@ -3,6 +3,14 @@ const orderDb = require("../model/orderSchema");
 const addressDb = require("../model/addressSchema");
 const { ObjectId } = require("mongodb");
 
+const Razorpay = require("razorpay");
+const { RAZORPAY_ID_KEY , RAZORPAY_SECRET_KEY } = process.env;
+
+const razorpayInstance = new Razorpay({
+  key_id: RAZORPAY_ID_KEY,
+  key_secret: RAZORPAY_SECRET_KEY
+});
+
 exports.placeOrder = async (req,res) => {
   const uId = req.session.passport.user;
   const place = req.query.place;
@@ -63,8 +71,11 @@ exports.placeOrder = async (req,res) => {
         { $unwind: "$addresses" },
         { $match: { "addresses._id": new ObjectId(aId) } }
       ]) 
+      
 
-      const address = adb[0].addresses
+      console.log(aId);
+      const address = adb[0].addresses;
+
 
       let order = new orderDb({
         userId: uId,
@@ -75,7 +86,33 @@ exports.placeOrder = async (req,res) => {
 
       await order.save();
 
-      res.render("orderPlaced");
+      if(req.body.payMethod === "COD"){
+        res.render("orderPlaced");
+      }
+      else{
+
+        const amount = req.body.amount * 100;
+        const options = {
+          amount: amount,
+          currency: "INR",
+          receipt: "admin@gmail.com"
+        }
+
+        try{
+          const orders = await razorpayInstance.orders.create(options);
+
+          console.log(orders);
+
+          res.json({orders, key_id: RAZORPAY_ID_KEY , orderId: order._id });
+        }catch(err){
+          console.log(err);
+          res.send(false)
+        }
+        
+
+        
+      }
+      
 
     }
   }catch(err){
@@ -193,6 +230,39 @@ exports.update = async (req,res) => {
 
   }catch(err){
     console.log(err);
+    res.send("internal server error")
+  }
+}
+
+
+exports.showOrders = async (req,res)=>{
+  const uId = req.params.uId;
+  const oId = req.params.oId;
+
+  try{
+
+    if(oId){
+
+      const order = await orderDb.findOne({ userId: uId, _id: oId });
+  
+      res.send(order);
+  
+    } else {
+
+      let orders = await orderDb.find({userId: uId});
+
+      if(orders===null){
+        res.send(false);
+      }else {
+        res.send(orders);
+      }
+
+    
+    }
+    
+
+  }catch(err){
+    console.log(err.message);
     res.send("internal server error")
   }
 }
