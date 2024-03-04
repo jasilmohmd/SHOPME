@@ -178,6 +178,29 @@ exports.orderItem =(req,res) => {
     })
 }
 
+exports.couponManage = (req, res) => {
+  // Make a get request to /api/users
+  axios.get(`http://localhost:${PORT}/admin/api/coupons`)
+    .then(function (response) {
+      res.render("admin_couponManage", { coupon: response.data });
+    })
+    .catch(err => {
+      res.send(err);
+    })
+
+}
+
+exports.addCoupon = (req, res) => {
+  // Make a get request to /api/category
+  axios.get(`http://localhost:${PORT}/admin/api/category`)
+    .then(function (response) {
+      res.render("admin_addCoupon", { category: response.data });
+    })
+    .catch(err => {
+      res.send(err);
+    })
+}
+
 exports.logoutAdmin = (req, res) => {
   req.session.destroy();
   res.redirect('/admin')

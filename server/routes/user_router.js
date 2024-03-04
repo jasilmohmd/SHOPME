@@ -77,7 +77,7 @@ route.get("/register_verify2", middleware.checkNotAuthenticated, services.regist
 route.post("/register_verify2", middleware.checkNotAuthenticated, OTPVerification.otpVerification );
 
 //resend otp verification
-route.post("/resendOTP",middleware.checkNotAuthenticated, services.resendOTP)
+route.get("/resendOTP",middleware.checkNotAuthenticated, OTPVerification.resendOtp)
 
 //Register page render
 route.get("/register", middleware.checkNotAuthenticated, services.register);

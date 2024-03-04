@@ -7,6 +7,7 @@ const product = require("../controller/product");
 const category = require("../controller/category");
 const user = require("../controller/user");
 const order = require("../controller/order");
+const coupon = require("../controller/coupon");
 const store = require("../middleware/multer");
 const middleware = require("../middleware/middleware");
 
@@ -65,6 +66,15 @@ route.get("/order-page", middleware.checkAuthenticatedAdmin, services.orderPage)
 //admin order item render
 route.get("/order-item", middleware.checkAuthenticatedAdmin, services.orderItem);
 
+//admin Coupon management render
+route.get("/coupon-manage", middleware.checkAuthenticatedAdmin, services.couponManage);
+
+//admin add Coupon render
+route.get("/add-coupon", middleware.checkAuthenticatedAdmin, services.addCoupon);
+
+//admin add coupon post
+route.post("/add-coupon", middleware.checkAuthenticatedAdmin, coupon.addCoupon);
+
 //admin logout
 route.get("/admin-logout", services.logoutAdmin)
 
@@ -118,5 +128,11 @@ route.get("/api/orderItem", order.findItem);
 
 //update order status
 route.post("/api/updateOrder", order.update);
+
+
+
+
+//get coupons
+route.get("/api/coupons", coupon.find);
 
 module.exports = route

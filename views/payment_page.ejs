@@ -262,18 +262,17 @@
                     "key": res.key_id,
                     "amount": res.orders.amount,
                     "currency": res.orders.currency,
-                    "name": res.orderId,
+                    "name": "SHOPME",
                     "order_id": res.orders.id,
                     "handler": function(response){
                       alert("Payment Succeeded");
                     },
                     "prefill": {
-                        "name": "",
-                        "email": "example@gmail.com",
-                        "contact": "9000090000"
+                        "name": res.order.address.name,
+                        "contact": res.order.address.phone
                     },
                     "theme": {
-                      color: "#2300a3"
+                      color: "#1f1f14"
                     }
 
                   }

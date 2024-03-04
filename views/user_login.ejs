@@ -8,18 +8,20 @@
     <div class="login-box">
       <h3>Login</h3>
       <% if(messages.error) {%>
-        <%= messages.error  %>
+        <p><%= messages.error  %></p>
         <% } %>
-      <form action="/login" method="POST">
+      <form action="/login" method="POST" id="form">
         <div>
           <div class="input-box">
             <label for="email">Email</label><br>
-            <input type="email" name="email" placeholder="example@gmail.com" required>
+            <input id="email" name="email" placeholder="example@gmail.com"><br>
+            <span class="validateError" id="emailError"></span>
           </div>
           
           <div class="input-box">
             <label for="password">password</label><br>
-            <input type="password" name="password" placeholder="******" required><br>
+            <input id="password" type="password" name="password" placeholder="******"><br>
+            <p class="validateError" id="passwordError"></p>
             <a href="#">forgot password</a>
           </div>
         </div>
@@ -33,6 +35,9 @@
   </div>
 </main>
 <!--/ main -->
+
+<script src="/js/user_emailValidation.js"></script>
+<script src="/js/user_registerValidation.js"></script>
 
 <!-- footer -->
 <%- include("include/_footer") %>

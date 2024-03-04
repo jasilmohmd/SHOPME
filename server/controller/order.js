@@ -103,7 +103,7 @@ exports.placeOrder = async (req,res) => {
 
           console.log(orders);
 
-          res.json({orders, key_id: RAZORPAY_ID_KEY , orderId: order._id });
+          res.json({orders, key_id: RAZORPAY_ID_KEY , order: order });
         }catch(err){
           console.log(err);
           res.send(false)

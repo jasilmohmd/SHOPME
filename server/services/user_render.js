@@ -184,15 +184,15 @@ exports.registerVerify2 = (req,res)=>{
 //resend otp
 exports.resendOTP = async (req,res)=>{
   try{
-    let{userId,email} = req.body;
+    let email = req.session.user;
 
-    if ( !userId || !email ){
+    if ( !email ){
       throw Error("Empty user details are not allowed")
     }
     else{
       //delete existing records and resend
       await userOTPVerification.deleteMany({ userId });
-      sendOTPVerificationEmail({ _id: userId, email }, res);
+      sendOTPVerificationEmail({ email }, res);
     }
 
   }

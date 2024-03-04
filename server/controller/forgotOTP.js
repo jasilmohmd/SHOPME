@@ -21,7 +21,7 @@ const sendOTPVerificationEmail = async (req, res) => {
       from: process.env.AUTH_EMAIL,
       to: req.session.user,
       subject: "Verify your email",
-      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and continue with creating account.</p>
+      html: `<p>Enter <b>${otp}</b> in the app to verify your email address and continue with changing your password.</p>
       <p>this code expires in 1 minute.</p>`
     };
 
@@ -46,13 +46,12 @@ const sendOTPVerificationEmail = async (req, res) => {
     await transporter.sendMail(mailOptions);
 
 
-    res.render("user_verify2",{email})
+    res.render("user_forgotPassword2",{email})
 
   } catch (err) {
     console.log(err);
   }
 }
-
 
 exports.otp = (req, res) => {
   if (!req.body) {
@@ -61,15 +60,6 @@ exports.otp = (req, res) => {
   }
   req.session.user = req.body.email
 
-  sendOTPVerificationEmail(req, res);
-}
-
-exports.resendOtp = async (req, res) => {
-
-  let email= req.session.user
-
-  //delete existing records and resend
-  await userOTPdb.deleteMany({ email });
   sendOTPVerificationEmail(req, res);
 }
 
@@ -102,12 +92,9 @@ exports.otpVerification = async (req, res) => {
         res.send({ message: "invalid otp" })
       }
       else {
-        res.render("user_register",{email});
+        res.render("user_forgotPassword3",{email});
       }
     }
   }
-
-
-
 
 }
