@@ -74,18 +74,10 @@ exports.showCart = async (req,res) => {
           as: "productDetails"
         }
       },
-      {
-        $project: {
-          userId: 1,
-          cartItems: 1,
-          productDetails: 1
-        }
-      },
       
     ]);
 
     if(userCart.length>0){
-      console.log(userCart);
       res.send(userCart);
     }
     else{

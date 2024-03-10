@@ -3,15 +3,15 @@ const categoryDb = require("../model/categorySchema");
 const fs = require("fs");
 const path = require("path");
 
-exports.saveProduct = async (req,res)=>{
-  try{
+exports.saveProduct = async (req, res) => {
+  try {
 
     const files = req.files;
 
     console.log(files);
 
-    const image = files.map((file)=>{
-      return "/img/"+ file.filename
+    const image = files.map((file) => {
+      return "/img/" + file.filename
     })
 
     const product = new productDb({
@@ -33,46 +33,46 @@ exports.saveProduct = async (req,res)=>{
     await product.save();
     res.redirect("/admin/product-manage")
   }
-  catch(err){
+  catch (err) {
     console.log(err);
     res.redirect("/admin/add-product")
   }
 }
 
-exports.find = (req,res)=>{
-  if(req.query.id){
+exports.find = (req, res) => {
+  if (req.query.id) {
     const id = req.query.id;
 
     console.log(id);
 
     productDb.findById(id)
-      .then( data => {
-        if(!data){
-          res.status(404).send({message:"product not found with id "+ id })
+      .then(data => {
+        if (!data) {
+          res.status(404).send({ message: "product not found with id " + id })
         }
-        else{
+        else {
           console.log(data);
           res.send(data)
         }
       })
-      .catch(err =>{
-        res.status(500).send({message: "Error retrieving product with id "+ id })
+      .catch(err => {
+        res.status(500).send({ message: "Error retrieving product with id " + id })
       })
   }
-  else{
+  else {
     console.log("hi");
     //retrieve all products
-    productDb.find({unlist: false})
-      .then(product=>{
+    productDb.find({ unlist: false })
+      .then(product => {
         res.send(product)
       })
-      .catch(err =>{
-        res.status(500).send({message: err.message})
+      .catch(err => {
+        res.status(500).send({ message: err.message })
       })
   }
 }
 
-exports.update = async (req,res) => {
+exports.update = async (req, res) => {
   const id = req.query.id;
 
   const files = req.files;
@@ -81,14 +81,14 @@ exports.update = async (req,res) => {
 
   let image;
 
-  if(files){
-    image = files.map((file)=>{
-      return "/img/"+ file.filename
+  if (files) {
+    image = files.map((file) => {
+      return "/img/" + file.filename
     })
   }
 
 
-  const updatedProductData= {
+  const updatedProductData = {
     pName: req.body.pName,
     bName: req.body.bName,
     category: req.body.category,
@@ -106,89 +106,115 @@ exports.update = async (req,res) => {
   // console.log(image);
   // console.log(updatedProductData);
 
-  if(image && image.length>0){
-    await productDb.findByIdAndUpdate({_id: id},{$push:{image: image}})
+  if (image && image.length > 0) {
+    await productDb.findByIdAndUpdate({ _id: id }, { $push: { image: image } })
   }
 
-  await productDb.findByIdAndUpdate({_id: id},{$set:updatedProductData},{new:true})
+  await productDb.findByIdAndUpdate({ _id: id }, { $set: updatedProductData }, { new: true })
 
   res.redirect("/admin/product-manage");
 }
 
-exports.unlist = async (req,res)=>{
+exports.unlist = async (req, res) => {
   const id = req.query.id;
 
-  await productDb.updateOne({_id: id},{$set:{unlist: true}});
-  
+  await productDb.updateOne({ _id: id }, { $set: { unlist: true } });
+
   res.redirect("/admin/product-manage")
 
 }
 
-exports.restore = async (req,res)=>{
+exports.restore = async (req, res) => {
   const id = req.query.id;
 
-  await productDb.updateOne({_id: id},{$set:{unlist: false}});
+  await productDb.updateOne({ _id: id }, { $set: { unlist: false } });
   res.redirect("/admin/unlist-product")
 
 }
 
-exports.findUnlist = (req,res) => {
+exports.findUnlist = (req, res) => {
   //retrieve all unlisted products
-  productDb.find({unlist: true})
-  .then(product=>{
-    res.send(product)
-  })
-  .catch(err =>{
-    res.status(500).send({message: err.message})
-  })
+  productDb.find({ unlist: true })
+    .then(product => {
+      res.send(product)
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message })
+    })
 }
 
-exports.deleteImage = async (req,res) => {
+exports.deleteImage = async (req, res) => {
   const id = req.query.id;
 
   const index = req.query.index;
 
-  try{
+  try {
     const product = await productDb.findById(id);
-    
+
     const img = product.image[index];
 
-    product.image.splice(index,1)
+    product.image.splice(index, 1)
 
-    const imgFilePath = path.join(__dirname,"../..","assets"+img);
+    const imgFilePath = path.join(__dirname, "../..", "assets" + img);
 
     console.log(imgFilePath);
 
-    fs.unlink(imgFilePath, (err)=>{
-      if(err){
+    fs.unlink(imgFilePath, (err) => {
+      if (err) {
         console.log(err);
       }
     })
 
     const updatedProduct = await product.save();
-    const category = await categoryDb.find({unlist: false});
+    const category = await categoryDb.find({ unlist: false });
 
-    res.render("admin_updateProduct", { product: updatedProduct , category: category})
+    res.render("admin_updateProduct", { product: updatedProduct, category: category })
 
-  }catch(err){
+  } catch (err) {
     console.log(err);
   }
 
 }
 
-exports.delete = (req,res) => {
+exports.delete = (req, res) => {
   const id = req.query.id;
 
   productDb.findByIdAndDelete(id)
     .then(data => {
-      if(!data){
-        res.status(404).send({ message: `Cannot delete product with id ${id}.Maybe id is wrong`})
+      if (!data) {
+        res.status(404).send({ message: `Cannot delete product with id ${id}.Maybe id is wrong` })
       }
-      else{
+      else {
         res.redirect("/admin/unlist-product")
       }
     })
     .catch(err => {
-      res.status(500).send({message: err.message})
+      res.status(500).send({ message: err.message })
     })
+}
+
+exports.search = (req, res) => {
+
+  if (req.query.search) {
+    const searchQuery = req.query.search;
+    const regex = new RegExp(searchQuery, 'i'); // 'i' flag for case-insensitive search
+
+    productDb.find({ pName: { $regex: regex }, unlist: false })
+      .then(products => {
+        res.send(products);
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.message });
+      });
+  } else {
+    console.log("hi");
+    // Retrieve all products
+    productDb.find({ unlist: false })
+      .then(products => {
+        res.send(products);
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.message });
+      });
+  }
 }

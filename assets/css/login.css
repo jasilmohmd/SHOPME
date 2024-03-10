@@ -105,6 +105,15 @@ h3{
   color: #b5b5b5;
 }
 
+.abtExpire{
+  color: rgb(145, 13, 13);
+}
+
+.expired{
+  font-size: 13px;
+  color: rgb(145, 13, 13);
+}
+
 @media (max-width:375px){
   .login-box{
     width: 250px;

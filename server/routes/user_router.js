@@ -9,6 +9,8 @@ const product = require("../controller/product");
 const category = require("../controller/category");
 const user = require("../controller/user");
 const cart = require("../controller/cart");
+const wallet = require("../controller/wallet");
+const coupon = require("../controller/coupon");
 const address = require("../controller/addresses");
 const checkout = require("../controller/checkout");
 const order = require("../controller/order");
@@ -31,6 +33,9 @@ route.get('/home', middleware.isBlocked, middleware.checkAuthenticated , service
 //product page render
 route.get("/product_page", middleware.isBlocked, middleware.checkAuthenticated, services.productPage );
 
+//searching products
+route.post("/search", services.productSearch)
+
 //category pages render
 route.get("/category_page", middleware.isBlocked, middleware.checkAuthenticated, services.categoryPage);
 
@@ -46,6 +51,9 @@ route.get("/add-address-page",middleware.isBlocked, middleware.checkAuthenticate
 //update address page render
 route.get("/update-address/:index" ,middleware.isBlocked, middleware.checkAuthenticated, services.updateAddress)
 
+//wallet page
+route.get("/wallet_page",middleware.isBlocked, middleware.checkAuthenticated, services.walletPage)
+
 //cart page render
 route.get("/cart_page", middleware.isBlocked, middleware.checkAuthenticated, services.cartPage);
 
@@ -57,6 +65,9 @@ route.get("/payment_page", middleware.isBlocked, middleware.checkAuthenticated, 
 
 //order placed
 route.get("/orderPlaced",middleware.isBlocked, middleware.checkAuthenticated, services.orderPlaced);
+
+//wallet payment error
+route.get("/walletError",middleware.isBlocked, middleware.checkAuthenticated, services.walletError) 
 
 //orders page render
 route.get("/orders_page",middleware.isBlocked, middleware.checkAuthenticated, services.ordersPage);
@@ -76,9 +87,6 @@ route.get("/register_verify2", middleware.checkNotAuthenticated, services.regist
 //Register verify 2 post
 route.post("/register_verify2", middleware.checkNotAuthenticated, OTPVerification.otpVerification );
 
-//resend otp verification
-route.get("/resendOTP",middleware.checkNotAuthenticated, OTPVerification.resendOtp)
-
 //Register page render
 route.get("/register", middleware.checkNotAuthenticated, services.register);
 
@@ -95,6 +103,12 @@ route.get("/logout", services.logoutUser);
 
 //api
 
+//resend otp verification
+route.get("/api/resendOTP",middleware.checkNotAuthenticated, OTPVerification.resendOtp)
+
+//search products
+route.get("/api/search/products",product.search);
+
 //get products
 route.get("/api/products", product.find);
 
@@ -108,6 +122,15 @@ route.get("/api/categoryProducts", category.findProducts);
 //get user
 route.get("/api/user", user.find);
 
+//get transactions in wallet
+route.get("/api/showWallet", wallet.showWallet);
+
+//add money to wallet
+route.post("/api/wallet/addMoney", wallet.addMoney);
+
+//add money to wallet razorpay handler
+route.post("/api/razorpay/wallet", wallet.rzpHandler);
+
 //add to cart
 route.post("/api/addToCart/:pId", cart.addToCart);
 
@@ -119,6 +142,15 @@ route.get("/api/removeFromCart/:pId",  cart.removeFromCart);
 
 //update quantity of products in cart
 route.post("/api/updateCart/:pId", cart.updateCart);
+
+//show coupons available
+route.get("/api/coupon/show", coupon.find);
+
+//apply coupon in cart
+route.post("/api/coupon/apply", coupon.applyCoupon);
+
+//delete coupon from cart
+route.get("/api/coupon/remove", coupon.removeCoupon);
 
 //show items in checkout
 route.get("/api/checkout/:uId", checkout.orderItems);
@@ -149,6 +181,9 @@ route.post("/api/updateAddress/:index", address.updateAddress)
 
 //place order
 route.post("/api/placeOrder", order.placeOrder);
+
+//razorpay handler
+route.post("/api/razorpay", order.rzpHandler)
 
 //show all orders
 route.get("/api/showOrders/:uId", order.showOrders);

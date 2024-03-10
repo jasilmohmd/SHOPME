@@ -75,6 +75,9 @@ route.get("/add-coupon", middleware.checkAuthenticatedAdmin, services.addCoupon)
 //admin add coupon post
 route.post("/add-coupon", middleware.checkAuthenticatedAdmin, coupon.addCoupon);
 
+//admin add Coupon render
+route.get("/update-coupon", middleware.checkAuthenticatedAdmin, services.updateCoupon);
+
 //admin logout
 route.get("/admin-logout", services.logoutAdmin)
 
@@ -134,5 +137,11 @@ route.post("/api/updateOrder", order.update);
 
 //get coupons
 route.get("/api/coupons", coupon.find);
+
+//update coupon 
+route.post("/api/updateCoupon", coupon.updateCoupon );
+
+//delee coupon
+route.get("/api/coupon/delete", coupon.deleteCoupon);
 
 module.exports = route

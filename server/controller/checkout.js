@@ -21,14 +21,7 @@ exports.orderItems = async (req,res) => {
             foreignField:"_id",
             as: "productDetails"
           }
-        },
-        {
-          $project: {
-            userId: 1,
-            cartItems: 1,
-            productDetails: 1
-          }
-        },
+        }
         
       ]);
 
@@ -70,14 +63,7 @@ exports.paymentSec = async (req,res) => {
             foreignField:"_id",
             as: "productDetails"
           }
-        },
-        {
-          $project: {
-            userId: 1,
-            cartItems: 1,
-            productDetails: 1
-          }
-        },
+        }
         
       ]);
 
@@ -89,6 +75,12 @@ exports.paymentSec = async (req,res) => {
       let count = 0; 
 
       let total,mrpTotal,totalDiscount,totalCount;
+      
+      let couponDiscount = 0
+
+      if(userCart.length>0){
+        couponDiscount = userCart[0].couponDiscount
+      }
 
       userCart.forEach((product)=> {
         for(let i=0 ; i< product.cartItems.quantity; i++){
@@ -104,10 +96,10 @@ exports.paymentSec = async (req,res) => {
 
       mrpTotal = mrp;
       totalDiscount = mrp - price;
-      total = price;
+      total = price-couponDiscount;
       totalCount = count;
 
-      details = {mrpTotal,totalDiscount,total,totalCount}
+      details = {mrpTotal,totalDiscount,couponDiscount,total,totalCount}
 
       if(userCart.length>0){
         res.send(details);

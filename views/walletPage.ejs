@@ -1,0 +1,157 @@
+<!-- include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
+
+  <!-- main site -->
+  <main class="main">
+
+    <!-- add Money Modal -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Money</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+
+          <div class="add-address-sec">
+            <form class="pay-form">
+              <div class="add-address-body">
+                <div>
+                  <label for="name">Amount</label><br>
+                  <input type="text" name="amount" class="name" required>
+                </div>
+
+              </div>
+
+              <div>
+                <button class="btn" type="submit">Submit</button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- end of add Money Modal -->
+
+    <div class="wallet">
+      <div class="wallet-head">
+        <p>
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12"
+            viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+            <path
+              d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+          </svg>
+          My Wallet
+        </p>
+        <hr>
+      </div>
+
+      <div class="transact-head">
+
+        <p>Balance : <%= wallet.balance %>
+        </p>
+
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">Add Money</button>
+
+
+      </div>
+
+      <div class="transact-page">
+        <% if( !wallet || wallet.transactions.length<1){ %>
+          <div class="transact-body">
+            No Transactions
+          </div>
+          <% } else { %>
+            <% for(let i=wallet.transactions.length-1 ; i>=0 ; i--){ %>
+              <div class="transact-body">
+                <div>
+                  <%= wallet.transactions[i].formattedDate %>
+                </div>
+
+                <% if(wallet.transactions[i].transactType){ %>
+                  <div style="color: rgb(12, 120, 12);">
+                    +<%= wallet.transactions[i].amount %>
+                  </div>
+                  <% } else{ %>
+                    <div style="color: rgb(151, 11, 11);">
+                      -<%= wallet.transactions[i].amount %>
+                    </div>
+                    <% } %>
+              </div>
+              <% } %>
+                <% } %>
+
+      </div>
+
+  </main>
+  <!--/ main site -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+
+    $(document).ready(() => {
+
+      $(".pay-form").submit((e) => {
+
+
+
+        e.preventDefault();
+
+        var formData = $('.pay-form').serialize();
+        // console.log(formData);
+
+        $.ajax({
+          url: "/api/wallet/addMoney",
+          type: "POST",
+          data: formData,
+          success: (res) => {
+            if (res.orders) {
+
+
+              var options = {
+                "key": res.key_id,
+                "amount": res.orders.amount,
+                "currency": res.orders.currency,
+                "name": "SHOPME",
+                "order_id": res.orders.id,
+                "callback_url": `/api/razorpay/wallet?amount=${res.orders.amount/100}`,
+                "prefill": {
+                  "name": res.user.userName,
+                  "contact": res.user.phone
+                },
+                "theme": {
+                  color: "#1f1f14"
+                }
+
+              }
+
+
+              var razorpayObject = new Razorpay(options);
+              razorpayObject.on("payment.failed", function (response) {
+                res.send("Payment Failed!")
+              });
+
+              console.log(options);
+
+              razorpayObject.open();
+
+
+
+
+            }
+
+          }
+        })
+      })
+    })
+
+  </script>
+
+  <!-- footer -->
+  <%- include("include/_footer") %>
+    <!--/ footer -->

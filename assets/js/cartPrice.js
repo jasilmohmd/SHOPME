@@ -26,10 +26,13 @@ function callme(){
         // const discountElement = document.querySelectorAll('#discountp');
         // discount+= Number(discountElement[index].value)
     })
+
+    let couponDiscount = Number(document.querySelector("#couponDiscount").innerHTML);
+
     document.getElementById('totalmrp').innerHTML = mrp.toLocaleString('en-IN');
     document.getElementById('discount').innerHTML = (mrp-price).toLocaleString('en-IN');
     // document.getElementById('discountpercentage').innerHTML = discount;
-    document.getElementById('total').innerHTML = price.toLocaleString('en-IN');
+    document.getElementById('total').innerHTML = (price-couponDiscount).toLocaleString('en-IN');
     document.getElementById('count').innerHTML = count;
 
 }

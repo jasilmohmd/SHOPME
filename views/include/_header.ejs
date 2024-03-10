@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/css/login.css">
     <link rel="stylesheet" href="/css/productPage.css">
     <link rel="stylesheet" href="/css/myAccount.css">
+    <link rel="stylesheet" href="/css/wallet.css">
     <link rel="stylesheet" href="/css/cartPage.css">
     <link rel="stylesheet" href="/css/paymentPage.css">
     <link rel="stylesheet" href="/css/success.css">
@@ -34,7 +35,7 @@
         <div class="header-rgt-sec">
           <div>
             <div class="search-container">
-              <form action="/search" method="get">
+              <form action="/search" method="post" id="searchForm">
                 <input class="search expandright" id="searchright" type="search" name="q" placeholder="">
                 <label class="button searchbutton" for="searchright"><i class="bi bi-search"></i><span>SEARCH</span></label>
               </form>
@@ -49,7 +50,7 @@
             <a href="" class="menu-icons my-account"><i class="bi bi-person-fill"></i></a>
           </div>
           <div>
-            <a href="" class="menu-txt">ORDERS</a>
+            <a href="/orders_page" class="menu-txt">ORDERS</a>
           </div>
           <div>
             <a href="cart_page" class="menu-txt">CART</a>

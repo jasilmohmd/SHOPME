@@ -13,6 +13,10 @@
     </div>
     <% } %>
 
+    <% if(search){ %>
+      <div id="searchResults">Search results for "<%= search %>"</div>
+    <% } %>
+
     <div id="products-row" class="row">
       <% for(let i=0; i<product.length ; i++){ %>
       <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">

@@ -1,0 +1,48 @@
+.wallet{
+  width: 500px;
+  margin: 20px 25px;
+  box-shadow: 10px 10px 30px -10px #aaa9a9;
+  border-radius: 30px;
+  padding: 20px;
+}
+
+.wallet-head{
+  margin: 10px 10px;
+  font-weight: 600;
+}
+
+.transact-head{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}
+
+.transact-head button{
+  font-size: 0.75rem;
+  padding: 8px 15px;
+}
+
+.transact-page{
+  margin: 10px;
+  box-shadow: inset 2px 2px 15px #aaa9a940;
+  padding: 20px;
+  border-radius: 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.transact-body{
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 25px;
+  box-shadow: 2px 2px 10px #aaa9a940,inset 2px 2px 15px #fff;
+  border-radius: 30px;
+}
+
+
+.transact-body p{
+  margin: 0;
+  font-size: 0.75rem;
+}

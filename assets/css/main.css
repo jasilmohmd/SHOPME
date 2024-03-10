@@ -86,3 +86,12 @@ a{
   font-weight: 500;
   color: #b5b5b5;
 }
+
+#searchResults{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem;
+  color: #b5b5b5;
+  margin-bottom: 15px;
+}

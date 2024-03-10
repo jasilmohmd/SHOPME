@@ -1,22 +1,24 @@
+const productDb = require("../model/productSchema")
 const cartDb = require("../model/cartSchema");
 const orderDb = require("../model/orderSchema");
 const addressDb = require("../model/addressSchema");
 const { ObjectId } = require("mongodb");
 
 const Razorpay = require("razorpay");
-const { RAZORPAY_ID_KEY , RAZORPAY_SECRET_KEY } = process.env;
+const walletDb = require("../model/walletSchema");
+const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
 const razorpayInstance = new Razorpay({
   key_id: RAZORPAY_ID_KEY,
   key_secret: RAZORPAY_SECRET_KEY
 });
 
-exports.placeOrder = async (req,res) => {
+exports.placeOrder = async (req, res) => {
   const uId = req.session.passport.user;
   const place = req.query.place;
 
-  try{
-    if(place === "cart"){
+  try {
+    if (place === "cart") {
       let userCart = await cartDb.aggregate([
         {
           $match: { userId: new ObjectId(uId) }
@@ -28,7 +30,7 @@ exports.placeOrder = async (req,res) => {
           $lookup: {
             from: "productdbs",
             localField: "cartItems.productId",
-            foreignField:"_id",
+            foreignField: "_id",
             as: "productDetails"
           }
         },
@@ -39,10 +41,10 @@ exports.placeOrder = async (req,res) => {
             productDetails: 1
           }
         },
-        
+
       ]);
 
-      
+
 
       let products = [];
 
@@ -55,7 +57,7 @@ exports.placeOrder = async (req,res) => {
           category: product.productDetails[0].category,
           subTitle: product.productDetails[0].subTitle,
           descriptionHead: product.productDetails[0].descriptionHead,
-          description: product.productDetails[0].description, 
+          description: product.productDetails[0].description,
           price: product.productDetails[0].lastPrice,
           mrp: product.productDetails[0].firstPrice,
           discount: product.productDetails[0].discount,
@@ -64,32 +66,44 @@ exports.placeOrder = async (req,res) => {
         })
       })
 
-      const aId = req.body.aId; 
+      const aId = req.body.aId;
 
       const adb = await addressDb.aggregate([
         { $match: { userId: new ObjectId(uId) } },
         { $unwind: "$addresses" },
         { $match: { "addresses._id": new ObjectId(aId) } }
-      ]) 
-      
+      ])
+
 
       console.log(aId);
       const address = adb[0].addresses;
 
 
-      let order = new orderDb({
+      let order = {
         userId: uId,
         orderItems: products,
         paymentMethod: req.body.payMethod,
         address: address
-      })
-
-      await order.save();
-
-      if(req.body.payMethod === "COD"){
-        res.render("orderPlaced");
       }
-      else{
+
+      req.session.order = order;
+
+      if (req.body.payMethod === "COD") {
+        const newOrder = new orderDb(order);
+        await newOrder.save();
+
+        userCart.forEach(async (product) => {
+          await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
+        })
+
+        await cartDb.updateOne(
+          { userId: req.session.passport.user },
+          { $set: { cartItems: [] } }
+        );
+
+        res.json({ response: true, method: "COD" });
+      }
+      else if (req.body.payMethod === "OP") {
 
         const amount = req.body.amount * 100;
         const options = {
@@ -98,37 +112,109 @@ exports.placeOrder = async (req,res) => {
           receipt: "admin@gmail.com"
         }
 
-        try{
+        try {
           const orders = await razorpayInstance.orders.create(options);
 
           console.log(orders);
 
-          res.json({orders, key_id: RAZORPAY_ID_KEY , order: order });
-        }catch(err){
+          res.json({ orders, key_id: RAZORPAY_ID_KEY, order: order });
+        } catch (err) {
           console.log(err);
           res.send(false)
         }
-        
 
-        
+
+
+      } else {
+
+        const uId = req.session.passport.user;
+        const amount = req.body.amount;
+
+        let wallet = await walletDb.findOne({ userId: uId })
+
+        if (wallet.balance>=amount) {
+
+          const newOrder = new orderDb(order);
+          await newOrder.save();
+
+
+          await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
+
+          wallet.transactions.push({ transactType: false, amount: amount });
+
+          wallet.save();
+
+          userCart.forEach(async (product) => {
+            await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
+          })
+
+          await cartDb.updateOne(
+            { userId: uId },
+            { $set: { cartItems: [] } }
+          );
+
+          res.json({ response: true, method: "wallet" });
+
+        }
+        else{
+
+          res.json({response: false, method: "wallet" , message: "insuficient funds in your wallet"});
+
+        }
       }
-      
+
 
     }
-  }catch(err){
+  } catch (err) {
     console.log(err);
     res.send("internal server error")
   }
 }
 
-exports.find = (req,res) => {
+exports.rzpHandler = async (req, res) => {
+  try {
+
+    const crypto = require("crypto");
+
+    const hmac = crypto.createHmac("sha256", process.env.RAZORPAY_SECRET_KEY);
+    hmac.update(
+      req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id
+    );
+
+    if (hmac.digest("hex") === req.body.razorpay_signature) {
+
+      const order = req.session.order;
+
+      const newOrder = new orderDb(order);
+      await newOrder.save();
+
+      order.orderItems.forEach(async (product) => {
+        await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
+      })
+
+      await cartDb.updateOne(
+        { userId: req.session.passport.user },
+        { $set: { cartItems: [] } }
+      );
+      res.redirect("/orderPlaced")
+    }
+    else {
+      res.send("order failed")
+    }
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+exports.find = (req, res) => {
   if (req.query.id) {
     const id = req.query.id;
 
     console.log(id);
 
     orderDb.aggregate([
-      
+
       {
         $lookup: {
           from: "userdbs",
@@ -144,20 +230,20 @@ exports.find = (req,res) => {
       }
     ])
       .then(data => {
-        if(!data){
-          res.status(404).send({ message: "user not found with id "+ id })
+        if (!data) {
+          res.status(404).send({ message: "user not found with id " + id })
         }
-        else{
+        else {
           console.log(data);
           res.send(data)
         }
       })
       .catch(err => {
-        res.status(500).send({message: "Error retrieving user with id "+id})
+        res.status(500).send({ message: "Error retrieving user with id " + id })
       })
 
   }
-  else{
+  else {
     orderDb.aggregate([
       {
         $lookup: {
@@ -177,48 +263,49 @@ exports.find = (req,res) => {
   }
 }
 
-exports.findItem = async (req,res) => {
+exports.findItem = async (req, res) => {
   const id = req.query.id;
   const pId = req.query.pId;
 
-    try{
-      const order = await orderDb.aggregate([
-        {
-          $match: {
-            _id: new ObjectId(id)
-          }
-        },
-        {
-          $unwind: "$orderItems"
-        },
-        {
-          $match: {
-            "orderItems.productId": new ObjectId(pId)
-          }
+  try {
+    const order = await orderDb.aggregate([
+      {
+        $match: {
+          _id: new ObjectId(id)
         }
-      ])
+      },
+      {
+        $unwind: "$orderItems"
+      },
+      {
+        $match: {
+          "orderItems.productId": new ObjectId(pId)
+        }
+      }
+    ])
 
-      console.log(id);
-      
-      const product = order[0].orderItems;
+    console.log(id);
 
-      console.log(product);
+    const product = order[0].orderItems;
 
-      res.status(200).send(product);
+    console.log(product);
 
-    }catch(err){
-      res.status(500).send({ message: err.message })
-    }
-      
+    res.status(200).send(product);
+
+  } catch (err) {
+    res.status(500).send({ message: err.message })
+  }
+
 
 }
 
-exports.update = async (req,res) => {
+exports.update = async (req, res) => {
   const id = req.query.id;
   const pId = req.query.pId;
 
-  try{
-    await orderDb.updateOne({_id: id, "orderItems.productId": pId},{$set: 
+  try {
+    await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
+      $set:
       {
         "orderItems.$.orderStatus": req.body.status
       }
@@ -228,40 +315,40 @@ exports.update = async (req,res) => {
 
     res.redirect(referer);
 
-  }catch(err){
+  } catch (err) {
     console.log(err);
     res.send("internal server error")
   }
 }
 
 
-exports.showOrders = async (req,res)=>{
+exports.showOrders = async (req, res) => {
   const uId = req.params.uId;
   const oId = req.params.oId;
 
-  try{
+  try {
 
-    if(oId){
+    if (oId) {
 
       const order = await orderDb.findOne({ userId: uId, _id: oId });
-  
+
       res.send(order);
-  
+
     } else {
 
-      let orders = await orderDb.find({userId: uId});
+      let orders = await orderDb.find({ userId: uId });
 
-      if(orders===null){
+      if (orders === null) {
         res.send(false);
-      }else {
+      } else {
         res.send(orders);
       }
 
-    
-    }
-    
 
-  }catch(err){
+    }
+
+
+  } catch (err) {
     console.log(err.message);
     res.send("internal server error")
   }

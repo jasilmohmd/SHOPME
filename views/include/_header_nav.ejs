@@ -26,8 +26,8 @@
         <div class="header-rgt-sec">
           <div>
             <div class="search-container">
-              <form action="/search" method="get">
-                <input class="search expandright" id="searchright" type="search" name="q" placeholder="">
+              <form action="/search" method="post">
+                <input class="search expandright" id="searchright" type="search" name="q">
                 <label class="button searchbutton" for="searchright"><i class="bi bi-search"></i><span>SEARCH</span></label>
               </form>
             </div>
@@ -38,14 +38,14 @@
           </div>
           <div>
             <a href="/my_account" class="menu-txt">MY ACCOUNT</a>
-            <a href="#" class="menu-icons my-account"><i class="bi bi-person-fill"></i></a>
+            <a href="/my_account" class="menu-icons my-account"><i class="bi bi-person-fill"></i></a>
           </div>
           <div>
-            <a href="#" class="menu-txt">ORDERS</a>
+            <a href="/orders_page" class="menu-txt">ORDERS</a>
           </div>
           <div>
             <a href="/cart_page" class="menu-txt">CART</a>
-            <a href="#" class="menu-icons"><i class="bi bi-cart3"></i></a>
+            <a href="/cart_page" class="menu-icons"><i class="bi bi-cart3"></i></a>
           </div>
         </div>
       </div>

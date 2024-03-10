@@ -46,6 +46,7 @@ exports.find = (req,res)=>{
     //retrieve all products
     categoryDb.find({unlist: false})
       .then(category=>{
+        // console.log(category);
         res.send(category)
       })
       .catch(err =>{

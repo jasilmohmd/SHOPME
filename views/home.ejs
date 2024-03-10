@@ -7,9 +7,9 @@
 
   <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-indicators">
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="1" aria-label="Slide 2"></button>
-      <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+      <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="1" aria-label="Slide 2"></button>
+      <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="2" aria-label="Slide 3"></button>
     </div>
     <div class="carousel-inner" data-bs-interval="10000">
       <div class="carousel-item active">
@@ -32,9 +32,33 @@
     </button>
   </div>
 
-  <div class="offer">
-    <p>use code <span>SRK10</span> to get</p>
-    <h3>Additional 10% Discount</h3>
+  <div id="carouselExampleAutoplaying2" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <% for(let i=0; i<coupon.length; i++){ %>
+      <button type="button" data-bs-target="#carouselExampleAutoplaying2" data-bs-slide-to="<%= i %>" <% if(i===0){ %> 
+        class="active"
+        aria-current="true"
+        <% }%>  aria-label="Slide <%= i %>"></button>
+      <% } %>
+    </div>
+    <div class="carousel-inner" data-bs-interval="10000">
+      <% for(let i=0; i<coupon.length; i++){ %>
+      <div class="carousel-item active">
+        <div class="offer">
+          <p>use code <span><%= coupon[i].couponCode %></span> to get</p>
+          <h3>Additional <%= coupon[i].couponDiscount %>% Discount</h3>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying2" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying2" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
   </div>
 
   <div class="products">

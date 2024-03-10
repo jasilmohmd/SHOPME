@@ -201,6 +201,22 @@ exports.addCoupon = (req, res) => {
     })
 }
 
+exports.updateCoupon = (req, res) => {
+  const id = req.query.id;
+  // Make a get request to /api/category
+  axios.all([
+    axios.get(`http://localhost:${PORT}/admin/api/category`),
+    axios.get(`http://localhost:${PORT}/admin/api/coupons?id=${id}`)
+  ])
+    .then(axios.spread((response1,response2)=> {
+      console.log(response2.data);
+      res.render("admin_updateCoupon", { category: response1.data, coupon: response2.data });
+    }))
+    .catch(err => {
+      res.send("hi");
+    })
+}
+
 exports.logoutAdmin = (req, res) => {
   req.session.destroy();
   res.redirect('/admin')

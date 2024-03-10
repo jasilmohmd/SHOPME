@@ -71,6 +71,8 @@ exports.resendOtp = async (req, res) => {
   //delete existing records and resend
   await userOTPdb.deleteMany({ email });
   sendOTPVerificationEmail(req, res);
+
+  res.redirect("/register_verify2")
 }
 
 exports.otpVerification = async (req, res) => {

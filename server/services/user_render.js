@@ -21,10 +21,11 @@ exports.home = (req,res) => {
   // Make a get request to /api/products
   axios.all([
     axios.get(`http://localhost:${PORT}/api/category`),
-    axios.get(`http://localhost:${PORT}/api/products`,)
+    axios.get(`http://localhost:${PORT}/api/products`),
+    axios.get(`http://localhost:${PORT}/api/coupon/show`)
   ])
-  .then(axios.spread((response1,response2)=>{
-    res.render("home",{category: response1.data, product: response2.data})
+  .then(axios.spread((response1,response2,response3)=>{
+    res.render("home",{category: response1.data, product: response2.data, coupon: response3.data })
   }))
   .catch(err =>{
     res.send(err);
@@ -44,6 +45,21 @@ exports.productPage = (req,res) => {
   })
 
 };
+
+exports.productSearch = (req,res) => {
+  let search = req.body.q
+  axios.all([
+    axios.get(`http://localhost:${PORT}/api/category`),
+    axios.get(`http://localhost:${PORT}/api/search/products?search=${search}`)
+  ])
+    .then(axios.spread((response1, response2) => {
+      search?search:search="All products"
+      res.render("category", { category: response1.data, product: response2.data, search })
+    }))
+    .catch(err => {
+      res.send(err);
+    });
+}
 
 exports.categoryPage = (req,res) => {
   axios.all([
@@ -67,6 +83,19 @@ exports.myAccount = (req,res) => {
   .catch(err =>{
       res.send(err);
   })
+}
+
+exports.walletPage = (req,res) => {
+  const uId = req.session.passport.user;
+  axios.get(`http://localhost:${PORT}/api/showWallet?uId=${uId}`)
+  .then(function(response){
+    // console.log(response.data);
+    res.render("walletPage",{wallet: response.data});
+  })
+  .catch(err =>{
+      res.send(err);
+  })
+
 }
 
 exports.addressPage = (req,res) => {
@@ -138,7 +167,11 @@ exports.paymentPage = (req,res) => {
 }
 
 exports.orderPlaced = (req,res) => {
-  res.render("orderPlaced")
+  res.render("orderPlaced");
+}
+
+exports.walletError = (req,res) => {
+  res.render("walletError",{ message: req.query.message });
 }
 
 exports.ordersPage = (req,res) => {

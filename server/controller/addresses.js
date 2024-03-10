@@ -65,7 +65,7 @@ exports.addAddress = async (req,res) => {
       res.redirect("/address_page");
     }
     else{
-      res.redirect("/checkout_page");
+      res.redirect("/payment_page");
     }
     
   }catch(err){
@@ -220,7 +220,9 @@ exports.updateAddress = async (req,res) => {
 exports.changeAddress = async (req,res) => {
 
   const uId = req.session.passport.user;
-  const address = req.body.address;
+  const address = req.body.addressid;
+  console.log(req.body);
+  console.log(address);
 
   try{
     
