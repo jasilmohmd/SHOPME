@@ -41,15 +41,16 @@ const sendOTPVerificationEmail = async (req, res) => {
 
     req.session.otpId = data._id;
 
-    email=req.session.user
+    email = req.session.user
 
     await transporter.sendMail(mailOptions);
 
 
-    res.render("user_verify2",{email})
+    res.render("user_verify2", { email })
 
   } catch (err) {
     console.log(err);
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -66,7 +67,7 @@ exports.otp = (req, res) => {
 
 exports.resendOtp = async (req, res) => {
 
-  let email= req.session.user
+  let email = req.session.user
 
   //delete existing records and resend
   await userOTPdb.deleteMany({ email });
@@ -76,40 +77,48 @@ exports.resendOtp = async (req, res) => {
 }
 
 exports.otpVerification = async (req, res) => {
-  if (!req.body) {
-    res.status(400).send({ message: "you left the field empty" });
-    return
-  }
-  const otpUser = await userOTPdb.findOne({ _id: req.session.otpId });
 
-  if (!otpUser) {
-    res.send({ message: "otp expired" });
-  }
-  else {
 
-    email= req.session.user
+  try {
 
-    const { expiresAt } = otpUser
+    if (!req.body) {
+      res.status(400).send({ message: "you left the field empty" });
+      return
+    }
+    const otpUser = await userOTPdb.findOne({ _id: req.session.otpId });
 
-    if (expiresAt < Date.now()) {
-      await userOTPdb.deleteMany({ _id: req.session.otpId });
-      res.send({message:"OTP expired.please try again"})
+    if (!otpUser) {
+      res.send({ message: "otp expired" });
     }
     else {
-      const otp = req.body.otp;
 
-      const validOTP = await bcrypt.compare(otp, otpUser.otp);
+      email = req.session.user
 
-      if (!validOTP) {
-        res.send({ message: "invalid otp" })
+      const { expiresAt } = otpUser
+
+      if (expiresAt < Date.now()) {
+        await userOTPdb.deleteMany({ _id: req.session.otpId });
+        res.send({ message: "OTP expired.please try again" })
       }
       else {
-        res.render("user_register",{email});
+        const otp = req.body.otp;
+
+        const validOTP = await bcrypt.compare(otp, otpUser.otp);
+
+        if (!validOTP) {
+          res.send({ message: "invalid otp" })
+        }
+        else {
+          res.render("user_register", { email });
+        }
       }
     }
+
+  } catch (err) {
+
+    res.render("errorPage", { status: 500 });
+
   }
-
-
 
 
 }

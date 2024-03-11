@@ -48,7 +48,7 @@ exports.addToCart = async (req,res) => {
   } 
   catch(err){
     console.log(err);
-    res.send("internal server error");
+    res.render("errorPage",{ status: 500 });
   }
   
 } 
@@ -86,7 +86,7 @@ exports.showCart = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    res.send("internal server error");
+    res.render("errorPage",{ status: 500 });
   }
 }
 
@@ -114,7 +114,7 @@ exports.removeFromCart = async (req,res) => {
     
 
   }catch(err){
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
   }
 }
 

@@ -35,7 +35,7 @@ exports.saveProduct = async (req, res) => {
   }
   catch (err) {
     console.log(err);
-    res.redirect("/admin/add-product")
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -56,7 +56,7 @@ exports.find = (req, res) => {
         }
       })
       .catch(err => {
-        res.status(500).send({ message: "Error retrieving product with id " + id })
+        res.render("errorPage", { status: 500 });
       })
   }
   else {
@@ -67,68 +67,97 @@ exports.find = (req, res) => {
         res.send(product)
       })
       .catch(err => {
-        res.status(500).send({ message: err.message })
+        console.log(err);
+        res.render("errorPage", { status: 500 });
       })
   }
 }
 
 exports.update = async (req, res) => {
-  const id = req.query.id;
 
-  const files = req.files;
+  try {
 
-  console.log(files);
+    const id = req.query.id;
 
-  let image;
+    const files = req.files;
 
-  if (files) {
-    image = files.map((file) => {
-      return "/img/" + file.filename
-    })
+    // console.log(files);
+
+    let image;
+
+    if (files) {
+      image = files.map((file) => {
+        return "/img/" + file.filename
+      })
+    }
+
+
+    const updatedProductData = {
+      pName: req.body.pName,
+      bName: req.body.bName,
+      category: req.body.category,
+      subTitle: req.body.subTitle,
+      descriptionHead: req.body.descriptionHead,
+      description: req.body.description,
+      firstPrice: req.body.firstPrice,
+      lastPrice: req.body.lastPrice,
+      discount: req.body.discount,
+      colour: req.body.colour,
+      inStock: req.body.inStock,
+      new: req.body.new
+    }
+
+    // console.log(image);
+    // console.log(updatedProductData);
+
+    if (image && image.length > 0) {
+      await productDb.findByIdAndUpdate({ _id: id }, { $push: { image: image } })
+    }
+
+    await productDb.findByIdAndUpdate({ _id: id }, { $set: updatedProductData }, { new: true })
+
+    res.redirect("/admin/product-manage");
+
+  } catch (err) {
+
+    res.render("errorPage", { status: 500 });
+
   }
 
-
-  const updatedProductData = {
-    pName: req.body.pName,
-    bName: req.body.bName,
-    category: req.body.category,
-    subTitle: req.body.subTitle,
-    descriptionHead: req.body.descriptionHead,
-    description: req.body.description,
-    firstPrice: req.body.firstPrice,
-    lastPrice: req.body.lastPrice,
-    discount: req.body.discount,
-    colour: req.body.colour,
-    inStock: req.body.inStock,
-    new: req.body.new
-  }
-
-  // console.log(image);
-  // console.log(updatedProductData);
-
-  if (image && image.length > 0) {
-    await productDb.findByIdAndUpdate({ _id: id }, { $push: { image: image } })
-  }
-
-  await productDb.findByIdAndUpdate({ _id: id }, { $set: updatedProductData }, { new: true })
-
-  res.redirect("/admin/product-manage");
 }
 
 exports.unlist = async (req, res) => {
   const id = req.query.id;
 
-  await productDb.updateOne({ _id: id }, { $set: { unlist: true } });
+  try{
 
-  res.redirect("/admin/product-manage")
+    await productDb.updateOne({ _id: id }, { $set: { unlist: true } });
+  
+    res.redirect("/admin/product-manage")
+
+  }catch(err){
+
+    res.render("errorPage", { status: 500 });
+
+  }
+
 
 }
 
 exports.restore = async (req, res) => {
   const id = req.query.id;
 
-  await productDb.updateOne({ _id: id }, { $set: { unlist: false } });
-  res.redirect("/admin/unlist-product")
+  try{
+
+    await productDb.updateOne({ _id: id }, { $set: { unlist: false } });
+    res.redirect("/admin/unlist-product")
+
+  }catch(err){
+
+    res.render("errorPage", { status: 500 });
+
+  }
+
 
 }
 
@@ -139,7 +168,7 @@ exports.findUnlist = (req, res) => {
       res.send(product)
     })
     .catch(err => {
-      res.status(500).send({ message: err.message })
+      res.render("errorPage", { status: 500 });
     })
 }
 
@@ -172,6 +201,7 @@ exports.deleteImage = async (req, res) => {
 
   } catch (err) {
     console.log(err);
+    res.render("errorPage", { status: 500 });
   }
 
 }
@@ -189,7 +219,7 @@ exports.delete = (req, res) => {
       }
     })
     .catch(err => {
-      res.status(500).send({ message: err.message })
+      res.render("errorPage", { status: 500 });
     })
 }
 
@@ -204,7 +234,7 @@ exports.search = (req, res) => {
         res.send(products);
       })
       .catch(err => {
-        res.status(500).send({ message: err.message });
+        res.render("errorPage", { status: 500 });
       });
   } else {
     console.log("hi");
@@ -214,7 +244,7 @@ exports.search = (req, res) => {
         res.send(products);
       })
       .catch(err => {
-        res.status(500).send({ message: err.message });
+        res.render("errorPage", { status: 500 });
       });
   }
 }

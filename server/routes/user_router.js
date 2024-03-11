@@ -191,4 +191,7 @@ route.get("/api/showOrders/:uId", order.showOrders);
 //show an order
 route.get("/api/showOrders/:uId/:oId", order.showOrders);
 
+//cancel order
+route.get("/api/order/cancel", order.cancelOrder);
+
 module.exports = route

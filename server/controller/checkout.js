@@ -38,7 +38,7 @@ exports.orderItems = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    req.send("internal server error")
+    res.render("errorPage", { status: 500 });
   }
 
 }
@@ -113,7 +113,7 @@ exports.paymentSec = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    req.send("internal server error")
+    res.render("errorPage", { status: 500 });
   }
 
 }

@@ -32,7 +32,7 @@ exports.showWallet = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.send("internal server error");
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -47,14 +47,15 @@ exports.addMoney = async (req, res) => {
     receipt: "admin@gmail.com"
   }
 
-  const userDb = await Userdb.findById( uId );
-
-  const user = {
-    userName : userDb.name,
-    phone : userDb.phone
-  }
-
+  
   try {
+    const userDb = await Userdb.findById( uId );
+  
+    const user = {
+      userName : userDb.name,
+      phone : userDb.phone
+    }
+
     const orders = await razorpayInstance.orders.create(options);
 
     // console.log(orders);
@@ -62,7 +63,8 @@ exports.addMoney = async (req, res) => {
     res.json({ orders, key_id: RAZORPAY_ID_KEY , user });
   } catch (err) {
     console.log(err);
-    res.send(false)
+    res.send(false);
+    res.render("errorPage", { status: 500 });
   }
 
 }
@@ -111,5 +113,6 @@ exports.rzpHandler = async (req, res) => {
 
   } catch (err) {
     console.log(err);
+    res.render("errorPage", { status: 500 });
   }
 }

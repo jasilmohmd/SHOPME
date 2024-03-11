@@ -14,7 +14,7 @@ exports.find = (req, res) => {
         }
       })
       .catch(err => {
-        res.status(500).send({ message: "Error retrieving user with id " + id })
+        res.render("errorPage", { status: 500 });
       })
   }
   else {
@@ -24,7 +24,7 @@ exports.find = (req, res) => {
         res.status(200).send(users)
       })
       .catch(err => {
-        res.status(500).send({ message: err.message })
+        res.render("errorPage", { status: 500 });
       })
   }
 }
@@ -32,16 +32,34 @@ exports.find = (req, res) => {
 exports.block = async (req, res) => {
   const id = req.query.id;
 
-  await Userdb.updateOne({ _id: id }, { $set: { isBlocked: true } });
+  try{
 
-  res.redirect("/admin/user-manage")
+    await Userdb.updateOne({ _id: id }, { $set: { isBlocked: true } });
+  
+    res.redirect("/admin/user-manage")
+
+  }catch(err){
+
+    res.render("errorPage", { status: 500 });
+
+  }
+
 
 }
 
 exports.unblock = async (req, res) => {
   const id = req.query.id;
 
-  await Userdb.updateOne({ _id: id }, { $set: { isBlocked: false } });
+  try{
+    
+    await Userdb.updateOne({ _id: id }, { $set: { isBlocked: false } });
+  
+    res.redirect("/admin/user-manage")
 
-  res.redirect("/admin/user-manage")
+  }catch(err){
+
+    res.render("errorPage", { status: 500 });
+
+  }
+
 }

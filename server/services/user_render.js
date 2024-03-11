@@ -28,7 +28,7 @@ exports.home = (req,res) => {
     res.render("home",{category: response1.data, product: response2.data, coupon: response3.data })
   }))
   .catch(err =>{
-    res.send(err);
+    res.render("errorPage", { status: 500 });
 });
 
 };
@@ -41,7 +41,7 @@ exports.productPage = (req,res) => {
     res.render("product_page",{product: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 };
@@ -57,7 +57,7 @@ exports.productSearch = (req,res) => {
       res.render("category", { category: response1.data, product: response2.data, search })
     }))
     .catch(err => {
-      res.send(err);
+      res.render("errorPage", { status: 500 });
     });
 }
 
@@ -67,10 +67,10 @@ exports.categoryPage = (req,res) => {
     axios.get(`http://localhost:${PORT}/api/categoryProducts`, { params: { id: req.query.id } })
   ])
     .then(axios.spread((response1, response2) => {
-      res.render("category", { category: response1.data, product: response2.data })
+      res.render("category", { category: response1.data, product: response2.data, search: false })
     }))
     .catch(err => {
-      res.send(err);
+      res.render("errorPage", { status: 500 });
     });
 }
 
@@ -81,7 +81,7 @@ exports.myAccount = (req,res) => {
     res.render("my_account",{user: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 }
 
@@ -93,7 +93,7 @@ exports.walletPage = (req,res) => {
     res.render("walletPage",{wallet: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 }
@@ -105,13 +105,19 @@ exports.addressPage = (req,res) => {
     res.render("address_page",{address: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 }
 
 exports.addAddressPage = (req,res) => {
-  res.render("add_address_page")
+  try{
+
+    res.render("add_address_page")
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
 }
 
 exports.updateAddress = (req,res) => {
@@ -122,7 +128,7 @@ exports.updateAddress = (req,res) => {
     res.render("update_address_page",{address: response.data, index});
   })
   .catch(err =>{
-      res.send(err);
+      res.render("errorPage", { status: 500 });
   })
 }
 
@@ -133,7 +139,7 @@ exports.cartPage = (req,res) => {
     res.render("cart_page",{cart: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
   
 }
@@ -145,7 +151,7 @@ exports.checkoutPage = (req,res) => {
     res.render("checkout_page",{cart: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
   
 }
@@ -161,17 +167,29 @@ exports.paymentPage = (req,res) => {
   }))
   .catch(err =>{
     console.log(err.message);
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 }
 
 exports.orderPlaced = (req,res) => {
-  res.render("orderPlaced");
+  try{
+    
+    res.render("orderPlaced");
+    
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
 }
 
 exports.walletError = (req,res) => {
-  res.render("walletError",{ message: req.query.message });
+  try{
+    
+    res.render("walletError",{ message: req.query.message });
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
 }
 
 exports.ordersPage = (req,res) => {
@@ -182,7 +200,7 @@ exports.ordersPage = (req,res) => {
     res.render("orders_page",{orders: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 }
@@ -196,7 +214,7 @@ exports.orderDetails = (req,res) => {
     res.render("orderDetails_page",{order: response.data});
   })
   .catch(err =>{
-      res.send(err);
+    res.render("errorPage", { status: 500 });
   })
 
 }
@@ -230,17 +248,21 @@ exports.resendOTP = async (req,res)=>{
 
   }
   catch(err){
-    res.json({
-      status: "FAILED",
-      message: err.message
-    })
+    res.render("errorPage", { status: 500 });
   }
 }
 
 //Register user page
 exports.register = (req,res)=>{
-  req.session.isValidate = false;
-  res.render('user_register', { emailIsValid: req.session.emailIsValid });
+
+  try{
+    
+    req.session.isValidate = false;
+    res.render('user_register', { emailIsValid: req.session.emailIsValid });
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
 };
 
 //Register user page POST
@@ -258,12 +280,18 @@ exports.registerPost = async (req,res)=>{
     await user.save()
     res.redirect('/')
   }catch {
-    res.redirect('/register')
+    res.render("errorPage", { status: 500 });
   }
 };
 
 exports.userBlocked = (req,res) => {
-  res.render("user_blocked")
+  try{
+    
+    res.render("user_blocked")
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
 }
 
 //User logout
@@ -271,8 +299,15 @@ exports.logoutUser = async (req, res) => {
   // req.logOut()  
   const id = req.session.passport.user;
 
-  await Userdb.findByIdAndUpdate({_id: id},{$set:{status:"Inactive"}});
-  delete req.session.passport.user;
-  res.redirect('/')
+  try{
+    
+    await Userdb.findByIdAndUpdate({_id: id},{$set:{status:"Inactive"}});
+    delete req.session.passport.user;
+    res.redirect('/')
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
+
 
 }

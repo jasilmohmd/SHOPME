@@ -24,7 +24,7 @@ exports.addCoupon = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -70,7 +70,7 @@ exports.updateCoupon = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -82,7 +82,7 @@ exports.deleteCoupon = async (req, res) => {
     res.redirect("/admin/coupon-manage");
   } catch (err) {
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -199,6 +199,7 @@ exports.applyCoupon = async (req, res) => {
 
   } catch (err) {
     console.log(err);
+    res.render("errorPage", { status: 500 });
   }
 
 }
@@ -217,6 +218,7 @@ exports.removeCoupon = async (req, res) => {
   } catch (err) {
 
     console.log(err);
+    res.render("errorPage", { status: 500 });
 
   }
 

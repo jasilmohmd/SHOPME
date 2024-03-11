@@ -6,6 +6,7 @@ const { ObjectId } = require("mongodb");
 
 const Razorpay = require("razorpay");
 const walletDb = require("../model/walletSchema");
+const { error } = require("console");
 const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
 
 const razorpayInstance = new Razorpay({
@@ -167,7 +168,7 @@ exports.placeOrder = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
   }
 }
 
@@ -317,7 +318,29 @@ exports.update = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
+  }
+}
+
+exports.cancelOrder = async (req, res) => {
+  const id = req.query.id;
+  const pId = req.query.pId;
+
+  try {
+    await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
+      $set:
+      {
+        "orderItems.$.orderStatus": "cancelled"
+      }
+    });
+
+    const referer = req.get("Referer")
+
+    res.redirect(referer);
+
+  } catch (err) {
+    console.log(err);
+    res.render("errorPage",{ status: 500 });
   }
 }
 
@@ -350,6 +373,6 @@ exports.showOrders = async (req, res) => {
 
   } catch (err) {
     console.log(err.message);
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
   }
 }

@@ -59,6 +59,9 @@
         </div>
 
         <div class="order-interactions">
+          <a href="/api/order/cancel?id=<%= order._id %>&pId=<%= order.orderItems[i].productId %>">
+            <button class="btn">Cancel</button>
+          </a>
           <p>Order Status : <%= order.orderItems[i].orderStatus %></p>
         </div>
       </div>

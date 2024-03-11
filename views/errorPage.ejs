@@ -1,0 +1,33 @@
+<!-- include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
+
+  <!-- main site -->
+  <main>
+
+    <div class="success">
+
+
+      <lord-icon src="https://cdn.lordicon.com/akqsdstj.json" trigger="hover" style="width:250px;height:250px">
+      </lord-icon>
+
+      <p>Error <%= status %>!</p>
+      <p style="font-size: 0.5rem;">
+        <% if(status===500){ %>
+        <%= "internal server error" %>
+        <% } %>
+      </p>
+
+    </div>
+
+
+
+  </main>
+
+  <script src="https://cdn.lordicon.com/lordicon.js"></script>
+
+  <!--/ main site -->
+
+  <!-- footer -->
+  <%- include("include/_footer") %>
+    <!--/ footer -->

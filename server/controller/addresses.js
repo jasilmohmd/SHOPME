@@ -70,9 +70,7 @@ exports.addAddress = async (req,res) => {
     
   }catch(err){
     console.log(err);
-    if(main==="true"){
-      res.redirect("/add-address-page")
-    }
+    res.render("errorPage",{ status: 500 });
   }
 }
 
@@ -111,7 +109,7 @@ exports.showAddresses = async (req,res) => {
   
     }catch(err){
       console.log(err.message);
-      res.send("internal server error")
+      res.render("errorPage",{ status: 500 });
     }
 
   
@@ -156,7 +154,7 @@ exports.removeAddress = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    res.redirect("/address_page");
+    res.render("errorPage",{ status: 500 });
 
   }
 }
@@ -182,7 +180,7 @@ exports.makeDefault = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
   }
   
 }
@@ -214,6 +212,7 @@ exports.updateAddress = async (req,res) => {
 
   }catch(err){
     console.log(err);
+    res.render("errorPage",{ status: 500 });
   }
 }
 
@@ -240,7 +239,7 @@ exports.changeAddress = async (req,res) => {
 
   }catch(err){
     console.log(err);
-    res.send("internal server error")
+    res.render("errorPage",{ status: 500 });
   }
   
 }
