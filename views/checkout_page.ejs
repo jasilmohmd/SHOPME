@@ -25,14 +25,20 @@
                       </h6>
 
                       <div class="cart-product-qty">
-                        Qty:
-                        <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
-                          <% for(let j=1 ; j<=5 ; j++){ %>
-                            <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
-                                <%= j %>
-                            </option>
+                        <% if(cart[i].productDetails[0].inStock>0){ %>
+                          Qty:
+                          <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
+                            <% let stock=(cart[i].productDetails[0].inStock<5)?cart[i].productDetails[0].inStock : 5
+                              %>
+                              <% for(let j=1 ; j<=stock ; j++){ %>
+                                <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
+                                    <%= j %>
+                                </option>
+                                <% } %>
+                          </select>
+                          <% }else{ %>
+                            <p style="color: red;">Out of Stock</p>
                             <% } %>
-                        </select>
                       </div>
 
                       <p id="price">

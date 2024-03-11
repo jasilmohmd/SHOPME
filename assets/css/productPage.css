@@ -78,7 +78,7 @@
 }
 
 .firstPrice{
-  margin-top: -25px;
+  margin-top: -10px;
   color: #b5b5b5;
   text-decoration: line-through;
 }
@@ -95,7 +95,7 @@
 }
 
 .description{
-  margin-top: -10px;
+  margin-top: 0px;
 }
 
 .btn{

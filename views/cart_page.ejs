@@ -7,7 +7,9 @@
 
     <div class="cart">
       <% if(cart===false){ %>
-        <div class="no-products"><p>Cart is Empty!</p></div>
+        <div class="no-products">
+          <p>Cart is Empty!</p>
+        </div>
         <% } else { %>
           <div class="cart-head">
             <h5>Cart</h5>
@@ -16,63 +18,73 @@
 
           <div class="cart-body">
             <div class="cart-products-sec">
-              <% for(let i=0 ; i<cart.length ; i++){ %>
-                <div class="cart-product">
-                  <div class="cart-product-left">
-                    <img src="<%= cart[i].productDetails[0].image[0] %>" alt="image">
-                    <div class="cart-product-details">
-                      <h6>
-                        <%= cart[i].productDetails[0].pName %>
-                      </h6>
+              <form class="pIdForm">
+                <% for(let i=0 ; i<cart.length ; i++){ %>
+                  <div class="cart-product">
+                    <div class="cart-product-left">
+                      <img src="<%= cart[i].productDetails[0].image[0] %>" alt="image">
+                      <div class="cart-product-details">
+                        <h6>
+                          <%= cart[i].productDetails[0].pName %>
+                        </h6>
 
-                      <div class="cart-product-qty">
-                        Qty:
-                        <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
-                          <% let stock = (cart[i].productDetails[0].inStock<5)?cart[i].productDetails[0].inStock : 5 %>
-                          <% for(let j=1 ; j<= stock ; j++){ %>
-                            <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
-                                <%= j %>
-                            </option>
-                            <% } %>
-                        </select>
+                        <input style="display: none;" name="pId[]" type="text"
+                          value="<%= cart[i].productDetails[0]._id %>">
+
+                        <div class="cart-product-qty">
+                          <% if(cart[i].productDetails[0].inStock>0){ %>
+                            Qty:
+                            <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
+                              <% let stock=(cart[i].productDetails[0].inStock<5)?cart[i].productDetails[0].inStock : 5
+                                %>
+                                <% for(let j=1 ; j<=stock ; j++){ %>
+                                  <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
+                                      <%= j %>
+                                  </option>
+                                  <% } %>
+                            </select>
+                            <% }else{ %>
+                              <p style="color: red;">Out of Stock</p>
+                              <% } %>
+                        </div>
+
+                        <p id="price">
+                          <%= cart[i].productDetails[0].lastPrice %>
+                        </p>
+                        <p id="mrp">
+                          <%= (cart[i].productDetails[0].firstPrice) %>
+                        </p>
                       </div>
+                    </div>
 
-                      <p id="price">
-                        <%= cart[i].productDetails[0].lastPrice %>
-                      </p>
-                      <p id="mrp">
-                        <%= (cart[i].productDetails[0].firstPrice) %>
-                      </p>
+                    <div class="cart-product-right">
+                      <a href="/api/removeFromCart/<%= cart[i].productDetails[0]._id %>">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em"
+                          viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+                          <path
+                            d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+                        </svg>
+                      </a>
                     </div>
                   </div>
-
-                  <div class="cart-product-right">
-                    <a href="/api/removeFromCart/<%= cart[i].productDetails[0]._id %>">
-                      <svg xmlns="http://www.w3.org/2000/svg" height="1em"
-                        viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-                        <path
-                          d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-                <% } %>
+                  <% } %>
+              </form>
 
 
-                  <div class="coupon-sec">
-                    <form action="/api/coupon/apply" method="POST">
-                      <input type="text" name="couponCode" class="coupon-input" placeholder="Enter Coupon Code">
+              <div class="coupon-sec">
+                <form action="/api/coupon/apply" method="POST">
+                  <input type="text" name="couponCode" class="coupon-input" placeholder="Enter Coupon Code">
 
-                      <button type="submit" class="coupon-btn">APPLY</button>
-                      <br>
-                    </form>
-                    <% if(cart[0].appliedCoupon){ %>
-                      <p style="color: rgb(17, 116, 17);">
-                        <%= cart[0].appliedCoupon %> applied &nbsp;
-                      </p>
-                      <a style="color: rgb(132, 17, 17);" href="/api/coupon/remove">Remove</a>
-                      <% } %>
-                  </div>
+                  <button type="submit" class="coupon-btn">APPLY</button>
+                  <br>
+                </form>
+                <% if(cart[0].appliedCoupon){ %>
+                  <p style="color: rgb(17, 116, 17);">
+                    <%= cart[0].appliedCoupon %> applied &nbsp;
+                  </p>
+                  <a style="color: rgb(132, 17, 17);" href="/api/coupon/remove">Remove</a>
+                  <% } %>
+              </div>
             </div>
 
             <div class="cart-details-sec">
@@ -115,9 +127,9 @@
                 </div>
               </div>
               <div class="checkout">
-                <a href="/checkout_page">
-                  <button class="btn">Checkout</button>
-                </a>
+
+                <button id="checkoutBtn" class="btn" type="button">Checkout</button>
+
               </div>
 
             </div>
@@ -128,6 +140,43 @@
     </div>
 
   </main>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script>
+    $(document).ready(() => {
+      // Intercept the form submission event
+      $("#checkoutBtn").click((e) => {
+
+        console.log("hi");
+
+        // Serialize the form data
+        var formData = $('.pIdForm').serialize();
+        console.log(formData);
+
+        // Send an AJAX request to check stock availability
+        $.ajax({
+          url: "/api/checkStock",
+          type: "POST",
+          data: formData,
+          success: (res) => {
+            if (res.allProductsInStock) {
+              // If all products are in stock, redirect to checkout
+              window.location.href = "/checkout_page";
+            } else {
+              // If any product is out of stock, display an error message
+              alert("Some products are out of stock. Please remove them from your cart.");
+            }
+          },
+          error: () => {
+            // Handle errors if any
+            alert("An error occurred while checking stock availability. Please try again.");
+          }
+        });
+      });
+    });
+
+  </script>
 
   <script src="/js/cartPrice.js"></script>
   <script src="/js/qtyUpdate.js"></script>

@@ -1,5 +1,32 @@
 const cartDb = require("../model/cartSchema");
 const { ObjectId } = require("mongodb");
+const productDb = require("../model/productSchema");
+
+exports.checkStock = async (req,res) => {
+  try{
+    
+    const { 'pId[]': pIdArray } = req.body;
+    
+    // Convert pIdArray to an array of ObjectId if needed
+    const pIds = Array.isArray(pIdArray) ? pIdArray : [pIdArray];
+
+    console.log(pIds);
+    
+    const products = await productDb.find({_id: {$in: pIds}});
+
+    const outOfStockProducts = products.filter(product => product.inStock <= 0);
+
+    if (outOfStockProducts.length === 0) {
+      // If all products are in stock, proceed to the next middleware
+      res.send({allProductsInStock:true})
+    } else {
+      res.send({allProductsInStock:false})
+    }
+
+  }catch(err){
+    res.render("errorPage", { status: 500 });
+  }
+}
 
 exports.orderItems = async (req,res) => {
   const uId = req.params.uId;

@@ -40,7 +40,11 @@
             ₹<%= product.firstPrice %>
           </p>
   
-          <p class="stock">In Stock</p>
+          <% if(product.inStock>0){ %>
+            <p class="stock">In Stock</p>
+          <% }else{ %>
+            <p class="stock" style="color: rgb(141, 13, 13);">Out of Stock</p>
+          <% } %>
           
           <p class="descriptionHead">
             <%= product.descriptionHead %>

@@ -152,6 +152,9 @@ route.post("/api/coupon/apply", coupon.applyCoupon);
 //delete coupon from cart
 route.get("/api/coupon/remove", coupon.removeCoupon);
 
+//check stock before checkout
+route.post("/api/checkStock", checkout.checkStock);
+
 //show items in checkout
 route.get("/api/checkout/:uId", checkout.orderItems);
 
