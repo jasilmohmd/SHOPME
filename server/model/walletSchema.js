@@ -22,6 +22,10 @@ const walletSchema = new Schema({
         default: Date.now(),
         required: true
       },
+      source:{
+        type: String,
+        required: true
+      },
       transactType:{
         type: Boolean,
         required: true

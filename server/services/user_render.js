@@ -64,10 +64,11 @@ exports.productSearch = (req,res) => {
 exports.categoryPage = (req,res) => {
   axios.all([
     axios.get(`http://localhost:${PORT}/api/category`),
-    axios.get(`http://localhost:${PORT}/api/categoryProducts`, { params: { id: req.query.id } })
+    axios.get(`http://localhost:${PORT}/api/categoryProducts`, { params: { id: req.query?.id,sort:req.query?.sort, priceAbove: req.query?.priceAbove, priceBelow: req.query?.priceBelow } })
   ])
     .then(axios.spread((response1, response2) => {
-      res.render("category", { category: response1.data, product: response2.data, search: false })
+      // console.log(response2.data);
+      res.render("category", { category: response1.data, product: response2.data, search: false, req: req })
     }))
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -227,8 +228,9 @@ exports.registerVerify = (req,res)=>{
 
 //Register verification 2 user page
 exports.registerVerify2 = (req,res)=>{
+  let email = req.session.user;
   req.session.isValidate = false;
-  res.render('user_verify2', { emailIsValid: req.session.emailIsValid });
+  res.render('user_verify2', { emailIsValid: req.session.emailIsValid , email });
 };
 
 

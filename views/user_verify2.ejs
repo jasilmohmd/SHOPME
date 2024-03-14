@@ -17,8 +17,10 @@
           <div class="input-box">
             <label for="otp">OTP</label><br>
             <input type="number" name="otp" required>
-            <p id="timer" style="margin-top: 5px;"></p>
-            <a href="/resendOTP">Resend OTP</a>
+            <div class="otpTimer">
+              <div id="timer" style="margin-top: 5px;"></div>
+              <a id="resendBtn" class="hide" href="/api/resendOTP">Resend OTP</a>
+            </div>
             <button class="btn" type="submit">SUBMIT</button>
           </div>
 
@@ -41,22 +43,24 @@
 
         display.textContent = minutes + ":" + seconds;
 
-        if(timer<10){
+        if (timer < 10) {
           display.classList.add("abtExpire");
         }
-        
+
         if (--timer < 0) {
           clearInterval(intervalId); // Clear the interval when timer reaches zero
           display.textContent = "Otp expired"
-          display.classList.add("expired");
+          resendBtn.classList.add("show");
         }
       }, 1000);
     }
 
     // Start timer when page loads
     window.onload = function () {
-      var timeLeft = 60; // Remaining time in seconds
-      var display = document.getElementById('timer');
+      let timeLeft = 60; // Remaining time in seconds
+      let display = document.getElementById('timer');
+      let resendBtn = document.getElementById("resendBtn")
+
       startTimer(timeLeft, display);
     };
   </script>

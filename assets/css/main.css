@@ -28,8 +28,9 @@
 }
 
 #product{
+  border: none;
   border-radius: 50px;
-  box-shadow: 10px 10px 30px -10px #aaa9a9;
+  box-shadow: 10px 10px 30px -10px #00000032;
   margin: 10px 10px;
 }
 
@@ -94,4 +95,81 @@ a{
   font-size: 1rem;
   color: #b5b5b5;
   margin-bottom: 15px;
+}
+
+#filterDiv{
+  border-right: 1px solid #dddddd;
+  margin-right: 15px;
+  margin-left: 0;
+}
+
+.menu {
+  padding: 20px;
+}
+
+.menu h4 {
+  margin-top: 15px;
+  font-size: 1.2rem;
+}
+
+.menu p ,.menu label{
+  font-size: 0.8rem;
+  margin: 2px;
+}
+
+.menu input[type="number"] {
+  width: 80%;
+  font-size: 0.75rem;
+  padding: 5px 15px;
+  margin-bottom: 10px;
+  border-radius: 15px;
+  border: none;
+  box-shadow: 2px 5px 10px -3px #0000002e;
+}
+
+.menu button {
+  font-size: 0.65rem;
+  background-color: #1e1c1c;
+  border-radius: 20px;
+  color: #fff;
+  border: none;
+  padding: 5px 15px;
+  cursor: pointer;
+}
+
+
+.sort-div {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.menu button:hover {
+  background-color: #0056b3;
+}
+
+.menu .sort-options input[type="radio"] {
+  margin-right: 5px;
+}
+
+/* CSS to change radio button color */
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 10px; /* Set width and height to match the custom radio button */
+  height: 10px;
+  border-radius: 50%; /* Make it round */
+  border: 1px solid black; /* Set border color */
+  /* outline: none; */
+  cursor: pointer; /* Show pointer cursor on hover */
+}
+
+/* Style for checked state */
+input[type="radio"]:checked {
+  background-color: rgb(22, 22, 22); /* Change background color when checked */
+}
+
+.menu .sort-options label {
+  cursor: pointer;
 }

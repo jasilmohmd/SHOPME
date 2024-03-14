@@ -13,13 +13,13 @@ let transporter = nodemailer.createTransport({
 
 
 //send otp verification email
-const sendOTPVerificationEmail = async (req, res) => {
+const sendOTPVerificationEmail = async (email) => {
   try {
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
-      to: req.session.user,
+      to: email,
       subject: "Verify your email",
       html: `<p>Enter <b>${otp}</b> in the app to verify your email address and continue with creating account.</p>
       <p>this code expires in 1 minute.</p>`
@@ -30,7 +30,7 @@ const sendOTPVerificationEmail = async (req, res) => {
 
 
     const newOTPVerification = new userOTPdb({
-      email: req.session.user,
+      email: email,
       otp: hashedOTP,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 60000),
@@ -39,39 +39,51 @@ const sendOTPVerificationEmail = async (req, res) => {
     //save otp record
     const data = await newOTPVerification.save();
 
-    req.session.otpId = data._id;
-
-    email = req.session.user
+    const otpId = data._id;
 
     await transporter.sendMail(mailOptions);
 
 
-    res.render("user_verify2", { email })
+    return otpId
 
   } catch (err) {
     console.log(err);
+    throw err;
+  }
+}
+
+
+exports.otp = async (req, res) => {
+  try {
+
+    if (!req.body) {
+      res.status(400).send({ message: "you left the field empty" })
+      return
+    }
+    req.session.user = req.body.email
+
+    const otpId = await sendOTPVerificationEmail(req.session.user);
+    req.session.otpId = otpId;
+
+    res.redirect("/register_verify2");
+
+  } catch (err) {
     res.render("errorPage", { status: 500 });
   }
 }
 
-
-exports.otp = (req, res) => {
-  if (!req.body) {
-    res.status(400).send({ message: "you left the field empty" })
-    return
-  }
-  req.session.user = req.body.email
-
-  sendOTPVerificationEmail(req, res);
-}
-
 exports.resendOtp = async (req, res) => {
 
-  let email = req.session.user
+  let otpId = req.session.otpId
 
   //delete existing records and resend
-  await userOTPdb.deleteMany({ email });
-  sendOTPVerificationEmail(req, res);
+  await userOTPdb.deleteOne({ _id: otpId });
+
+  // Send a new OTP and get the new OTP ID
+  const newOtpId = await sendOTPVerificationEmail(req.session.user);
+
+  // Update the session with the new OTP ID
+  req.session.otpId = newOtpId;
 
   res.redirect("/register_verify2")
 }

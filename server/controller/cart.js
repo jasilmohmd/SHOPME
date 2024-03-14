@@ -4,9 +4,10 @@ const { ObjectId } = require("mongodb")
 
 exports.addToCart = async (req, res) => {
 
+  
   const uId = req.session.passport.user;
   const pId = req.params.pId;
-
+  
   try {
     const product = await productDb.findById(pId)
 

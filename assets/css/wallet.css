@@ -1,48 +1,57 @@
-.wallet{
-  width: 500px;
-  margin: 20px 25px;
-  box-shadow: 10px 10px 30px -10px #aaa9a9;
-  border-radius: 30px;
+/* Adjustments to the table appearance */
+.transact-page {
+  padding: 5px;
+  border-radius: 20px;
+  box-shadow: inset 2px 2px 15px #aaa9a940;
+  overflow-y: auto; /* Allow vertical scrolling if necessary */
+  border-collapse: separate; /* Use separate border model */
+  border-spacing: 10px 15px; 
+}
+
+
+.transact-page th{
+  padding: 8px 20px;
+  text-align: center;
+}
+.transact-page td {
+  padding: 15px 20px;
+  text-align: center;
+}
+
+/* Adjustments to the transaction body */
+.transact-body { 
+  margin: 15px;
+  padding: 20px 25px;
+  box-shadow: 2px 2px 10px #aaa9a940,inset 2px 2px 15px #fff;
+  border-radius: 15px;
+}
+
+.transact-body p {
+  margin: 0;
+}
+
+/* Adjustments to the wallet and its contents */
+.wallet {
+  /* max-width: 900px; */
+  margin: 20px auto;
   padding: 20px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 30px -10px #aaa9a9;
 }
 
-.wallet-head{
-  margin: 10px 10px;
-  font-weight: 600;
+.wallet-head {
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
-.transact-head{
+.transact-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 10px;
+  margin-bottom: 20px;
 }
 
-.transact-head button{
-  font-size: 0.75rem;
-  padding: 8px 15px;
-}
-
-.transact-page{
-  margin: 10px;
-  box-shadow: inset 2px 2px 15px #aaa9a940;
-  padding: 20px;
-  border-radius: 35px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.transact-body{
-  display: flex;
-  justify-content: space-between;
-  padding: 20px 25px;
-  box-shadow: 2px 2px 10px #aaa9a940,inset 2px 2px 15px #fff;
-  border-radius: 30px;
-}
-
-
-.transact-body p{
-  margin: 0;
-  font-size: 0.75rem;
+.transact-head button {
+  padding: 8px 20px;
+  font-size: 14px;
 }

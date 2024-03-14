@@ -191,22 +191,126 @@ exports.delete = async (req, res) => {
 }
 
 exports.findProducts = async (req, res) => {
-  const id = req.query.id;
 
   try {
 
-    const category = await categoryDb.findById(id)
+    if (req.query.sort) {
 
-    const cName = category.cName;
+      const id = req.query.id;
 
-    //retrieve products of that category
-    productDb.find({ unlist: false, category: cName })
-      .then(product => {
-        res.send(product)
-      })
-      .catch(err => {
-        res.status(500).send({ message: err.message })
-      })
+      console.log(id);
+
+      let { sort, priceAbove, priceBelow } = req.query;
+
+      priceAbove? priceAbove=Number(priceAbove) : priceAbove=0;
+      priceBelow? priceBelow=Number(priceBelow) : priceBelow=Infinity;
+
+      console.log(priceBelow);
+
+      if (id === "all") {
+
+        if (sort === "lowestToHighest") {
+
+          //retrieve all products
+          productDb.find({ unlist: false, lastPrice: { $gte: priceAbove, $lte: priceBelow } }).sort({ lastPrice: 1 })
+            .then(product => {
+              console.log(product);
+              res.send(product)
+            })
+            .catch(err => {
+              res.status(500).send({ message: err.message })
+            })
+
+
+        } else {
+
+          //retrieve all products
+          productDb.find({ unlist: false, lastPrice: { $gte: priceAbove, $lte: priceBelow } }).sort({ lastPrice: -1 })
+            .then(product => {
+              res.send(product)
+            })
+            .catch(err => {
+              res.status(500).send({ message: err.message })
+            })
+
+        }
+
+
+      } else {
+
+        const category = await categoryDb.findById(id)
+
+        cName = category.cName;
+
+        if (sort === "lowestToHighest") {
+
+          //retrieve products of that category
+          productDb.find({ unlist: false, category: cName, lastPrice: { $gte: priceAbove, $lte: priceBelow } }).sort({ lastPrice: 1 })
+            .then(product => {
+              res.send(product)
+            })
+            .catch(err => {
+              res.status(500).send({ message: err.message })
+            })
+
+
+        } else {
+
+          //retrieve products of that category
+          productDb.find({ unlist: false, category: cName, lastPrice: { $gte: priceAbove, $lte: priceBelow } }).sort({ lastPrice: -1 })
+            .then(product => {
+              res.send(product)
+            })
+            .catch(err => {
+              res.status(500).send({ message: err.message })
+            })
+
+        }
+
+
+      }
+
+    } else {
+
+      const id = req.query.id;
+
+      req.session.category = id;
+
+      console.log(req.session.category);
+
+      let cName;
+
+      if (id === "all") {
+
+        //retrieve all products
+        productDb.find({ unlist: false })
+          .then(product => {
+            res.send(product)
+          })
+          .catch(err => {
+            res.status(500).send({ message: err.message })
+          })
+
+      } else {
+
+        const category = await categoryDb.findById(id)
+
+        cName = category.cName;
+
+        //retrieve products of that category
+        productDb.find({ unlist: false, category: cName })
+          .then(product => {
+            res.send(product)
+          })
+          .catch(err => {
+            res.status(500).send({ message: err.message })
+          })
+
+      }
+
+    }
+
+
 
   } catch (err) {
 

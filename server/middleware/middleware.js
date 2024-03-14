@@ -7,7 +7,7 @@ exports.checkAuthenticated = (req, res, next)=>{
     if(req.isAuthenticated()){
       return next()
     }
-    res.redirect('/')
+    res.redirect('/login')
 
   }catch(err){
     res.render("errorPage", { status: 500 });
@@ -20,7 +20,7 @@ exports.checkNotAuthenticated = (req,res,next)=>{
   try{
     
     if(req.isAuthenticated()){
-      return res.redirect('/home')
+      return res.redirect('/')
     }
     next()
 

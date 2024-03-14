@@ -1,45 +1,117 @@
 <!-- include header -->
-  <%- include("include/_header_nav") %>
-<!--/ include header -->
+<%- include("include/_header_nav") %>
+  <!--/ include header -->
 
-<!-- main site -->
-<main>
-
-  <div class="products">
-
-    <% if(product.length<1){ %>
-    <div class="no-products">
-      <p>No products</p>
-    </div>
-    <% } %>
+  <!-- main site -->
+  <main>
 
     <% if(search){ %>
       <div id="searchResults">Search results for "<%= search %>"</div>
-    <% } %>
-
-    <div id="products-row" class="row">
-      <% for(let i=0; i<product.length ; i++){ %>
-      <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">
-        <a href="/product_page?id=<%= product[i]._id %>">
-          <div id="product" class="card">
-            <img src="<%= product[i].image[0] %>">
-            <div class="card-body">
-              <h5 class="card-title"><%= product[i].pName %></h5>
-              <p class="price">₹<%= product[i].lastPrice %></p>
-              <p class="mrp">₹<%= product[i].firstPrice %></p>
-            </div>
-          </div>
-        </a>
-      </div>
       <% } %>
 
-    </div>
 
-  </div>
+        <div class="products" style="display: flex;">
 
-</main>
-<!--/ main site -->
+          <div class="col-md-2" id="filterDiv">
 
-<!-- footer -->
+            <!-- Menu for sorting and filtering -->
+            <form id="filterForm">
+              <div class="menu">
+                <h4>Sort By Price</h4>
+                <div class="sort-options">
+                  <input style="display: none;" type="text" name="id" value="<%= req.query.id %>">
+                  <div class="sort-div">
+                    <input type="radio" id="lowestToHighest" name="sort" value="lowestToHighest" checked>
+                    <label for="lowestToHighest">Lowest to Highest</label>
+                  </div>
+                  <div class="sort-div">
+                    <input type="radio" id="highestToLowest" name="sort" value="highestToLowest">
+                    <label for="highestToLowest">Highest to Lowest</label>
+                  </div>
+                </div>
+                <h4>Filter By Price</h4>
+                <p>Price Above</p>
+                <input type="number" id="priceAbove" name="priceAbove" placeholder="Enter price">
+                <p>Price Below</p>
+                <input type="number" id="priceBelow" name="priceBelow" placeholder="Enter price">
+                <button type="submit">Apply Filters</button>
+              </div>
+            </form>
+
+          </div>
+
+          <div class="col-md-10">
+
+            <% if(product.length<1){ %>
+              <div class="no-products">
+                <p>No products</p>
+              </div>
+              <% } %>
+
+                <div id="products-row" class="row">
+                  <% for(let i=0; i<product.length ; i++){ %>
+                    <div class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+                      <a href="/product_page?id=<%= product[i]._id %>">
+                        <div id="product" class="card">
+                          <img src="<%= product[i].image[0] %>">
+                          <div class="card-body">
+                            <h5 class="card-title">
+                              <%= product[i].pName %>
+                            </h5>
+                            <p class="price">₹<%= product[i].lastPrice %>
+                            </p>
+                            <p class="mrp">₹<%= product[i].firstPrice %>
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                    <% } %>
+
+                </div>
+
+          </div>
+
+
+
+
+        </div>
+
+  </main>
+  <!--/ main site -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!-- <script>
+
+    $(document).ready(function () {
+      $('#filterForm').submit(function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Serialize form data
+        var formData = $(this).serialize();
+
+        // Send AJAX request
+        $.ajax({
+          type: 'GET', // Or 'GET' depending on your server route
+          url: "/category_page",
+          data: formData,
+          success: function (response) {
+            // Handle the success response
+            console.log(response);
+
+          },
+          error: function (xhr, status, error) {
+            // Handle errors
+            console.error('Error:', error);
+          }
+        });
+      });
+    });
+
+
+  </script> -->
+
+  <!-- footer -->
   <%- include("include/_footer") %>
-<!--/ footer -->
+    <!--/ footer -->

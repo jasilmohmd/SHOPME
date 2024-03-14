@@ -51,7 +51,8 @@
 
       <div class="transact-head">
 
-        <p>Balance : <%= wallet.balance %>
+        <p>
+          Current Balance : <span style="font-weight: 600;">₹<%= wallet.balance %></span>
         </p>
 
         <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal2">Add Money</button>
@@ -59,32 +60,47 @@
 
       </div>
 
-      <div class="transact-page">
-        <% if( !wallet || wallet.transactions.length<1){ %>
-          <div class="transact-body">
-            No Transactions
-          </div>
-          <% } else { %>
-            <% for(let i=wallet.transactions.length-1 ; i>=0 ; i--){ %>
-              <div class="transact-body">
-                <div>
-                  <%= wallet.transactions[i].formattedDate %>
-                </div>
 
-                <% if(wallet.transactions[i].transactType){ %>
-                  <div style="color: rgb(12, 120, 12);">
-                    +<%= wallet.transactions[i].amount %>
-                  </div>
-                  <% } else{ %>
-                    <div style="color: rgb(151, 11, 11);">
-                      -<%= wallet.transactions[i].amount %>
-                    </div>
-                    <% } %>
-              </div>
-              <% } %>
+      <table class="transact-page">
+        <thead>
+          <tr class="transact-body">
+            <th>Date & Time</th>
+            <th>Source</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if( !wallet || wallet.transactions.length<1){ %>
+            <div class="transact-body">
+              No Transactions
+            </div>
+            <% } else { %>
+              <% for(let i=wallet.transactions.length-1 ; i>=0 ; i--){ %>
+                <tr class="transact-body">
+                  <td>
+                    <%= wallet.transactions[i].formattedDate %>
+                  </td>
+
+                  <td>
+                    <%= wallet.transactions[i]?.source %>
+                  </td>
+
+                  <% if(wallet.transactions[i].transactType){ %>
+                    <td style="color: rgb(12, 120, 12);">
+                      +₹<%= wallet.transactions[i].amount %>
+                    </td>
+                    <% } else{ %>
+                      <td style="color: rgb(151, 11, 11);">
+                        -₹<%= wallet.transactions[i].amount %>
+                      </td>
+                      <% } %>
+                </tr>
                 <% } %>
+                  <% } %>
+        </tbody>
 
-      </div>
+      </table>
+    </div>
 
   </main>
   <!--/ main site -->
@@ -119,7 +135,7 @@
                 "currency": res.orders.currency,
                 "name": "SHOPME",
                 "order_id": res.orders.id,
-                "callback_url": `/api/razorpay/wallet?amount=${res.orders.amount/100}`,
+                "callback_url": `/api/razorpay/wallet?amount=${res.orders.amount / 100}`,
                 "prefill": {
                   "name": res.user.userName,
                   "contact": res.user.phone

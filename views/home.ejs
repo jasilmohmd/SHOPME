@@ -43,7 +43,7 @@
     </div>
     <div class="carousel-inner" data-bs-interval="10000">
       <% for(let i=0; i<coupon.length; i++){ %>
-      <div class="carousel-item active">
+      <div class="carousel-item <% if(i===0){ %>active<% } %>">
         <div class="offer">
           <p>use code <span><%= coupon[i].couponCode %></span> to get</p>
           <h3>Additional <%= coupon[i].couponDiscount %>% Discount</h3>

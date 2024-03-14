@@ -133,34 +133,40 @@ exports.placeOrder = async (req, res) => {
 
         let wallet = await walletDb.findOne({ userId: uId })
 
-        if (wallet.balance>=amount) {
+        if (wallet) {
 
-          const newOrder = new orderDb(order);
-          await newOrder.save();
+          if (wallet.balance >= amount) {
+
+            const newOrder = new orderDb(order);
+            await newOrder.save();
 
 
-          await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
+            await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
 
-          wallet.transactions.push({ transactType: false, amount: amount });
+            wallet.transactions.push({ transactType: false, amount: amount, source: `payed for order id ${newOrder._id}` });
 
-          wallet.save();
+            wallet.save();
 
-          userCart.forEach(async (product) => {
-            await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
-          })
+            userCart.forEach(async (product) => {
+              await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
+            })
 
-          await cartDb.updateOne(
-            { userId: uId },
-            { $set: { cartItems: [] } }
-          );
+            await cartDb.updateOne(
+              { userId: uId },
+              { $set: { cartItems: [] } }
+            );
 
-          res.json({ response: true, method: "wallet" });
+            res.json({ response: true, method: "wallet" });
 
-        }
-        else{
+          }
+          else {
 
-          res.json({response: false, method: "wallet" , message: "insuficient funds in your wallet"});
+            res.json({ response: false, method: "wallet", message: "insuficient funds in your wallet" });
 
+          }
+
+        }else{
+          res.json({ response: false, method: "wallet", message: "Topup your wallet" });
         }
       }
 
@@ -168,7 +174,7 @@ exports.placeOrder = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.render("errorPage",{ status: 500 });
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -318,7 +324,7 @@ exports.update = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.render("errorPage",{ status: 500 });
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -340,7 +346,7 @@ exports.cancelOrder = async (req, res) => {
 
   } catch (err) {
     console.log(err);
-    res.render("errorPage",{ status: 500 });
+    res.render("errorPage", { status: 500 });
   }
 }
 
@@ -373,6 +379,6 @@ exports.showOrders = async (req, res) => {
 
   } catch (err) {
     console.log(err.message);
-    res.render("errorPage",{ status: 500 });
+    res.render("errorPage", { status: 500 });
   }
 }

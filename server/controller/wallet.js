@@ -92,14 +92,15 @@ exports.rzpHandler = async (req, res) => {
           transactions: [
             {
               transactType: true,
-              amount: amount
+              amount: amount,
+              source: "Wallet Topup"
             }
           ]
         })
       }
       else {
         await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: amount } });
-        wallet.transactions.push({ transactType: true, amount: amount });
+        wallet.transactions.push({ transactType: true, amount: amount, source: "Wallet Topup" });
       }
 
       await wallet.save();

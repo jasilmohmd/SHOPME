@@ -105,6 +105,12 @@ h3{
   color: #b5b5b5;
 }
 
+.otpTimer{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .abtExpire{
   color: rgb(145, 13, 13);
 }
@@ -112,6 +118,14 @@ h3{
 .expired{
   font-size: 13px;
   color: rgb(145, 13, 13);
+}
+
+.hide{
+  display: none;
+}
+
+.show{
+  display: flex;
 }
 
 @media (max-width:375px){

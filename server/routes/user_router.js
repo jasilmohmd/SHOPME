@@ -17,27 +17,27 @@ const order = require("../controller/order");
 
 
 //Login Page render
-route.get('/', middleware.checkNotAuthenticated, services.login);
+route.get('/login', middleware.checkNotAuthenticated, services.login);
 
 
 //Login Post
 route.post('/login', middleware.checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/home',
-  failureRedirect: '/',
+  successRedirect: '/',
+  failureRedirect: '/login',
   failureFlash: true
 }));
 
 //Home page render
-route.get('/home', middleware.isBlocked, middleware.checkAuthenticated , services.home);
+route.get('/', middleware.isBlocked, services.home);
 
 //product page render
-route.get("/product_page", middleware.isBlocked, middleware.checkAuthenticated, services.productPage );
+route.get("/product_page", middleware.isBlocked, services.productPage );
 
 //searching products
-route.post("/search", services.productSearch)
+route.post("/search",middleware.isBlocked, services.productSearch)
 
 //category pages render
-route.get("/category_page", middleware.isBlocked, middleware.checkAuthenticated, services.categoryPage);
+route.get("/category_page", middleware.isBlocked, services.categoryPage);
 
 //my account page render
 route.get("/my_account", middleware.isBlocked, middleware.checkAuthenticated, services.myAccount);
@@ -132,7 +132,7 @@ route.post("/api/wallet/addMoney", wallet.addMoney);
 route.post("/api/razorpay/wallet", wallet.rzpHandler);
 
 //add to cart
-route.post("/api/addToCart/:pId", cart.addToCart);
+route.post("/api/addToCart/:pId",middleware.checkAuthenticated, cart.addToCart);
 
 //show items in cart
 route.get("/api/showCart/:uId", cart.showCart);
