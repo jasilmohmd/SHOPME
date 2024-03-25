@@ -17,6 +17,7 @@
 }
 
 .products{
+  position: relative;
   margin: 30px 25px;
 }
 
@@ -31,12 +32,14 @@
   border: none;
   border-radius: 50px;
   box-shadow: 10px 10px 30px -10px #00000032;
-  margin: 10px 10px;
+  margin: 8px;
+  height: 100%;
 }
 
-#product img{
-  margin: 30px;
-  height: 25vh;
+#product img {
+  margin: 20px auto; /* Center the images horizontally */
+  max-height: 20vh; /* Set maximum height for the images */
+  width: auto; /* Ensure images adjust their width proportionally */
   object-fit: contain;
 }
 
@@ -54,12 +57,12 @@ a{
 }
 
 #product .card-title{
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 
 #product .card-text{
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -97,10 +100,14 @@ a{
   margin-bottom: 15px;
 }
 
+
 #filterDiv{
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
   border-right: 1px solid #dddddd;
   margin-right: 15px;
-  margin-left: 0;
+  margin-left: 0; 
 }
 
 .menu {
@@ -118,7 +125,7 @@ a{
 }
 
 .menu input[type="number"] {
-  width: 80%;
+  width: 90%;
   font-size: 0.75rem;
   padding: 5px 15px;
   margin-bottom: 10px;
@@ -172,4 +179,12 @@ input[type="radio"]:checked {
 
 .menu .sort-options label {
   cursor: pointer;
+}
+
+.invoice{
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 2px 5px 10px -3px #0000002e;
 }

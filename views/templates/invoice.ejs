@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Invoice</title>
+  <style>
+    /* CSS styles for the invoice */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .invoice {
+      width: 80%;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .invoice-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .invoice-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+
+    .invoice-total {
+      margin-top: 20px;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="invoice">
+    <div class="invoice-header">
+      <h2>Order Invoice</h2>
+    </div>
+    <div class="invoice-details">
+      <p>Order Id : <%= order._id %>
+      </p>
+      <p>Order Date : <%= order.orderDate.toDateString() %>
+      </p>
+      <p>Payment Method : <%= order.paymentMethod %>
+      </p>
+      <p>Applied Coupon : <%= order.appliedCoupon?order.appliedCoupon:"None" %></p>
+      <p>Shipping Address : <%= order.address.name %>, <%= order.address.address %>, <%= order.address.district %>, <%=
+                order.address.pincode %>
+      </p>
+    </div>
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Coupon Discount</th>
+          <th>Quantity</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% order.orderItems.forEach(item=> { %>
+          <% if(item.orderStatus==="delivered" ){ %>
+            <tr>
+              <td>
+                <%= item.pName %>
+              </td>
+              <td>₹<%= item.price %>
+              </td>
+              <td>₹<%= item.couponDiscount %></td>
+              <td>
+                <%= item.quantity %>
+              </td>
+              <td>₹<%= (item.price-item.couponDiscount) * item.quantity %>
+              </td>
+            </tr>
+            <% } %>
+              <% }); %>
+      </tbody>
+    </table>
+    <div class="invoice-total">
+      <p style="font-weight: 600;font-size: 1.15rem;">SubTotal : ₹<%= order.orderItems.reduce((total, item)=> total + ((item.price-item.couponDiscount) * item.quantity), 0) %> </p>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -69,22 +69,7 @@
                   </div>
                   <% } %>
               </form>
-
-
-              <div class="coupon-sec">
-                <form action="/api/coupon/apply" method="POST">
-                  <input type="text" name="couponCode" class="coupon-input" placeholder="Enter Coupon Code">
-
-                  <button type="submit" class="coupon-btn">APPLY</button>
-                  <br>
-                </form>
-                <% if(cart[0].appliedCoupon){ %>
-                  <p style="color: rgb(17, 116, 17);">
-                    <%= cart[0].appliedCoupon %> applied &nbsp;
-                  </p>
-                  <a style="color: rgb(132, 17, 17);" href="/api/coupon/remove">Remove</a>
-                  <% } %>
-              </div>
+              
             </div>
 
             <div class="cart-details-sec">
@@ -109,14 +94,6 @@
                     <p class="green" id="discount">0</p>
                   </div>
 
-                  <div class="details-title-sec">
-                    <% if(cart.length>0){ %>
-                      <p class="details-title">Coupun Discount</p>
-                      <p id="couponDiscount" class="green">
-                        <%= cart[0].couponDiscount %>
-                      </p>
-                  </div>
-                  <% } %>
                 </div>
 
                 <div class="cart-details-footer">

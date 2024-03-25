@@ -4,6 +4,7 @@ const passport = require("passport")
 
 const services = require('../services/user_render');
 const OTPVerification = require("../controller/OTPVerification");
+const forgotOTP = require("../controller/forgotOTP");
 const middleware = require("../middleware/middleware")
 const product = require("../controller/product");
 const category = require("../controller/category");
@@ -14,6 +15,7 @@ const coupon = require("../controller/coupon");
 const address = require("../controller/addresses");
 const checkout = require("../controller/checkout");
 const order = require("../controller/order");
+const puppeteer = require("../controller/puppeteer");
 
 
 //Login Page render
@@ -75,6 +77,12 @@ route.get("/orders_page",middleware.isBlocked, middleware.checkAuthenticated, se
 //order details page render
 route.get("/orderDetails_page",middleware.isBlocked, middleware.checkAuthenticated, services.orderDetails);
 
+//update account details page
+route.get("/update_account", middleware.isBlocked, middleware.checkAuthenticated, services.updateAccount );
+
+//Change Password render
+route.get("/change_password", services.changePassword);
+
 //Register verify render
 route.get("/register_verify", middleware.checkNotAuthenticated, services.registerVerify);
 
@@ -93,8 +101,26 @@ route.get("/register", middleware.checkNotAuthenticated, services.register);
 //Register Post
 route.post('/register', middleware.checkNotAuthenticated, services.registerPost);
 
+//Forgot password verify render
+route.get("/forgot_passwordVerify", services.forgotPasswordVerify);
+
+//Forgot password verify post
+route.post("/forgot_passwordVerify", forgotOTP.otp);
+
+//Forgot password verify 2 render
+route.get("/forgot_passwordVerify2", services.forgotPasswordVerify2);
+
+//Forgot password verify 2 post
+route.post("/forgot_passwordVerify2", forgotOTP.otpVerification );
+
+//forgot Password render
+route.get("/forgot_password", services.register);
+
+//forgot Password post
+route.post("/forgot_password", middleware.checkNotAuthenticated, forgotOTP.changePassword);
+
 //user blocked render
-route.get("/user-blocked", services.userBlocked)
+route.get("/user-blocked", services.userBlocked);
 
 //User logout
 route.get("/logout", services.logoutUser);
@@ -156,10 +182,10 @@ route.get("/api/coupon/remove", coupon.removeCoupon);
 route.post("/api/checkStock", checkout.checkStock);
 
 //show items in checkout
-route.get("/api/checkout/:uId", checkout.orderItems);
+route.get("/api/checkout", checkout.orderItems);
 
 //show order details in payment section
-route.get("/api/paymentSec/:uId", checkout.paymentSec);
+route.post("/api/paymentSec", checkout.paymentSec);
 
 //change address
 route.post("/api/changeAddress", address.changeAddress);
@@ -182,11 +208,20 @@ route.get("/api/makeDefault/:index", address.makeDefault)
 //update address
 route.post("/api/updateAddress/:index", address.updateAddress)
 
+//upadate account details
+route.post("/api/updateAccount", user.update );
+
+//change Password 
+route.post("/api/change_password", user.changePassword);
+
 //place order
 route.post("/api/placeOrder", order.placeOrder);
 
 //razorpay handler
 route.post("/api/razorpay", order.rzpHandler)
+
+//continue payement for failled payment
+route.post("/api/continuePayment", order.continuePayment);
 
 //show all orders
 route.get("/api/showOrders/:uId", order.showOrders);
@@ -196,5 +231,11 @@ route.get("/api/showOrders/:uId/:oId", order.showOrders);
 
 //cancel order
 route.get("/api/order/cancel", order.cancelOrder);
+
+//return order
+route.get("/api/order/return", order.returnProduct);
+
+//invoice
+route.get("/api/order/invoice", puppeteer.invoice);
 
 module.exports = route

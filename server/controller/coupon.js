@@ -89,37 +89,22 @@ exports.deleteCoupon = async (req, res) => {
 exports.applyCoupon = async (req, res) => {
 
   try {
-    const uId = req.session.passport.user;
+    // const uId = req.session.passport.user;
 
     const couponCode = req.body.couponCode;
 
     // console.log(couponCode);
 
 
-    const order = await cartDb.aggregate([
-      { 
-        $match: { userId: new ObjectId(uId) } 
-      },
-      {
-        $unwind: "$cartItems"
-      },
-      {
-        $lookup: {
-          from: "productdbs",
-          localField: "cartItems.productId",
-          foreignField: "_id",
-          as: "productDetails"
-        }
-      },
-      
-    ])
+    const order = req.session.order;
 
-    
+    console.log(order);
+
     const cartTotal = order.reduce((total, value) => {
-      total+= value.productDetails[0].lastPrice
+      total += value.productDetails[0].lastPrice
       return total;
-    },0)
-    
+    }, 0)
+
     const isCoupon = await couponDb.findOne({ couponCode });
 
     // Code for Invalid Coupon
@@ -156,44 +141,60 @@ exports.applyCoupon = async (req, res) => {
       }
       else {
 
-        const totalapplied = order.reduce((sum, product) => {
-          if (product.productDetails[0].category == couponCategory) {
-            sum += product.productDetails[0].lastPrice
-          }
-          return sum;
-        
-        }, 0);
+        let totalCouponDiscount = 0
 
-        const totalDiscount = totalapplied * (couponDiscount / 100);
-        console.log(totalapplied);
+        order.forEach((product) => {
+          if (product.productDetails[0].category == couponCategory) {
+            let discount = product.productDetails[0].lastPrice * (couponDiscount / 100);
+            product.productDetails[0].couponDiscount = discount
+            totalCouponDiscount+=discount
+          }
+
+        });
 
         // Checking Orders above ..if ordervalue is less than the specified amount then cannot be applied
         if (cartTotal < orderAbove) {
           return res.json({ error: "Cannot be applied" })
         }
 
-        await applyCouponinOrder(couponCode, totalDiscount, res)
+        order[0].couponCode = couponCode;
+        order[0].totalCouponDiscount = totalCouponDiscount;
+
+        req.session.order = order;
+
+        console.log(order);
+
+        res.json({ message: "Coupon Applied" })
 
       }
 
     }
     else {
 
-      const totalDiscount = cartTotal * (couponDiscount / 100);
+      let totalCouponDiscount = 0
+
+      order.forEach((product) => {
+
+        let discount = product.productDetails[0].lastPrice * (couponDiscount / 100);
+        product.productDetails[0].couponDiscount = discount
+        totalCouponDiscount+=discount
+
+      });
 
       // Checking Orders above ..if ordervalue is less than the specified amount then cannot be applied
       if (cartTotal < orderAbove) {
         return res.json({ error: "Cannot be applied" })
       }
 
-      await applyCouponinOrder(couponCode, totalDiscount, res)
+      order[0].couponCode = couponCode;
+      order[0].totalCouponDiscount = totalCouponDiscount;
 
-    }
+      req.session.order = order;
 
-    // Function for applying coupon in the cartdb 
-    async function applyCouponinOrder(couponCode, totalDiscount, res) {
-      await cartDb.findOneAndUpdate({ userId: uId }, { $set: { appliedCoupon: couponCode , couponDiscount: totalDiscount} })
-      res.json({ message: "Coupon applied" })
+      console.log(order);
+
+      res.json({ message: "Coupon Applied" })
+
     }
 
 
@@ -208,12 +209,16 @@ exports.removeCoupon = async (req, res) => {
 
   try {
 
-    const uId = req.session.passport.user;
+    let order = req.session.order;
 
-    // const order = await cartDb.findById(uId)
+    order[0].couponCode = null;
+    order[0].totalCouponDiscount= 0;
 
-    await cartDb.findOneAndUpdate({ userId: uId }, { $set: { appliedCoupon: null, couponDiscount: 0 } });
-    res.json({ message: "Coupon removed" })
+    order.forEach( product => {
+      product.productDetails[0].couponDiscount?product.productDetails[0].couponDiscount=0:"";
+    })
+    
+    res.json({message: "coupon removed"})
 
   } catch (err) {
 

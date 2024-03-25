@@ -132,7 +132,17 @@ route.get("/api/orderItem", order.findItem);
 //update order status
 route.post("/api/updateOrder", order.update);
 
+// chart
+route.get("/api/ordersreportforgraph", order.ordersreportforgraph);
 
+//top products
+route.get("/api/topProducts", order.topProducts);
+
+//top Categories
+route.get("/api/topCategories", order.topCategories);
+
+//top Brands
+route.get("/api/topBrands", order.topBrands);
 
 
 //get coupons

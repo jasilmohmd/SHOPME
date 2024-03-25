@@ -53,8 +53,9 @@
             <h4>Order Details</h4>
             <p>Order Id : <%= order[0]._id %>
             </p>
-            <p>PaymentMethod : <%= order[0].paymentMethod %>
+            <p>Payment Method : <%= order[0].paymentMethod %>
             </p>
+            <p>Payment Status : <%= order[0].paymentStatus %></p>
             <p>Order Date : <%= order[0].orderDate %></p>
             <br>
             <h4>User Details</h4>
@@ -99,13 +100,27 @@
                 <div class="interactions">
                   <form action="/admin/api/updateOrder?id=<%= order[0]._id %>&pId=<%= order[0].orderItems[i].productId %>" method="POST" >
                     <label for="status">Status : </label>
+                    <%if(order[0].orderItems[i].orderStatus === "pickedup"){ %>
+                      <p style="color: rgb(129, 12, 12);">Return Completed</p>
+                    <% }else if(order[0].orderItems[i].orderStatus === "delivered"){ %>
+                      <p style="color: rgb(7, 125, 48);">Delivered</p>
+                    <% }else{ %>
                     <select name="status" id="status">
-                      <option <%= order[0].orderItems[i].orderStatus === "pending"? "selected":"" %> value="pending">Pending</option>
+                      <% if(order[0].orderItems[i].orderStatus === "returned"){ %>
+                        <option <%= order[0].orderItems[i].orderStatus === "returned"? "selected":"" %> value="returned">Returned</option>
+                        <option <%= order[0].orderItems[i].orderStatus === "pickedup"? "selected":"" %> value="pickedup">Picked Up</option>
+                      <%} else if(order[0].orderItems[i].orderStatus === "ordered"){ %>
+                      <option <%= order[0].orderItems[i].orderStatus === "ordered"? "selected":"" %> value="ordered">Ordered</option>
                       <option <%= order[0].orderItems[i].orderStatus === "shipped"? "selected":"" %> value="shipped">Shipped</option>
                       <option <%= order[0].orderItems[i].orderStatus === "delivered"? "selected":"" %> value="delivered">Delivered</option>
                       <option <%= order[0].orderItems[i].orderStatus === "cancelled"? "selected":"" %> value="cancelled">Cancel</option>
+                      <% } else{ %>
+                        <option <%= order[0].orderItems[i].orderStatus === "pending"? "selected":"" %> value="pending">Pending</option>
+                        <option <%= order[0].orderItems[i].orderStatus === "cancelled"? "selected":"" %> value="cancelled">Cancel</option>
+                      <% } %>
                     </select>
-                    <button class="btn" type="submit">Submit</button>
+                    <button class="butn" type="submit">Submit</button>
+                    <% } %>
                   </form>
                 </div>
                     

@@ -116,6 +116,11 @@
     <!-- end of modal -->
 
 
+    <% if(!details){ %>
+      <div class="no-products">
+        <p>No products</p>
+      </div>
+    <% }else{ %>
 
     <div class="cart">
       <div class="cart-head">
@@ -241,6 +246,7 @@
         </div>
       </form>
     </div>
+    <% } %>
 
   </main>
 
@@ -300,6 +306,9 @@
               location.href = '/orderPlaced';
             }else if(res.method==="wallet"){
               const message = res.message
+              location.href = "/walletError?message=" + encodeURIComponent(message);
+            }else if(res.method==="COD"){
+              const message = res.message;
               location.href = "/walletError?message=" + encodeURIComponent(message);
             }
           }

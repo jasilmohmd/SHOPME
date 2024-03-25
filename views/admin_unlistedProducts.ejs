@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
@@ -15,84 +19,164 @@
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Unlisted Products</h1>
-				</div>
-				
-			</div>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
 
-			<div class="container">
-				<div class="container-head">
-					<a href="/admin/product-manage"><div class="btn">Go back</div></a>
-					
-				</div>
-				<div class="container-body">
-					<% for(let i=0 ; i<product.length ; i++){ %>
-					
-					<div class="product-box">
-						<div class="product">
-							<img src="<%= product[i].image[0] %>" >
-							<div class="main-details">
-								<p><span><%= product[i].pName %></span></p>
-								<p>Color: <%= product[i].colour %></p>
-								<p>Qty: <%= product[i].inStock %></p>
-							</div>
-						</div>
-						<div class="end-sec">
-							<div class="sub-details">
-								<p>MRP: <%= product[i].firstPrice %></p>
-								<p>Discount: <%= product[i].discount %>%</p>
-								<p>price: <%= product[i].lastPrice %></p>
-							</div>
-							<div class="interactions">
-								<a href="/admin/api/products/restore?id=<%= product[i]._id %>">
-									<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM216 408c0 13.3-10.7 24-24 24s-24-10.7-24-24V305.9l-31 31c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l72-72c9.4-9.4 24.6-9.4 33.9 0l72 72c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-31-31V408z"/></svg>
-								</a>
-								<a href="/admin/api/products/delete?id=<%= product[i]._id %>">
-									<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
-								</a>
-							</div>
-						</div>
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Unlisted Products</h1>
 					</div>
-					
-					<% } %>
+
 				</div>
-			</div>
 
-		</main>
-		<!-- MAIN -->
+				<div class="container">
+					<div class="container-head">
+						<a href="/admin/product-manage">
+							<div class="butn">Go back</div>
+						</a>
 
-	</section>
-	<!-- CONTENT -->
-	
+					</div>
+					<div class="container-body">
+						<% for(let i=0 ; i<product.length ; i++){ %>
 
-	<script src="js/admin_css.js"></script>
+							<div class="product-box">
+								<div class="product">
+									<img src="<%= product[i].image[0] %>">
+									<div class="main-details">
+										<p><span>
+												<%= product[i].pName %>
+											</span></p>
+										<p>Color: <%= product[i].colour %>
+										</p>
+										<p>Qty: <%= product[i].inStock %>
+										</p>
+									</div>
+								</div>
+								<div class="end-sec">
+									<div class="sub-details">
+										<p>MRP: <%= product[i].firstPrice %>
+										</p>
+										<p>Discount: <%= product[i].discount %>%</p>
+										<p>price: <%= product[i].lastPrice %>
+										</p>
+									</div>
+									<div class="interactions">
+										<button style="border: none; background-color: transparent;" data-bs-toggle="modal"
+										data-bs-target="#staticBackdrop1<%= i %>">
+											<svg xmlns="http://www.w3.org/2000/svg" height="1em"
+												viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+												<path
+													d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM216 408c0 13.3-10.7 24-24 24s-24-10.7-24-24V305.9l-31 31c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l72-72c9.4-9.4 24.6-9.4 33.9 0l72 72c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-31-31V408z" />
+											</svg>
+										</button>
+										<!-- Restore Prompt -->
+
+										<!-- Modal -->
+										<div class="modal modal-sm fade" id="staticBackdrop1<%= i %>" data-bs-backdrop="static"
+											data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm Restore</h1>
+													</div>
+													<div class="modal-body">
+														Are you sure?
+													</div>
+													<div class="modal-footer">
+
+														<a href="/admin/api/products/restore?id=<%= product[i]._id %>">
+
+															<button class="modalbtn" style="background-color: rgb(144, 14, 14);" type="button"
+																class="btn btn-primary">Yes</button>
+
+														</a>
+
+														<button class="modalbtn" type="button" class="btn btn-secondary"
+															data-bs-dismiss="modal">No</button>
+
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- Restore Prompt -->
+										<button style="border: none; background-color: transparent;" data-bs-toggle="modal"
+										data-bs-target="#staticBackdrop2<%= i %>">
+											<svg xmlns="http://www.w3.org/2000/svg" height="1em"
+												viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
+												<path
+													d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
+											</svg>
+										</button>
+										<!-- delete Prompt -->
+
+										<!-- Modal -->
+										<div class="modal modal-sm fade" id="staticBackdrop2<%= i %>" data-bs-backdrop="static"
+											data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+											<div class="modal-dialog modal-dialog-centered">
+												<div class="modal-content">
+													<div class="modal-header">
+														<h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm Delete</h1>
+													</div>
+													<div class="modal-body">
+														Are you sure? You can't retrieve once deleted.
+													</div>
+													<div class="modal-footer">
+
+														<a href="/admin/api/products/delete?id=<%= product[i]._id %>">
+
+															<button class="modalbtn" style="background-color: rgb(144, 14, 14);" type="button"
+																class="btn btn-primary">Yes</button>
+
+														</a>
+
+														<button class="modalbtn" type="button" class="btn btn-secondary"
+															data-bs-dismiss="modal">No</button>
+
+													</div>
+												</div>
+											</div>
+										</div>
+										<!-- delete Prompt -->
+									</div>
+								</div>
+							</div>
+
+							<% } %>
+					</div>
+				</div>
+
+			</main>
+			<!-- MAIN -->
+
+		</section>
+		<!-- CONTENT -->
+
+
+		<script src="js/admin_css.js"></script>
 </body>
+
 </html>

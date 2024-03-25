@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const userOTPdb = require("../model/userOTPVerificationSchema");
+const Userdb = require("../model/userSchema");
 
 //node mailer stuff
 let transporter = nodemailer.createTransport({
@@ -13,13 +14,13 @@ let transporter = nodemailer.createTransport({
 
 
 //send otp verification email
-const sendOTPVerificationEmail = async (req, res) => {
+const sendOTPVerificationEmail = async (email) => {
   try {
     const otp = `${Math.floor(1000 + Math.random() * 9000)}`;
 
     const mailOptions = {
       from: process.env.AUTH_EMAIL,
-      to: req.session.user,
+      to: email,
       subject: "Verify your email",
       html: `<p>Enter <b>${otp}</b> in the app to verify your email address and continue with changing your password.</p>
       <p>this code expires in 1 minute.</p>`
@@ -30,7 +31,7 @@ const sendOTPVerificationEmail = async (req, res) => {
 
 
     const newOTPVerification = new userOTPdb({
-      email: req.session.user,
+      email: email,
       otp: hashedOTP,
       createdAt: new Date(),
       expiresAt: new Date(Date.now() + 60000),
@@ -39,14 +40,11 @@ const sendOTPVerificationEmail = async (req, res) => {
     //save otp record
     const data = await newOTPVerification.save();
 
-    req.session.otpId = data._id;
-
-    email = req.session.user
+    const otpId = data._id;
 
     await transporter.sendMail(mailOptions);
 
-
-    res.render("user_forgotPassword2", { email })
+    return otpId;
 
   } catch (err) {
     console.log(err);
@@ -54,14 +52,41 @@ const sendOTPVerificationEmail = async (req, res) => {
   }
 }
 
-exports.otp = (req, res) => {
-  if (!req.body) {
-    res.status(400).send({ message: "you left the field empty" })
-    return
-  }
-  req.session.user = req.body.email
+exports.otp = async (req, res) => {
 
-  sendOTPVerificationEmail(req, res);
+  try {
+
+    if (!req.body) {
+      res.status(400).send({ message: "you left the field empty" })
+      return
+    }
+    req.session.user = req.body.email
+
+    const otpId = await sendOTPVerificationEmail(req.session.user);
+    req.session.otpId = otpId;
+
+    res.redirect("/forgot_passwordVerify2");
+
+  } catch (err) {
+    res.render("errorPage", { status: 500 });
+  }
+
+}
+
+exports.resendOtp = async (req, res) => {
+
+  let otpId = req.session.otpId
+
+  //delete existing records and resend
+  await userOTPdb.deleteOne({ _id: otpId });
+
+  // Send a new OTP and get the new OTP ID
+  const newOtpId = await sendOTPVerificationEmail(req.session.user);
+
+  // Update the session with the new OTP ID
+  req.session.otpId = newOtpId;
+
+  res.redirect("/forgot_passwordVerify2");
 }
 
 exports.otpVerification = async (req, res) => {
@@ -105,6 +130,23 @@ exports.otpVerification = async (req, res) => {
 
     res.render("errorPage", { status: 500 });
 
+  }
+
+}
+
+exports.changePassword = async (req, res) => {
+
+  try {
+
+    const { email, password } = req.body
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await Userdb.findOneAndUpdate({ email: email }, { $set: { password: hashedPassword } });
+
+    res.redirect("/login");
+
+  } catch (err) {
+    res.render("errorPage", { status: 500 });
   }
 
 }

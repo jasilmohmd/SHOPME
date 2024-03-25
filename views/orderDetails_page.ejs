@@ -1,78 +1,302 @@
 <!-- include header -->
-  <%- include("include/_header") %>
-<!--/ include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
 
-<!-- main site -->
-<main>
+  <!-- main site -->
+  <main>
 
-  <div class="account">
-    <div class="account-head">
-      <p>
-        <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
-        My Orders
-      </p>
-      <hr>
-
-    </div>
-
-    <div class="order-head">
-
-      <div>
-        <h6>Order Details</h6>
-        <p>Order Id : <%= order._id %></p>
-        <p>Payment Method : <%= order.paymentMethod %></p>
-        <p>Order Date : <%= order.orderDate %></p>
-      </div>
-
-      <div>
-        <h6>Delivery Address</h6>
-        <p>Name : <%= order.address.name %></p>
-        <p>Address : <%= order.address.address %></p>
-        <p>Phone : <%= order.address.phone %></p>
-        <p>District : <%= order.address.district %></p>
-        <p>PIN : <%= order.address.pincode %></p>
-      </div>
-
-    </div>
-
-    <div class="order-page">
-      
-      <% for(let i=0 ; i<order.orderItems.length ; i++){ %>
-      <div class="order-body">
-
-        <div class="order-details">
-
-          <div class="image">
-                
-            <img src="<%= order.orderItems[i].image[0] %>">
-            
+    <!-- continue Payement Modal -->
+    <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Select Payment Method</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
-          <div>
-            <p>Product : <%= order.orderItems[i].pName %></p>
-            <p>Category : <%= order.orderItems[i].category %></p>
-            <p>Price : <%= order.orderItems[i].price %></p>
-            <p>Quantity: <%= order.orderItems[i].quantity %></p>
+
+          <div class="add-address-sec">
+            <form class="pay-form">
+              <div>
+
+                <input style="display: none;" name="id" type="text" value="<%= order._id %>">
+
+                <div class="items position-relative mb-3">
+                  <div class="d-flex payOptions align-items-center gap-3">
+                    <input class="pay" name="payMethod" value="OP" type="radio" id="onlinePayement" required />
+                    <img style="width:6vw; margin-right: -10px;" src="/img/rzp.png">
+                    <h2 class="m-0">Online/Card Payements</h2>
+                  </div>
+                </div>
+
+                <div class="items position-relative mb-3">
+                  <div class="d-flex payOptions align-items-center gap-3">
+                    <input class="pay" name="payMethod" value="wallet" type="radio" id="wallet" required />
+                    <h2 class="m-0"><span style="font-weight: 900;">SHOPME.</span> Wallet</h2>
+                  </div>
+                </div>
+
+                <div class="items position-relative mb-3">
+                  <div class="d-flex payOptions align-items-center gap-3">
+                    <input class="pay" name="payMethod" value="COD" type="radio" id="COD" required />
+                    <h2 class="m-0">Cash On Delivery (COD)</h2>
+                  </div>
+                </div>
+
+              </div>
+
+              <div>
+                <button class="btn" type="submit">Proceed to Payment</button>
+              </div>
+            </form>
           </div>
 
-          
-        </div>
-
-        <div class="order-interactions">
-          <a href="/api/order/cancel?id=<%= order._id %>&pId=<%= order.orderItems[i].productId %>">
-            <button class="btn">Cancel</button>
-          </a>
-          <p>Order Status : <%= order.orderItems[i].orderStatus %></p>
         </div>
       </div>
-      <% } %>
-      
+    </div>
+    <!-- continue Payement Modal -->
 
-  </div>
 
-</main>
-<!--/ main site -->
+    <div class="account">
+      <div class="account-head">
+        <p>
+          <svg xmlns="http://www.w3.org/2000/svg" height="16" width="12"
+            viewBox="0 0 384 512"><!--!Font Awesome Free 6.5.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.-->
+            <path
+              d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+          </svg>
+          My Orders
+        </p>
+        <hr>
 
-<!-- footer -->
+      </div>
+
+      <div class="order-head">
+
+        <div>
+          <h6>Order Details</h6>
+          <p>Order Id : <%= order._id %>
+          </p>
+          <p>Payment Method : <%= order.paymentMethod %>
+          </p>
+          <p>Applied Coupon : <%= order.appliedCoupon?order.appliedCoupon: "None" %></p>
+          <p>Order Date : <%= order.orderDate %>
+          </p>
+          <% let itemsPayement=false %>
+            <% order.orderItems.forEach(product=> {
+              if(product.orderStatus==="pending")
+              {
+              itemsPayement = true
+              }}) %>
+              <% if(itemsPayement===true){ %>
+                <p>Payment not completed.</p>
+                <button type="button" style="background-color: rgb(153, 7, 7);" class="btn" data-bs-toggle="modal"
+                  data-bs-target="#exampleModal3">Continue with Payment</button>
+                <% } %>
+        </div>
+
+        <div>
+          <h6>Delivery Address</h6>
+          <p>Name : <%= order.address.name %>
+          </p>
+          <p>Address : <%= order.address.address %>
+          </p>
+          <p>Phone : <%= order.address.phone %>
+          </p>
+          <p>District : <%= order.address.district %>
+          </p>
+          <p>PIN : <%= order.address.pincode %>
+          </p>
+        </div>
+
+      </div>
+
+      <div class="order-page">
+
+        <% for(let i=0 ; i<order.orderItems.length ; i++){ %>
+          <div class="order-body">
+
+            <div class="order-details">
+
+              <div class="image">
+
+                <img src="<%= order.orderItems[i].image[0] %>">
+
+              </div>
+
+              <div>
+                <p>Product : <%= order.orderItems[i].pName %>
+                </p>
+                <p>Category : <%= order.orderItems[i].category %>
+                </p>
+                <p>Price : <%= order.orderItems[i].price-order.orderItems[i].couponDiscount %>
+                </p>
+                <p>Quantity: <%= order.orderItems[i].quantity %>
+                </p>
+              </div>
+
+
+            </div>
+
+            <div class="order-interactions">
+              <% if( order.orderItems[i].orderStatus==="delivered" ){ %>
+                <a href="/api/order/invoice?id=<%= order._id %>">
+                  <button class="invoice"><i class="fa-solid fa-file-invoice"></i></button>
+                </a>
+
+                <button style="background-color: rgb(146, 12, 12);" class="btn" data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop1<%= i %>">Return</button>
+
+                <!-- Return Prompt -->
+
+                <!-- Modal -->
+                <div class="modal modal-sm fade" id="staticBackdrop1<%= i %>" data-bs-backdrop="static" data-bs-keyboard="false"
+                  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Return Product?</h1>
+                      </div>
+                      <div class="modal-body">
+                        Press yes to Continue
+                      </div>
+                      <div class="modal-footer">
+
+                        <a href="/api/order/return?id=<%= order._id %>&pId=<%= order.orderItems[i].productId %>">
+
+                          <button class="modalbtn" style="background-color: rgb(144, 14, 14);" type="button"
+                            class="btn btn-primary">Yes</button>
+
+                        </a>
+
+                        <button class="modalbtn" type="button" class="btn btn-secondary"
+                          data-bs-dismiss="modal">No</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of Return Prompt -->
+                <% }else if(order.orderItems[i].orderStatus==="pending" || order.orderItems[i].orderStatus=="shipped" ){
+                  %>
+                    <button class="btn" data-bs-toggle="modal"
+                  data-bs-target="#staticBackdrop2<%= i %>">Cancel</button>
+
+                  <!-- Cancel Prompt -->
+
+                  <!-- Modal -->
+                  <div class="modal modal-sm fade" id="staticBackdrop2<%= i %>" data-bs-backdrop="static"
+                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h1 class="modal-title fs-5" id="staticBackdropLabel">Cancel Product?</h1>
+                        </div>
+                        <div class="modal-body">
+                          Press yes to Continue
+                        </div>
+                        <div class="modal-footer">
+
+                          <a href="/api/order/cancel?id=<%= order._id %>&pId=<%= order.orderItems[i].productId %>">
+
+                            <button class="modalbtn" style="background-color: rgb(144, 14, 14);" type="button"
+                              class="btn btn-primary">Yes</button>
+
+                          </a>
+
+                          <button class="modalbtn" type="button" class="btn btn-secondary"
+                            data-bs-dismiss="modal">No</button>
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of Cancel Prompt -->
+
+                  <% }else if(order.paymentStatus==="refunded" ) {%>
+                    <p style="color: rgb(10, 121, 10);">Refunded</p>
+                    <% } %>
+                      <p>Order Status : <%= order.orderItems[i].orderStatus %>
+                      </p>
+            </div>
+          </div>
+          <% } %>
+
+
+      </div>
+
+  </main>
+  <!--/ main site -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+
+    $(document).ready(() => {
+
+      $(".pay-form").submit((e) => {
+
+
+
+        e.preventDefault();
+
+        var formData = $('.pay-form').serialize();
+        console.log(formData);
+
+        $.ajax({
+          url: "/api/continuePayment",
+          type: "POST",
+          data: formData,
+          success: (res) => {
+            console.log(res);
+            if (res.orders) {
+
+
+              var options = {
+                "key": res.key_id,
+                "amount": res.orders.amount,
+                "currency": res.orders.currency,
+                "name": "SHOPME",
+                "order_id": res.orders.id,
+                "callback_url": "/api/razorpay",
+                "prefill": {
+                  "name": res.order.address.name,
+                  "contact": res.order.address.phone
+                },
+                "theme": {
+                  color: "#1f1f14"
+                }
+
+              }
+
+
+              var razorpayObject = new Razorpay(options);
+              razorpayObject.on("payment.failed", function (response) {
+                res.send("Payment Failed!")
+              });
+
+              razorpayObject.open();
+
+
+
+
+            } else if (res.response) {
+              location.href = '/orderPlaced';
+            } else if (res.method === "wallet") {
+              const message = res.message
+              location.href = "/walletError?message=" + encodeURIComponent(message);
+            } else if (res.method === "COD") {
+              const message = res.message;
+              location.href = "/walletError?message=" + encodeURIComponent(message);
+            }
+          }
+        })
+      })
+    })
+
+  </script>
+
+  <!-- footer -->
   <%- include("include/_footer") %>
-<!--/ footer -->
+    <!--/ footer -->

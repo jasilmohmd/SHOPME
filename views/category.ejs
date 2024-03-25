@@ -21,11 +21,11 @@
                 <div class="sort-options">
                   <input style="display: none;" type="text" name="id" value="<%= req.query.id %>">
                   <div class="sort-div">
-                    <input type="radio" id="lowestToHighest" name="sort" value="lowestToHighest" checked>
+                    <input type="radio" id="lowestToHighest" name="sort" value="lowestToHighest">
                     <label for="lowestToHighest">Lowest to Highest</label>
                   </div>
                   <div class="sort-div">
-                    <input type="radio" id="highestToLowest" name="sort" value="highestToLowest">
+                    <input type="radio" id="highestToLowest" name="sort" value="highestToLowest" checked>
                     <label for="highestToLowest">Highest to Lowest</label>
                   </div>
                 </div>
@@ -40,7 +40,7 @@
 
           </div>
 
-          <div class="col-md-10">
+          <div id="productsView" class="col-md-10">
 
             <% if(product.length<1){ %>
               <div class="no-products">
@@ -66,7 +66,7 @@
                         </div>
                       </a>
                     </div>
-                    <% } %>
+                  <% } %>
 
                 </div>
 
@@ -82,35 +82,25 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!-- <script>
+  <script>
 
     $(document).ready(function () {
       $('#filterForm').submit(function (event) {
+        
         event.preventDefault(); // Prevent default form submission
-
+        
         // Serialize form data
-        var formData = $(this).serialize();
+        let formData = $(this).serialize();
 
-        // Send AJAX request
-        $.ajax({
-          type: 'GET', // Or 'GET' depending on your server route
-          url: "/category_page",
-          data: formData,
-          success: function (response) {
-            // Handle the success response
-            console.log(response);
-
-          },
-          error: function (xhr, status, error) {
-            // Handle errors
-            console.error('Error:', error);
-          }
-        });
+        const url = "/category_page?" + formData;
+        
+        $( "#productsView" ).load( `${url} #productsView` );
+        
       });
     });
 
 
-  </script> -->
+  </script>
 
   <!-- footer -->
   <%- include("include/_footer") %>

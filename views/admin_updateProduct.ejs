@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,155 +13,157 @@
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Edit Product</h1>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
+
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Edit Product</h1>
+					</div>
+
 				</div>
-				
-			</div>
 
-			<form action="/admin/api/products/update?id=<%= product._id %>" method="POST" enctype="multipart/form-data">
-				<div class="container">
-					<div class="input-box">
-						<div>
-							<label for="pName">Product Name</label>
-							<input type="text" name="pName" value="<%= product.pName %>" required>
-						</div>
-						
-						<div>
-							<label for="bName">Brand Name</label>
-							<input type="text" name="bName" value="<%= product.bName %>" required>
-						</div>
+				<form action="/admin/api/products/update?id=<%= product._id %>" method="POST" enctype="multipart/form-data">
+					<div class="container">
+						<div class="input-box">
+							<div>
+								<label for="pName">Product Name</label>
+								<input type="text" name="pName" value="<%= product.pName %>" required>
+							</div>
 
-						<div>
-							<label for="category">Category</label>
-							<select name="category" id="category">
-							<% for(let i=0 ; i<category.length ; i++){ %>
-							<option <%= product.category === category[i].cName?"selected":"" %> 
-								value="<%= category[i].cName %>"><%= category[i].cName %>
-							</option>
-							<% } %>
-							</select>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="subTitle">SubTitle</label>
-							<input type="text" name="subTitle" value="<%= product.subTitle %>" required>
-						</div>
-	
-						<div>
-							<label for="descriptionHead">Description Heading</label>
-							<input type="text" name="descriptionHead" value="<%= product.descriptionHead %>">
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="description">Description</label>
-							<input name="description" class="description" value="<%= product.description %>" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="firstPrice">First Price</label>
-							<input type="number" name="firstPrice" value="<%= product.firstPrice %>" required>
-						</div>
-	
-						<div>
-							<label for="lastPrice">Last Price</label>
-							<input type="number" name="lastPrice" value="<%= product.lastPrice %>" required>
-						</div>
-	
-						<div>
-							<label for="discount">Discount</label>
-							<input type="number" name="discount" value="<%= product.discount %>" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="colour">Colour</label>
-							<input type="text" name="colour" value="<%= product.colour %>" required>
-						</div>
-	
-						<div>
-							<label for="inStock">In Stock</label>
-							<input type="number" name="inStock" value="<%= product.inStock %>" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="image">Image Upload</label>
-							<div class="image-upload">
-								<span class="inner">Drag & drop images here or 
-									<span class="select">Browse</span></span>
-								<input type="file" name="pImage" multiple>
+							<div>
+								<label for="bName">Brand Name</label>
+								<input type="text" name="bName" value="<%= product.bName %>" required>
+							</div>
+
+							<div>
+								<label for="category">Category</label>
+								<select name="category" id="category">
+									<% for(let i=0 ; i<category.length ; i++){ %>
+										<option <%=product.category===category[i].cName?"selected":"" %>
+											value="<%= category[i].cName %>"><%= category[i].cName %>
+										</option>
+										<% } %>
+								</select>
 							</div>
 						</div>
-	
-						<div>
-							<input type="radio" name="new" value="<%= product.new %>">
-							<label for="new">Newly launched</label>
+
+						<div class="input-box">
+							<div>
+								<label for="subTitle">SubTitle</label>
+								<input type="text" name="subTitle" value="<%= product.subTitle %>" required>
+							</div>
+
+							<div>
+								<label for="descriptionHead">Description Heading</label>
+								<input type="text" name="descriptionHead" value="<%= product.descriptionHead %>">
+							</div>
 						</div>
-					</div>
 
-					<div class="container1">
-						<% for(let i=0 ; i < product.image.length ; i++ ){ %>
-						<div class="image">
-							<img src="<%= product.image[i] %>" >
-							<a href="/admin/api/products/deleteImage?id=<%= product._id %>&index=<%= i %>">&times;</a>
+						<div class="input-box">
+							<div>
+								<label for="description">Description</label>
+								<input name="description" class="description" value="<%= product.description %>" required>
+							</div>
 						</div>
-						<% } %>
-					</div>
-					<div class="container2">
+
+						<div class="input-box">
+							<div>
+								<label for="firstPrice">First Price</label>
+								<input type="number" name="firstPrice" value="<%= product.firstPrice %>" required>
+							</div>
+
+							<div>
+								<label for="lastPrice">Last Price</label>
+								<input type="number" name="lastPrice" value="<%= product.lastPrice %>" required>
+							</div>
+
+							<div>
+								<label for="discount">Discount</label>
+								<input type="number" name="discount" value="<%= product.discount %>" required>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div>
+								<label for="colour">Colour</label>
+								<input type="text" name="colour" value="<%= product.colour %>" required>
+							</div>
+
+							<div>
+								<label for="inStock">In Stock</label>
+								<input type="number" name="inStock" value="<%= product.inStock %>" required>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div>
+								<label for="image">Image Upload</label>
+								<div class="image-upload">
+									<span class="inner">Drag & drop images here or
+										<span class="select">Browse</span></span>
+									<input type="file" name="pImage" multiple>
+								</div>
+							</div>
+
+							<div>
+								<input type="radio" name="new" value="<%= product.new %>">
+								<label for="new">Newly launched</label>
+							</div>
+						</div>
+
+						<div class="container1">
+							<% for(let i=0 ; i < product.image.length ; i++ ){ %>
+								<div class="image">
+									<img src="<%= product.image[i] %>">
+									<a href="/admin/api/products/deleteImage?id=<%= product._id %>&index=<%= i %>">&times;</a>
+								</div>
+								<% } %>
+						</div>
+						<div class="container2">
+
+						</div>
+
+						<div class="btn-container">
+							<button class="btn" type="submit">Submit</button>
+						</div>
 
 					</div>
-	
-					<div class="btn-container">
-						<button type="submit" class="btn">Submit</button>
-					</div>
-	
-				</div>
-			</form>
+				</form>
 
-		</main>
-		<!-- MAIN -->
+			</main>
+			<!-- MAIN -->
 
-	</section>
-	<!-- CONTENT -->
-	
+		</section>
+		<!-- CONTENT -->
 
-	<script src="js/admin_css.js"></script>
-	<script src="/js/admin_imageUploadMultiple_update.js"></script>
+
+		<script src="js/admin_css.js"></script>
+		<script src="/js/admin_imageUploadMultiple_update.js"></script>
 </body>
+
 </html>

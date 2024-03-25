@@ -70,9 +70,9 @@
                       <button type="submit" class="coupon-btn">APPLY</button>
                       <br>
                     </form>
-                    <% if(cart[0].appliedCoupon){ %>
+                    <% if(cart[0].couponCode){ %>
                       <p style="color: rgb(17, 116, 17);">
-                        <%= cart[0].appliedCoupon %> applied &nbsp;
+                        <%= cart[0].couponCode %> applied &nbsp;
                       </p>
                       <a style="color: rgb(132, 17, 17);" href="/api/coupon/remove">Remove</a>
                       <% } %>
@@ -106,7 +106,7 @@
                 <% if(cart.length>0){ %>
                   <p class="details-title">Coupun Discount</p>
                   <p id="couponDiscount" class="green">
-                    <%= cart[0].couponDiscount %>
+                    <%= cart[0].totalCouponDiscount?cart[0].totalCouponDiscount:0 %>
                   </p>
 
                   <% } %>

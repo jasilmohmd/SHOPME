@@ -48,7 +48,7 @@ const sendOTPVerificationEmail = async (email) => {
 
   } catch (err) {
     console.log(err);
-    throw err;
+    res.render("errorPage", { status: 500 });
   }
 }
 

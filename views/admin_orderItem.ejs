@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,98 +9,130 @@
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
 	<!-- My CSS -->
 	<link rel="stylesheet" href="/css/admin_dash.css">
-  <link rel="stylesheet" href="/css/productManage.css">
-  <link rel="stylesheet" href="/css/orderManage.css">
+	<link rel="stylesheet" href="/css/productManage.css">
+	<link rel="stylesheet" href="/css/orderManage.css">
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Order Item</h1>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
+
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Order Item</h1>
+					</div>
+
 				</div>
-				
-			</div>
 
-			
-      <div class="container">
-        <div class="container-head">
-          <div class="sec">
-            <h4>Product details</h4>
-            <p>Product Name : <%= items.pName %></p>
-            <p>Quantity : <%= items.quantity %></p>
-            <p>Brand : <%= items.bName %></p>
-            <p>Category : <%= items.category %></p>
-            <p>Colour : <%= items.colour %></p>
-            <p>Price : <%= items.price %></p>
-            <p>MRP : <%= items.mrp %></p>
-            <p>Discount : <%= items.discount %></p>
-						<br>
-						<h4>Order Item Manage</h4>
-						<form action="/admin/api/updateOrder?id=<%= id %>&pId=<%= items.productId %>" method="POST">
-							<label for="status">Status : </label>
-							<select name="status" id="status">
-								<option <%= items.orderStatus === "pending"? "selected":"" %> value="pending">Pending</option>
-								<option <%= items.orderStatus === "shipped"? "selected":"" %> value="shipped">Shipped</option>
-								<option <%= items.orderStatus === "delivered"? "selected":"" %> value="delivered">Delivered</option>
-								<option <%= items.orderStatus === "cancelled"? "selected":"" %> value="cancelled">Cancel</option>
-							</select>
-							<button class="btn" type="submit">Submit</button>
-						</form>
-          </div>
-          <div class="sec">
-            <p>Subtitle: <%= items.subTitle %></p>
-            <br>
-            <h4><%= items.descriptionHead %></h4>
-            <p><%= items.description %></p>
-          </div>
-        </div>
-        <br>
-        <h4>Images</h4>
-        <div class="container-body">
-          
-            <div class="itemImage">
-              <% for(let i=0; i<items.image.length; i++){ %>
-                <img src="<%= items.image[i] %>">
-              <% } %>
-            </div>
-            
-          
-        </div>
-      </div>
-      
-			
 
-		</main>
-		<!-- MAIN -->
+				<div class="container">
+					<div class="container-head">
+						<div class="sec">
+							<h4>Product details</h4>
+							<p>Product Name : <%= items.pName %>
+							</p>
+							<p>Quantity : <%= items.quantity %>
+							</p>
+							<p>Brand : <%= items.bName %>
+							</p>
+							<p>Category : <%= items.category %>
+							</p>
+							<p>Colour : <%= items.colour %>
+							</p>
+							<p>Price : <%= items.price %>
+							</p>
+							<p>MRP : <%= items.mrp %>
+							</p>
+							<p>Discount : <%= items.discount %>
+							</p>
+							<br>
+							<h4>Order Item Manage</h4>
+							<form action="/admin/api/updateOrder?id=<%= id %>&pId=<%= items.productId %>" method="POST">
+								<label for="status">Status : </label>
+								<%if(items.orderStatus === "pickedup"){ %>
+									<div style="color: rgb(129, 12, 12);">Return Completed</div>
+								<% }else if(items.orderStatus === "delivered"){ %>
+									<div style="color: rgb(7, 125, 48);">Delivered</div>
+								<% }else{ %>
+								<select name="status" id="status">
+									<% if(items.orderStatus === "returned" || items.orderStatus === "pickedup"){ %>
+										<option <%= items.orderStatus === "returned"? "selected":"" %> value="returned">Returned</option>
+										<option <%= items.orderStatus === "pickedup"? "selected":"" %> value="pickedup">Picked Up</option>
+									<%} else if( items.orderStatus === "ordered" ){ %>
+										<option <%=items.orderStatus==="ordered" ? "selected" :"" %> value="ordered">Ordered</option>
+										<option <%=items.orderStatus==="shipped" ? "selected" :"" %> value="shipped">Shipped</option>
+										<option <%=items.orderStatus==="delivered" ? "selected" :"" %> value="delivered">Delivered</option>
+										<option <%=items.orderStatus==="cancelled" ? "selected" :"" %> value="cancelled">Cancel</option>
+										<% } else{ %>
+											<option <%=items.orderStatus==="pending" ? "selected" :"" %>
+												value="pending">Pending</option>
+											<option <%=items.orderStatus==="cancelled" ? "selected" :"" %>
+												value="cancelled">Cancel</option>
+											<% } %>
 
-	</section>
-	<!-- CONTENT -->
-	
+								</select>
+								<button class="butn" type="submit">Submit</button>
+								<% } %>
+							</form>
+						</div>
+						<div class="sec">
+							<p>Subtitle: <%= items.subTitle %>
+							</p>
+							<br>
+							<h4>
+								<%= items.descriptionHead %>
+							</h4>
+							<p>
+								<%= items.description %>
+							</p>
+						</div>
+					</div>
+					<br>
+					<h4>Images</h4>
+					<div class="container-body">
+
+						<div class="itemImage">
+							<% for(let i=0; i<items.image.length; i++){ %>
+								<img src="<%= items.image[i] %>">
+								<% } %>
+						</div>
+
+
+					</div>
+				</div>
+
+
+
+			</main>
+			<!-- MAIN -->
+
+		</section>
+		<!-- CONTENT -->
+
 </body>
+
 </html>

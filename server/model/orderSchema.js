@@ -45,6 +45,10 @@ const orderSchema = new Schema({
       type: Number,
       required: true
     },
+    couponDiscount:{
+      type: Number,
+      default: 0
+    },
     mrp:{
       type: Number,
       required: true
@@ -69,9 +73,17 @@ const orderSchema = new Schema({
       required: true
     }
   }],
+  appliedCoupon:{
+    type: String,
+    default: null
+  },
   paymentMethod:{
     type: String,
     required: true
+  },
+  paymentStatus:{
+    type: String,
+    default: "pending"
   },
   orderDate:{
     type: Date,

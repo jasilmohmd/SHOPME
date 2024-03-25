@@ -27,7 +27,7 @@ function callme(){
         // discount+= Number(discountElement[index].value)
     })
 
-    let couponDiscount = Number(document.querySelector("#couponDiscount").innerHTML);
+    let couponDiscount = Number(document.querySelector("#couponDiscount")?.innerHTML || 0 );
 
     document.getElementById('totalmrp').innerHTML = mrp.toLocaleString('en-IN');
     document.getElementById('discount').innerHTML = (mrp-price).toLocaleString('en-IN');

@@ -16,7 +16,7 @@ a{
   gap: 20px;
 }
 
-.btn{
+.butn{
   background-color: #1f1f14;
   padding: 8px 20px;
   color: #F9F9F9;
@@ -113,4 +113,49 @@ a{
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.modal-content {
+  border-radius: 15px;
+  background-color: rgb(190, 190, 190);
+  border: none;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.modal-body {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  margin: 10px;
+  padding: 5px;
+}
+
+/* CSS to evenly space buttons in the modal footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-around;
+  /* Evenly space the content */
+  border: none;
+  margin: 0px;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.modalbtn {
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  padding: 5px 25px;
+  border: none;
+  border-radius: 30px;
+
 }

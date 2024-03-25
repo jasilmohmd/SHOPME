@@ -37,7 +37,20 @@ exports.adminloginPost = (req, res) => {
 
 //admin dash
 exports.adminDash = (req, res) => {
-  res.render("admin_dash");
+
+  axios.all([
+    axios.get(`http://localhost:${PORT}/admin/api/topProducts`),
+    axios.get(`http://localhost:${PORT}/admin/api/topCategories`),
+    axios.get(`http://localhost:${PORT}/admin/api/topBrands`)
+  ])
+    .then(axios.spread((response1, response2,response3) => {
+      console.log(response3.data);
+      res.render("admin_dash", { topProducts: response1.data, topCategories: response2.data, topBrands: response3.data });
+    }))
+    .catch(err => {
+      res.send(err);
+    });
+
 }
 
 exports.productManage = (req, res) => {
@@ -141,7 +154,7 @@ exports.userManage = (req, res) => {
 
 }
 
-exports.orderManage =(req,res) => {
+exports.orderManage = (req, res) => {
   // Make a get request to /api/orders
   axios.get(`http://localhost:${PORT}/admin/api/orders`)
     .then(function (response) {
@@ -152,7 +165,7 @@ exports.orderManage =(req,res) => {
     })
 }
 
-exports.orderPage =(req,res) => {
+exports.orderPage = (req, res) => {
   const id = req.query.id;
   // Make a get request to /api/orders
   axios.get(`http://localhost:${PORT}/admin/api/orders?id=${id}`)
@@ -164,15 +177,18 @@ exports.orderPage =(req,res) => {
     })
 }
 
-exports.orderItem =(req,res) => {
+exports.orderItem = (req, res) => {
   const id = req.query.id;
   const pId = req.query.pId;
   // Make a get request to /api/orders
-  axios.get(`http://localhost:${PORT}/admin/api/orderItem?id=${id}&pId=${pId}`)
-    .then(function (response) {
-      console.log(response.data);
-      res.render("admin_orderItem", { items: response.data , id});
-    })
+  axios.all([
+    axios.get(`http://localhost:${PORT}/admin/api/orderItem?id=${id}&pId=${pId}`),
+    axios.get(`http://localhost:${PORT}/admin/api/orders?id=${id}`)
+  ])
+    .then(axios.spread((response1, response2) => {
+      console.log(response2.data);
+      res.render("admin_orderItem", { items: response1.data, order: response2.data, id });
+    }))
     .catch(err => {
       res.send(err);
     })
@@ -208,7 +224,7 @@ exports.updateCoupon = (req, res) => {
     axios.get(`http://localhost:${PORT}/admin/api/category`),
     axios.get(`http://localhost:${PORT}/admin/api/coupons?id=${id}`)
   ])
-    .then(axios.spread((response1,response2)=> {
+    .then(axios.spread((response1, response2) => {
       console.log(response2.data);
       res.render("admin_updateCoupon", { category: response1.data, coupon: response2.data });
     }))

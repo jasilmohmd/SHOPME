@@ -20,36 +20,11 @@ exports.placeOrder = async (req, res) => {
 
   try {
     if (place === "cart") {
-      let userCart = await cartDb.aggregate([
-        {
-          $match: { userId: new ObjectId(uId) }
-        },
-        {
-          $unwind: "$cartItems"
-        },
-        {
-          $lookup: {
-            from: "productdbs",
-            localField: "cartItems.productId",
-            foreignField: "_id",
-            as: "productDetails"
-          }
-        },
-        {
-          $project: {
-            userId: 1,
-            cartItems: 1,
-            productDetails: 1
-          }
-        },
-
-      ]);
-
-
+      let items = req.session.order;
 
       let products = [];
 
-      userCart.forEach((product) => {
+      items.forEach((product) => {
         products.push({
           productId: product.cartItems.productId,
           quantity: product.cartItems.quantity,
@@ -60,6 +35,7 @@ exports.placeOrder = async (req, res) => {
           descriptionHead: product.productDetails[0].descriptionHead,
           description: product.productDetails[0].description,
           price: product.productDetails[0].lastPrice,
+          couponDiscount: product.productDetails[0].couponDiscount,
           mrp: product.productDetails[0].firstPrice,
           discount: product.productDetails[0].discount,
           colour: product.productDetails[0].colour,
@@ -84,25 +60,40 @@ exports.placeOrder = async (req, res) => {
         userId: uId,
         orderItems: products,
         paymentMethod: req.body.payMethod,
+        appliedCoupon: items[0].couponCode,
         address: address
       }
 
-      req.session.order = order;
+      const newOrder = new orderDb(order);
+      await newOrder.save();
+
+      await cartDb.updateOne(
+        { userId: req.session.passport.user },
+        { $set: { cartItems: [] } }
+      );
+
+      req.session.order = null;
 
       if (req.body.payMethod === "COD") {
-        const newOrder = new orderDb(order);
-        await newOrder.save();
 
-        userCart.forEach(async (product) => {
-          await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
-        })
+        if (req.body.amount <= 100000) {
 
-        await cartDb.updateOne(
-          { userId: req.session.passport.user },
-          { $set: { cartItems: [] } }
-        );
+          const oId = newOrder._id;
 
-        res.json({ response: true, method: "COD" });
+          await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
+
+          items.forEach(async (product) => {
+            await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
+          })
+
+          res.json({ response: true, method: "COD" });
+
+        } else {
+
+          res.json({ response: false, method: "COD", message: "COD is only applicable for Orders below 1 Lakh" });
+
+        }
+
       }
       else if (req.body.payMethod === "OP") {
 
@@ -116,15 +107,13 @@ exports.placeOrder = async (req, res) => {
         try {
           const orders = await razorpayInstance.orders.create(options);
 
-          console.log(orders);
+          req.session.orderId = newOrder._id
 
           res.json({ orders, key_id: RAZORPAY_ID_KEY, order: order });
         } catch (err) {
           console.log(err);
           res.send(false)
         }
-
-
 
       } else {
 
@@ -137,17 +126,20 @@ exports.placeOrder = async (req, res) => {
 
           if (wallet.balance >= amount) {
 
-            const newOrder = new orderDb(order);
-            await newOrder.save();
-
 
             await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
+
+            const oId = newOrder._id;
+
+            await orderDb.findOneAndUpdate({ _id: oId }, { paymentStatus: "payed" });
 
             wallet.transactions.push({ transactType: false, amount: amount, source: `payed for order id ${newOrder._id}` });
 
             wallet.save();
 
-            userCart.forEach(async (product) => {
+            await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
+
+            items.forEach(async (product) => {
               await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
             })
 
@@ -165,7 +157,7 @@ exports.placeOrder = async (req, res) => {
 
           }
 
-        }else{
+        } else {
           res.json({ response: false, method: "wallet", message: "Topup your wallet" });
         }
       }
@@ -190,10 +182,13 @@ exports.rzpHandler = async (req, res) => {
 
     if (hmac.digest("hex") === req.body.razorpay_signature) {
 
-      const order = req.session.order;
+      const oId = req.session.orderId;
 
-      const newOrder = new orderDb(order);
-      await newOrder.save();
+      const order = await orderDb.findById(oId);
+
+      await orderDb.findOneAndUpdate({ _id: oId }, { paymentStatus: "payed" })
+
+      await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
 
       order.orderItems.forEach(async (product) => {
         await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
@@ -212,6 +207,102 @@ exports.rzpHandler = async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+}
+
+exports.continuePayment = async (req, res) => {
+
+  const id = req.body.id;
+
+  const order = await orderDb.findOne({ _id: id })
+
+  let amount = order.orderItems.reduce((total, item) => {
+    if (item.orderStatus !== "cancelled") {
+      return total += item.price
+    } else {
+      return total
+    }
+  }, 0);
+
+  if (req.body.payMethod === "OP") {
+
+    amount = amount * 100;
+
+    const options = {
+      amount: amount,
+      currency: "INR",
+      receipt: "admin@gmail.com"
+    }
+
+    try {
+
+      const orders = await razorpayInstance.orders.create(options);
+
+
+      req.session.orderId = id
+
+      res.json({ orders, key_id: RAZORPAY_ID_KEY, order: order });
+    } catch (err) {
+      console.log(err);
+      res.send(err)
+    }
+
+  } else if (req.body.payMethod === "wallet") {
+
+    const uId = req.session.passport.user;
+
+    let wallet = await walletDb.findOne({ userId: uId })
+
+    if (wallet) {
+
+      if (wallet.balance >= amount) {
+
+
+        await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
+
+        await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed" });
+
+        wallet.transactions.push({ transactType: false, amount: amount, source: `payed for order id ${id}` });
+
+        wallet.save();
+
+        order.orderItems.forEach(async (product) => {
+          await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
+        })
+
+        res.json({ response: true, method: "wallet" });
+
+      }
+      else {
+
+        res.json({ response: false, method: "wallet", message: "insuficient funds in your wallet" });
+
+      }
+
+    } else {
+      res.json({ response: false, method: "wallet", message: "Topup your wallet" });
+    }
+
+  }
+  else if (req.body.payMethod === "COD") {
+
+    if (amount <= 100000) {
+
+      order.orderItems.forEach(async (product) => {
+        await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
+      })
+
+      await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed" });
+
+      res.json({ response: true, method: "COD" });
+
+    } else {
+
+      res.json({ response: false, method: "COD", message: "COD is only applicable for Orders below 1 Lakh" });
+
+    }
+
+  }
+
 }
 
 exports.find = (req, res) => {
@@ -259,6 +350,9 @@ exports.find = (req, res) => {
           foreignField: "_id",
           as: "userDetails"
         }
+      },
+      {
+        $sort: { orderDate: - 1 }
       }
     ])
       .then(order => {
@@ -307,16 +401,47 @@ exports.findItem = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  const id = req.query.id;
-  const pId = req.query.pId;
 
   try {
+
+    const id = req.query.id;
+    const pId = req.query.pId;
+    const status = req.body.status;
+
+    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId });
+
+    const uId = order.userId;
+
+    if (status === "delivered") {
+
+      await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed" });
+
+    }
+
+    if (status === "pickedup") {
+
+
+      const amount = order.orderItems[0].price;
+
+      let wallet = await walletDb.findOne({ userId: uId });
+
+      await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: amount } });
+
+      wallet.transactions.push({ transactType: true, amount: amount, source: `refund for order id ${id} ` });
+
+      await wallet.save();
+
+      await orderDb.updateOne({ _id: id }, { paymentStatus: "refunded" });
+
+    }
+
     await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
       $set:
       {
-        "orderItems.$.orderStatus": req.body.status
+        "orderItems.$.orderStatus": status
       }
     });
+
 
     const referer = req.get("Referer")
 
@@ -329,10 +454,35 @@ exports.update = async (req, res) => {
 }
 
 exports.cancelOrder = async (req, res) => {
-  const id = req.query.id;
-  const pId = req.query.pId;
 
   try {
+    const uId = req.session.passport.user;
+    const id = req.query.id;
+    const pId = req.query.pId;
+
+    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId });
+
+
+    console.log(order);
+
+    if (order.paymentStatus === "payed") {
+
+      const amount = order.orderItems[0].price;
+
+      let wallet = await walletDb.findOne({ userId: uId });
+
+      await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: amount } });
+
+      wallet.transactions.push({ transactType: true, amount: amount, source: `refund for order id ${id} ` });
+
+      await wallet.save();
+
+      await orderDb.updateOne({ _id: id }, { paymentStatus: "refunded" });
+
+      res.send(`refund amound of ${amount} added to your wallet`)
+
+    }
+
     await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
       $set:
       {
@@ -350,6 +500,30 @@ exports.cancelOrder = async (req, res) => {
   }
 }
 
+exports.returnProduct = async (req, res) => {
+
+  try {
+
+    const id = req.query.id;
+    const pId = req.query.pId;
+
+    await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
+      $set:
+      {
+        "orderItems.$.orderStatus": "returned"
+      }
+    });
+
+    const referer = req.get("Referer")
+
+    res.redirect(referer);
+
+  } catch (err) {
+
+  }
+
+}
+
 
 exports.showOrders = async (req, res) => {
   const uId = req.params.uId;
@@ -365,7 +539,7 @@ exports.showOrders = async (req, res) => {
 
     } else {
 
-      let orders = await orderDb.find({ userId: uId });
+      let orders = await orderDb.find({ userId: uId }).sort({ orderDate: -1 });
 
       if (orders === null) {
         res.send(false);
@@ -380,5 +554,124 @@ exports.showOrders = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.render("errorPage", { status: 500 });
+  }
+}
+
+exports.ordersreportforgraph = async (req, res) => {
+  const orders = await orderDb.aggregate([
+    {
+      $group: {
+        _id: "$orderDate",
+        count: { $sum: 1 },
+      }
+    },
+
+  ])
+  res.send(orders)
+}
+
+exports.topProducts = async (req, res) => {
+  try {
+    const orders = await orderDb.find({}).lean(); // Retrieve all orders
+    const productCounts = {}; // Object to store product counts
+
+    // Loop through each order and count products
+    orders.forEach(order => {
+      order.orderItems.forEach(item => {
+        const productId = item.productId.toString(); // Convert ObjectId to string
+        const quantity = item.quantity; // Get quantity
+        if (!productCounts[productId]) {
+          productCounts[productId] = quantity; // If brand not in counts, initialize with quantity
+        } else {
+          productCounts[productId]+=quantity; // Increment count by quantity if brand already exists
+        }
+      });
+    });
+
+    // Sort product counts in descending order
+    const sortedProducts = Object.entries(productCounts)
+      .sort((a, b) => b[1] - a[1]) // Sort by count in descending order
+      .slice(0, 10); // Get top 10 products
+
+    // Retrieve product names for top products
+    const topProducts = await Promise.all(sortedProducts.map(async ([productId, count]) => {
+      const product = await productDb.findById(productId, 'pName').lean(); // Retrieve only the product name
+      return { productName: product.pName, count }; // Return only product name and count
+    }));
+
+    res.json(topProducts); // Send product counts as JSON response
+  } catch (error) {
+    console.error('Error retrieving product counts:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+exports.topCategories = async (req, res) => {
+  try {
+    const orders = await orderDb.find({}).lean(); // Retrieve all orders
+    const categoryCounts = {}; // Object to store category counts
+
+    // Loop through each order and count categories
+    orders.forEach(order => {
+      order.orderItems.forEach(item => {
+        const category = item.category; // Get category
+        const quantity = item.quantity; // Get quantity
+        if (!categoryCounts[category]) {
+          categoryCounts[category] = quantity; // If brand not in counts, initialize with quantity
+        } else {
+          categoryCounts[category] += quantity; // Increment count by quantity if brand already exists
+        }
+      });
+    });
+
+    // Sort category counts in descending order
+    const sortedCategories = Object.entries(categoryCounts)
+      .sort((a, b) => b[1] - a[1]) // Sort by count in descending order
+      .slice(0, 10); // Get top 10 categories
+
+    const topCategories = sortedCategories.map(([category, count]) => ({
+      category,
+      count
+    }));
+
+    res.json(topCategories); // Send top 10 categories as JSON response
+  } catch (error) {
+    console.error('Error retrieving top categories:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+exports.topBrands = async (req, res) => {
+  try {
+    const orders = await orderDb.find({}).lean(); // Retrieve all orders
+    const brandCounts = {}; // Object to store brand counts
+
+    // Loop through each order and count brands
+    orders.forEach(order => {
+      order.orderItems.forEach(item => {
+        const brand = item.bName; // Get brand
+        const quantity = item.quantity; // Get quantity
+        if (!brandCounts[brand]) {
+          brandCounts[brand] = quantity; // If brand not in counts, initialize with quantity
+        } else {
+          brandCounts[brand] += quantity; // Increment count by quantity if brand already exists
+        }
+      });
+    });
+
+    // Sort brand counts in descending order
+    const sortedBrands = Object.entries(brandCounts)
+      .sort((a, b) => b[1] - a[1]) // Sort by count in descending order
+      .slice(0, 10); // Get top 10 brands
+
+    const topBrands = sortedBrands.map(([brand, count]) => ({
+      brand,
+      count
+    }));
+
+    res.json(topBrands); // Send top 10 brands as JSON response
+  } catch (error) {
+    console.error('Error retrieving top brands:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 }

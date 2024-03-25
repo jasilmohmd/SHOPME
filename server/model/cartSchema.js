@@ -18,15 +18,7 @@ const cartSchema = new Schema({
       type: Number,
       required: true
     }
-  }],
-  appliedCoupon: {
-    type: String,
-    default: null
-  },
-  couponDiscount: {
-    type: Number,
-    default: 0
-  }
+  }]
 })
 
 const cartDb = mongoose.model("cart",cartSchema);
