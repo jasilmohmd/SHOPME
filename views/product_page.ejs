@@ -2,6 +2,8 @@
   <%- include("include/_header") %>
 <!--/ include header -->
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
 <!-- main site -->
 <main>
 
@@ -78,8 +80,63 @@
     </div>
   </div>
 
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <% if (message) { %>
+    <script>
+
+      $(function(){
+        
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+    
+        if('<%=message[0]?.success%>'){
+          
+          // Display an info toast with no title
+          toastr.success("<%=message[0]?.success%>")
+        }
+    
+        if('<%=message[0]?.info%>'){
+          // Display an info toast with no title
+          toastr.info("<%=message[0]?.info%>")
+        }
+    
+        if('<%=message[0]?.error%>'){
+          
+          // Display an info toast with no title
+          toastr.error("<%=message[0]?.error%>")
+        }
+        
+      });
+    </script>
+  <% } %>
+
 </main>
 <!--/ main site -->
+
+
+
+
+
+
 
 <!-- footer -->
   <%- include("include/_footer") %>

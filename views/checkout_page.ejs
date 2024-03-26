@@ -2,6 +2,8 @@
 <%- include("include/_header") %>
   <!--/ include header -->
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
   <!-- main site -->
   <main>
 
@@ -28,8 +30,7 @@
                         <% if(cart[i].productDetails[0].inStock>0){ %>
                           Qty:
                           <select name="qty" id="qty" data-pid="/api/updateCart/<%= cart[i].productDetails[0]._id %>">
-                            <% let stock=(cart[i].productDetails[0].inStock<5)?cart[i].productDetails[0].inStock : 5
-                              %>
+                            <% let stock=(cart[i].productDetails[0].inStock<5)?cart[i].productDetails[0].inStock : 5 %>
                               <% for(let j=1 ; j<=stock ; j++){ %>
                                 <option <%=cart[i].cartItems.quantity===j?"selected":"" %> value="<%= j %>">
                                     <%= j %>
@@ -51,13 +52,44 @@
                   </div>
 
                   <div class="cart-product-right">
-                    <a href="/api/removeFromCart/<%= cart[i].productDetails[0]._id %>">
+                    <button style="border: none; background-color: transparent;" data-bs-toggle="modal"
+                      data-bs-target="#staticBackdrop<%= i %>">
                       <svg xmlns="http://www.w3.org/2000/svg" height="1em"
                         viewBox="0 0 448 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
                         <path
                           d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z" />
                       </svg>
-                    </a>
+                    </button>
+                      <!-- delete Prompt -->
+
+                      <!-- Modal -->
+                      <div class="modal modal-sm fade" id="staticBackdrop<%= i %>" data-bs-backdrop="static"
+                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm Delete</h1>
+                            </div>
+                            <div class="modal-body">
+                              Are you sure?
+                            </div>
+                            <div class="modal-footer">
+
+                              <a href="/api/removeFromCart/<%= cart[i].productDetails[0]._id %>">
+
+                                <button class="modalbtn" style="background-color: rgb(144, 14, 14);" type="button"
+                                  class="btn btn-primary">Yes</button>
+
+                              </a>
+
+                              <button class="modalbtn" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">No</button>
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- delete Prompt -->
                   </div>
                 </div>
                 <% } %>
@@ -133,11 +165,61 @@
 
   </main>
 
-  <script src="/js/cartPrice.js"></script>
-  <script src="/js/qtyUpdate.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!--/ main site -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+    integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <!-- footer -->
-  <%- include("include/_footer") %>
-    <!--/ footer -->
+  <% if (message) { %>
+    <script>
+
+      $(function () {
+
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+
+        if ('<%=message[0]?.success%>') {
+
+          // Display an info toast with no title
+          toastr.success("<%=message[0]?.success%>")
+        }
+
+        if ('<%=message[0]?.info%>') {
+          // Display an info toast with no title
+          toastr.info("<%=message[0]?.info%>")
+        }
+
+        if ('<%=message[0]?.error%>') {
+
+          // Display an info toast with no title
+          toastr.error("<%=message[0]?.error%>")
+        }
+
+      });
+    </script>
+    <% } %>
+
+      <script src="/js/cartPrice.js"></script>
+      <script src="/js/qtyUpdate.js"></script>
+
+      <!--/ main site -->
+
+      <!-- footer -->
+      <%- include("include/_footer") %>
+        <!--/ footer -->

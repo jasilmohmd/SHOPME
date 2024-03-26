@@ -18,6 +18,17 @@ exports.login = (req, res) => {
 //Home page
 exports.home = (req, res) => {
 
+  let message;
+  let isNewLogin = req.session?.newLogin;
+
+  if(!isNewLogin){
+    req.session.newLogin = true;
+    message = {
+      success: "Successfully Logged in"
+    }
+  }else{
+    message = null
+  }
   // Make a get request to /api/products
   axios.all([
     axios.get(`http://localhost:${PORT}/api/category`),
@@ -25,7 +36,7 @@ exports.home = (req, res) => {
     axios.get(`http://localhost:${PORT}/api/coupon/show`)
   ])
     .then(axios.spread((response1, response2, response3) => {
-      res.render("home", { category: response1.data, product: response2.data, coupon: response3.data })
+      res.render("home", { category: response1.data, product: response2.data, coupon: response3.data , message: message })
     }))
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -34,11 +45,11 @@ exports.home = (req, res) => {
 };
 
 exports.productPage = (req, res) => {
-
   // Make a get request to /api/products
+  const message = req.flash('message');
   axios.get(`http://localhost:${PORT}/api/products`, { params: { id: req.query.id } })
     .then(function (response) {
-      res.render("product_page", { product: response.data });
+      res.render("product_page", { message,product: response.data });
     })
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -146,10 +157,12 @@ exports.cartPage = (req, res) => {
 }
 
 exports.checkoutPage = (req, res) => {
-
+  
+  const message = req.flash('message');
   try {
+    console.log(message);
     const order = req.session.order;
-    res.render("checkout_page", { cart: order });
+    res.render("checkout_page", { cart: order, message });
 
   } catch (err) {
     res.render("errorPage", { status: 500 });

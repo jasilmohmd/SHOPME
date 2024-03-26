@@ -98,7 +98,7 @@ exports.applyCoupon = async (req, res) => {
 
     const order = req.session.order;
 
-    console.log(order);
+    // console.log(order);
 
     const cartTotal = order.reduce((total, value) => {
       total += value.productDetails[0].lastPrice
@@ -121,12 +121,18 @@ exports.applyCoupon = async (req, res) => {
 
     // Checking Coupon Expiry
     if (couponExpiryDate < Date.now()) {
-      res.json({ error: "Coupon Expired" })
+      const message = { error: "Coupon Expired" };
+      req.flash('message', message);
+
+      res.redirect("/checkout_page");
     }
 
     // Checking Coupon Start
     else if (couponStartDate > Date.now()) {
-      res.json({ error: "Coupon not Available" })
+      const message = { error: "Coupon not Available" };
+      req.flash('message', message);
+
+      res.redirect("/checkout_page");
     }
 
     else if (couponCategory != "all") {
@@ -137,7 +143,11 @@ exports.applyCoupon = async (req, res) => {
       })
 
       if (!findCategory) {
-        res.json({ error: "Cannot be applied" })
+        const message = { info: `Coupon only applicable to ${couponCategory}` };
+        req.flash('message', message);
+
+        res.redirect("/checkout_page");
+        return;
       }
       else {
 
@@ -147,14 +157,18 @@ exports.applyCoupon = async (req, res) => {
           if (product.productDetails[0].category == couponCategory) {
             let discount = product.productDetails[0].lastPrice * (couponDiscount / 100);
             product.productDetails[0].couponDiscount = discount
-            totalCouponDiscount+=discount
+            totalCouponDiscount += discount
           }
 
         });
 
         // Checking Orders above ..if ordervalue is less than the specified amount then cannot be applied
         if (cartTotal < orderAbove) {
-          return res.json({ error: "Cannot be applied" })
+          const message = { info: `Coupon applicable only above ${orderAbove}` };
+          req.flash('message', message);
+
+          res.redirect("/checkout_page");
+          return;
         }
 
         order[0].couponCode = couponCode;
@@ -162,9 +176,12 @@ exports.applyCoupon = async (req, res) => {
 
         req.session.order = order;
 
-        console.log(order);
+        // console.log(order);
 
-        res.json({ message: "Coupon Applied" })
+        const message = { success: "Coupon Applied" };
+        req.flash('message', message);
+
+        res.redirect("/checkout_page");
 
       }
 
@@ -177,13 +194,17 @@ exports.applyCoupon = async (req, res) => {
 
         let discount = product.productDetails[0].lastPrice * (couponDiscount / 100);
         product.productDetails[0].couponDiscount = discount
-        totalCouponDiscount+=discount
+        totalCouponDiscount += discount
 
       });
 
       // Checking Orders above ..if ordervalue is less than the specified amount then cannot be applied
       if (cartTotal < orderAbove) {
-        return res.json({ error: "Cannot be applied" })
+        const message = { info: `Coupon applicable only above ${orderAbove}` };
+        req.flash('message', message);
+
+        res.redirect("/checkout_page");
+        return;
       }
 
       order[0].couponCode = couponCode;
@@ -191,9 +212,12 @@ exports.applyCoupon = async (req, res) => {
 
       req.session.order = order;
 
-      console.log(order);
+      // console.log(order);
 
-      res.json({ message: "Coupon Applied" })
+      const message = { success: "Coupon Applied" };
+      req.flash('message', message);
+
+      res.redirect("/checkout_page");
 
     }
 
@@ -212,13 +236,16 @@ exports.removeCoupon = async (req, res) => {
     let order = req.session.order;
 
     order[0].couponCode = null;
-    order[0].totalCouponDiscount= 0;
+    order[0].totalCouponDiscount = 0;
 
-    order.forEach( product => {
-      product.productDetails[0].couponDiscount?product.productDetails[0].couponDiscount=0:"";
+    order.forEach(product => {
+      product.productDetails[0].couponDiscount ? product.productDetails[0].couponDiscount = 0 : "";
     })
-    
-    res.json({message: "coupon removed"})
+
+    const message = { error: "Coupon removed" };
+    req.flash('message', message);
+
+    res.redirect("/checkout_page");
 
   } catch (err) {
 

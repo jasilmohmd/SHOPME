@@ -177,7 +177,7 @@
                   </div>
                 </div>
                 <!-- End of Return Prompt -->
-                <% }else if(order.orderItems[i].orderStatus==="pending" || order.orderItems[i].orderStatus=="shipped" ){
+                <% }else if(order.orderItems[i].orderStatus==="pending" || order.orderItems[i].orderStatus=="shipped" || order.orderItems[i].orderStatus=="ordered" ){
                   %>
                     <button class="btn" data-bs-toggle="modal"
                   data-bs-target="#staticBackdrop2<%= i %>">Cancel</button>

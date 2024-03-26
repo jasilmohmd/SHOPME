@@ -153,3 +153,48 @@
 .addressId{
   display: none;
 }
+
+.cart-product-right .modal-content{
+  border-radius: 15px;
+  background-color: rgb(190, 190, 190);
+  border: none;
+}
+
+.cart-product-right .modal-header {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  margin-top: 10px;
+  padding: 5px;
+}
+
+.cart-product-right .modal-body {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  border: none;
+  margin: 10px;
+  padding: 5px;
+}
+
+/* CSS to evenly space buttons in the modal footer */
+.cart-product-right .modal-footer {
+  display: flex;
+  justify-content: space-around;
+  /* Evenly space the content */
+  border: none;
+  margin: 0px;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+
+.cart-product-right .modalbtn {
+  background-color: black;
+  color: white;
+  font-size: 1rem;
+  padding: 5px 25px;
+  border: none;
+  border-radius: 30px;
+
+}

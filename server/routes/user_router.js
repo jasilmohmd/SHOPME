@@ -24,7 +24,7 @@ route.get('/login', middleware.checkNotAuthenticated, services.login);
 
 //Login Post
 route.post('/login', middleware.checkNotAuthenticated, passport.authenticate('local', {
-  successRedirect: '/',
+  successRedirect:'/',
   failureRedirect: '/login',
   failureFlash: true
 }));

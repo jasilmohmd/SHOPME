@@ -34,7 +34,11 @@ exports.addToCart = async (req, res) => {
 
         //add quantity if item already exists
         if (existingUserItem) {
-          existingUserItem.quantity += 1;
+          const message = { info: "Product already in cart" };
+          req.flash('message', message);
+
+          res.redirect(`/product_page?id=${pId}`);
+
         }
         else {
           // add item if its not in the cart
@@ -49,11 +53,16 @@ exports.addToCart = async (req, res) => {
 
       await userCart.save();
 
-      res.send(`Product added to cart`)
+      const message = { success: 'Product added to cart' };
+      req.flash('message', message);
+
+      res.redirect(`/product_page?id=${pId}`);
 
     }
     else{
-      res.send(`Product Out of stock`)
+      const message = { error: `Product Out of stock` };
+      req.flash('message', message);
+      res.redirect(`/product_page?id=${pId}`);
     }
 
   }
