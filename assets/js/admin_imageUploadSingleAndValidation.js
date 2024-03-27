@@ -2,7 +2,7 @@ let files = [],
 button = document.querySelector(".submit-btn"),
 form = document.querySelector("form"),
 drop = document.querySelector(".image-upload"),
-container = document.querySelector(".container2"),
+container = document.querySelector(".container1"),
 text = document.querySelector(".inner"),
 browse = document.querySelector(".select"),
 input = document.querySelector(".image-upload input");
@@ -13,9 +13,14 @@ browse.addEventListener("click", () => input.click());
 //input change event
 input.addEventListener("change", () => {
   let file = input.files;
+  document.getElementById("imageError").innerHTML = "";
 
   for(let i=0; i< file.length; i++){
-    files.push(file[i])
+    if (file[i].type.split("/")[0] !== "image") {
+      document.getElementById("imageError").innerHTML = "Only images are allowed!"
+      return
+    }
+    files[0]= file[i];
   }
   // form.reset();
   showImages();
@@ -24,7 +29,7 @@ input.addEventListener("change", () => {
 const showImages = () => {
   let images = "";
   files.forEach((e,i)=> {
-    images += `<div class="image">
+    images = `<div class="image">
     <img src="${URL.createObjectURL(e)}" >
     <span onclick="delImages(${i})">&times;</span>
   </div>`
@@ -64,7 +69,42 @@ drop.addEventListener("drop", e => {
   showImages();
 })
 
-button.addEventListener("click", () => {
-  let form = new FormData();
-  files.forEach((e, i) => form.append(`file[${i}]`, e))
+const cName = document.getElementById("cName");
+const cNameError = document.getElementById("cNameError");
+
+const nameRegex = /^[a-zA-Z0-9\s()\-,.]+$/;
+
+button.addEventListener("click", (e) => {
+
+  let flag = 0;
+
+  cName.value = cName.value.trim();
+
+  if (cName.value === '' || cName.value === null) {
+    flag = 1;
+    cNameError.innerHTML = "You left the field empty!"
+  }
+  else if (!nameRegex.test(cName.value) || cName.value.length < 3) {
+    flag = 1;
+    cNameError.innerHTML = "Enter a valid Product name!"
+  }
+
+
+  if(files.length<1){
+    flag = 1;
+    document.getElementById("imageError").innerHTML = "select an image"
+  }
+
+  if (flag === 1) {
+    e.preventDefault();
+    return
+  }
+
+  let formData = new FormData();
+  files.forEach((e, i) => formData.append(`file[${i}]`, e))
+  form.submit();
 })
+
+cName.addEventListener("keyup", () => {
+  cNameError.innerHTML = "";
+});

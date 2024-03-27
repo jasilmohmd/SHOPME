@@ -142,3 +142,8 @@
 .container2 .image a:hover {
   opacity: 0.8;
 }
+
+.validateError{
+  font-size: 0.8rem;
+  color: rgb(170, 16, 16);
+}

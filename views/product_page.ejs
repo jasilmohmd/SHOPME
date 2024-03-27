@@ -1,136 +1,188 @@
 <!-- include header -->
-  <%- include("include/_header") %>
-<!--/ include header -->
+<%- include("include/_header") %>
+  <!--/ include header -->
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
-<!-- main site -->
-<main>
+  <!-- <style>
+    .sideimage {
+      transition: transform 1s ease-in-out;
+      /* Add transition for opacity */
+    }
+  </style> -->
 
-  <div class="page">
-    <div class="main-sec">
-      <div class="image-sec">
-        <div class="side-image">
-          <div>
-            <img src="<%= product.image[0] %>">
+  <!-- main site -->
+  <main>
+
+    <div class="page">
+      <div class="main-sec">
+        <div class="image-sec">
+          <div class="side-image">
+            <button style="border: none;background-color: transparent;" onclick="scrollImages(-1)">
+              <i class="fa-solid fa-chevron-up"></i>
+            </button>
+
+            <% for(let i=0; i< Math.min(3, product.image.length) ; i++){ %>
+              <div>
+                <img class="sideimage" src="<%= product.image[i] %>" onclick="changeMainImage(this)">
+              </div>
+              <% } %>
+
+                <button style="border: none;background-color: transparent;" onclick="scrollImages(1)">
+                  <i class="fa-solid fa-chevron-down"></i>
+                </button>
           </div>
-          <div>
-            <img src="<%= product.image[1] %>">
-          </div>
-          <div>
-            <img src="<%= product.image[2] %>">
+          <div class="main-image">
+            <img id="mainImage" src="<%= product.image[0] %>">
           </div>
         </div>
-        <div class="main-image">
-          <img src="<%= product.image[0] %>">
+
+        <div class="details-sec">
+          <div class="product-details">
+            <h3 class="product-name">
+              <%= product.pName %>
+            </h3>
+            <p class="subTitle">
+              <%= product.subTitle %>
+            </p>
+
+            <p class="lastPrice">
+              ₹<%= product.lastPrice %>
+            </p>
+            <p class="firstPrice">
+              ₹<%= product.firstPrice %>
+            </p>
+
+            <% if(product.inStock>0){ %>
+              <p class="stock">In Stock</p>
+              <% }else{ %>
+                <p class="stock" style="color: rgb(141, 13, 13);">Out of Stock</p>
+                <% } %>
+
+                  <p class="descriptionHead">
+                    <%= product.descriptionHead %>
+                  </p>
+                  <p class="description">
+                    &emsp;<%= product.description %>
+                  </p>
+          </div>
+
+          <div class="product-interactions">
+            <form action="/api/addToCart/<%= product._id %>" method="POST">
+              <button class="btn addToCart" type="submit">Add to cart</button>
+            </form>
+
+            <a href="">
+              <button class="btn buyNow">Buy Now</button>
+            </a>
+          </div>
+
         </div>
       </div>
-    
-      <div class="details-sec">
-        <div class="product-details">
-          <h3 class="product-name">
-            <%= product.pName %>
-          </h3>
-          <p class="subTitle">
-            <%= product.subTitle %>
-          </p>
-          
-          <p class="lastPrice">
-            ₹<%= product.lastPrice %>
-          </p>
-          <p class="firstPrice">
-            ₹<%= product.firstPrice %>
-          </p>
-  
-          <% if(product.inStock>0){ %>
-            <p class="stock">In Stock</p>
-          <% }else{ %>
-            <p class="stock" style="color: rgb(141, 13, 13);">Out of Stock</p>
-          <% } %>
-          
-          <p class="descriptionHead">
-            <%= product.descriptionHead %>
-          </p>
-          <p class="description">
-            &emsp;<%= product.description %>
-          </p>
+
+      <div class="review-sec">
+        <h3>Ratings & Reviews.</h3>
+        <div class="reviews">
+          <hr>
+          <h5 class="review-head">Great Product</h5>
+          <p class="review-content">Great camera , Loved it.</p>
+          <p class="userName">username@gmail.com</p>
         </div>
-  
-        <div class="product-interactions">
-          <form action="/api/addToCart/<%= product._id %>" method="POST">
-            <button class="btn addToCart" type="submit">Add to cart</button>
-          </form>
-          
-          <a href="">
-            <button class="btn buyNow">Buy Now</button>
-          </a>
-        </div>
-        
       </div>
     </div>
-  
-    <div class="review-sec">
-      <h3>Ratings & Reviews.</h3>
-      <div class="reviews">
-        <hr>
-        <h5 class="review-head">Great Product</h5>
-        <p class="review-content">Great camera , Loved it.</p>
-        <p class="userName">username@gmail.com</p>
-      </div>
-    </div>
-  </div>
 
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-  <% if (message) { %>
     <script>
+      let imageS = '<%= product.image %>';
+      let image = imageS.split(',')
+      console.log(image);
+      // Define the index of the first side image to be shown
+      let startIndex = 0;
 
-      $(function(){
-        
-        toastr.options = {
-          "closeButton": true,
-          "debug": false,
-          "newestOnTop": true,
-          "progressBar": true,
-          "positionClass": "toast-top-right",
-          "preventDuplicates": false,
-          "onclick": null,
-          "showDuration": "300",
-          "hideDuration": "1000",
-          "timeOut": "5000",
-          "extendedTimeOut": "1000",
-          "showEasing": "swing",
-          "hideEasing": "linear",
-          "showMethod": "fadeIn",
-          "hideMethod": "fadeOut"
+      // Function to scroll the side images up or down
+      function scrollImages(direction) {
+        const sideImages = document.querySelectorAll('.sideimage');
+        // console.log(sideImages);
+        startIndex += direction;
+
+        // Ensure startIndex stays within bounds
+        if (startIndex < 0) {
+          startIndex = 0;
+        } else if (startIndex > image.length - 3) {
+          startIndex = image.length - 3;
         }
-    
-        if('<%=message[0]?.success%>'){
-          
-          // Display an info toast with no title
-          toastr.success("<%=message[0]?.success%>")
-        }
-    
-        if('<%=message[0]?.info%>'){
-          // Display an info toast with no title
-          toastr.info("<%=message[0]?.info%>")
-        }
-    
-        if('<%=message[0]?.error%>'){
-          
-          // Display an info toast with no title
-          toastr.error("<%=message[0]?.error%>")
-        }
-        
-      });
+
+        // Update the src attribute of the side images with a fade-in effect
+        sideImages.forEach((img, index) => {
+          img.style.transition = 'opacity 0.5s ease-in-out'; // Apply transition effect
+          img.style.opacity = '0'; // Start fade-out transition
+
+          // After the transition is complete, update the image source and start fade-in transition
+          setTimeout(() => {
+            img.src = image[startIndex + index];
+            img.style.opacity = '1'; // Start fade-in transition
+          }, 500); // Wait for the fade-out transition (0.5s)
+        });
+      }
+
+      // Define the changeMainImage function in the global scope
+      function changeMainImage(element) {
+        var newSrc = element.src;
+        document.getElementById('mainImage').src = newSrc;
+      }
     </script>
-  <% } %>
 
-</main>
-<!--/ main site -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+      integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <% if (message) { %>
+      <script>
+
+        $(function () {
+
+          toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+
+          if ('<%=message[0]?.success%>') {
+
+            // Display an info toast with no title
+            toastr.success("<%=message[0]?.success%>")
+          }
+
+          if ('<%=message[0]?.info%>') {
+            // Display an info toast with no title
+            toastr.info("<%=message[0]?.info%>")
+          }
+
+          if ('<%=message[0]?.error%>') {
+
+            // Display an info toast with no title
+            toastr.error("<%=message[0]?.error%>")
+          }
+
+        });
+      </script>
+      <% } %>
+
+  </main>
+  <!--/ main site -->
 
 
 
@@ -138,6 +190,6 @@
 
 
 
-<!-- footer -->
+  <!-- footer -->
   <%- include("include/_footer") %>
-<!--/ footer -->
+    <!--/ footer -->

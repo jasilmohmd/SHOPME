@@ -117,9 +117,10 @@ exports.categoryManage = (req, res) => {
 }
 
 exports.updateCategory = (req, res) => {
+  const message = req.flash('message');
   axios.get(`http://localhost:${PORT}/admin/api/category`, { params: { id: req.query.id } })
     .then(function (response) {
-      res.render("admin_updateCategory", { category: response.data });
+      res.render("admin_updateCategory", { category: response.data , message });
     })
     .catch(err => {
       res.send(err);
@@ -127,7 +128,9 @@ exports.updateCategory = (req, res) => {
 }
 
 exports.addCategory = (req, res) => {
-  res.render("admin_addCategory")
+  const message = req.flash('message');
+  console.log(message);
+  res.render("admin_addCategory", {message})
 }
 
 exports.unlistCategory = (req, res) => {

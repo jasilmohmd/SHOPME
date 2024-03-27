@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,146 +13,184 @@
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Add Product</h1>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
+
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Add Product</h1>
+					</div>
+
 				</div>
-				
-			</div>
 
-			<form action="/admin/add-product" method="POST" enctype="multipart/form-data">
-				<div class="container">
-					<div class="input-box">
-						<div>
-							<label for="pName">Product Name</label>
-							<input type="text" name="pName" required>
-						</div>
-						
-						<div>
-							<label for="bName">Brand Name</label>
-							<input type="text" name="bName" required>
-						</div>
+				<form id="form" action="/admin/add-product" method="POST" enctype="multipart/form-data">
+					<div class="container">
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="pName">Product Name</label>
+									<input type="text" name="pName" id="pName">
+								</div>
+								<span class="validateError" id="pNameError"></span>
+							</div>
 
-						<div>
-							<label for="category">Category</label>
-							<select name="category" id="category">
-							<% for(let i=0 ; i<category.length ; i++){ %>
-							<option value="<%= category[i].cName %>"><%= category[i].cName %></option>
-							<% } %>
-							</select>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="subTitle">SubTitle</label>
-							<input type="text" name="subTitle" required>
-						</div>
-	
-						<div>
-							<label for="descriptionHead">Description Heading</label>
-							<input type="text" name="descriptionHead">
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="description">Description</label>
-							<textarea name="description" rows="5" cols="50" class="description" required></textarea>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="firstPrice">First Price</label>
-							<input class="firstPrice" type="number" name="firstPrice" required>
-						</div>
-	
-						<div>
-							<label for="lastPrice">Last Price</label>
-							<input class="lastPrice" type="number" name="lastPrice" required>
-						</div>
-	
-						<div>
-							<label for="discount">Discount</label>
-							<input class="discount" type="number" name="discount" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="colour">Colour</label>
-							<input type="text" name="colour" required>
-						</div>
-	
-						<div>
-							<label for="inStock">In Stock</label>
-							<input type="number" name="inStock" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="image">Image Upload</label>
-							<div class="image-upload">
-								<span class="inner">Drag & drop images here or 
-									<span class="select">Browse</span></span>
-								<input type="file" name="pImage" required multiple>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="bName">Brand Name</label>
+									<input type="text" name="bName" id="bName">
+								</div>
+								<span class="validateError" id="bNameError"></span>
+							</div>
+
+							<div>
+								<label for="category">Category</label>
+								<select name="category" id="category">
+									<% for(let i=0 ; i<category.length ; i++){ %>
+										<option value="<%= category[i].cName %>">
+											<%= category[i].cName %>
+										</option>
+										<% } %>
+								</select>
 							</div>
 						</div>
-	
-						<div>
-							<input type="radio" name="new" value="1">
-							<label for="new">Newly launched</label>
+
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="subTitle">SubTitle</label>
+									<input type="text" name="subTitle" id="subTitle">
+								</div>
+								<span class="validateError" id="subTitleError"></span>
+							</div>
+
+							<div>
+								<div>
+									<label for="descriptionHead">Description Heading</label>
+									<input type="text" name="descriptionHead" id="descriptionHead">
+								</div>
+								<span class="validateError" id="descriptionHeadError"></span>
+							</div>
 						</div>
+
+						<div class="input-box">
+							<div>
+								<div>
+									<label for="description">Description</label>
+									<textarea name="description" rows="5" cols="50" class="description" id="description"></textarea>
+								</div>
+								<span class="validateError" id="descriptionError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="firstPrice">First Price</label>
+									<input class="firstPrice" type="number" name="firstPrice" id="firstPrice">
+								</div>
+								<span class="validateError" id="firstPriceError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="lastPrice">Last Price</label>
+									<input class="lastPrice" type="number" name="lastPrice" id="lastPrice">
+								</div>
+								<span class="validateError" id="lastPriceError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="discount">Discount</label>
+									<input class="discount" type="number" name="discount" id="discount">
+								</div>
+								<span class="validateError" id="discountError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="colour">Colour</label>
+									<input type="text" name="colour" id="colour">
+								</div>
+								<span class="validateError" id="colourError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="inStock">In Stock</label>
+									<input type="number" name="inStock" id="inStock">
+								</div>
+								<span class="validateError" id="inStockError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div>
+								<label for="image">Image Upload</label>
+								<div class="image-upload">
+									<span class="inner">Drag & drop images here or
+										<span class="select">Browse</span></span>
+									<input type="file" name="pImage" required multiple>
+								</div>
+								<span class="validateError" id="imageError"></span>
+							</div>
+
+							<div>
+								<input type="radio" name="new" value="1">
+								<label for="new">Featured Product</label>
+							</div>
+						</div>
+
+						<div class="container1">
+
+						</div>
+
+						<div class="btn-container">
+							<button type="button" class="btn submit-btn">Submit</button>
+						</div>
+
 					</div>
+				</form>
 
-					<div class="container1">
-						
-					</div>
-	
-					<div class="btn-container">
-						<button class="btn submit-btn">Submit</button>
-					</div>
-	
-				</div>
-			</form>
+			</main>
+			<!-- MAIN -->
 
-		</main>
-		<!-- MAIN -->
+		</section>
+		<!-- CONTENT -->
 
-	</section>
-	<!-- CONTENT -->
-	
 
-	<script src="/js/admin_css.js"></script>
-	<script src="/js/admin_imageUploadMultiple.js"></script>
-	<script src="/js/admin_addProduct"></script>
+		<script src="/js/admin_css.js"></script>
+		<script src="/js/admin_imageUploadMultipleAndValidation.js"></script>
+		<script src="/js/admin_addProduct"></script>
+
+
+
 </body>
+
 </html>

@@ -47,17 +47,24 @@
 
 				</div>
 
-				<form action="/admin/api/products/update?id=<%= product._id %>" method="POST" enctype="multipart/form-data">
+				<form id="form" action="/admin/api/products/update?id=<%= product._id %>" method="POST"
+					enctype="multipart/form-data">
 					<div class="container">
 						<div class="input-box">
-							<div>
-								<label for="pName">Product Name</label>
-								<input type="text" name="pName" value="<%= product.pName %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="pName">Product Name</label>
+									<input type="text" name="pName" id="pName" value="<%= product.pName %>">
+								</div>
+								<span class="validateError" id="pNameError"></span>
 							</div>
 
-							<div>
-								<label for="bName">Brand Name</label>
-								<input type="text" name="bName" value="<%= product.bName %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="bName">Brand Name</label>
+									<input type="text" name="bName" id="bName" value="<%= product.bName %>">
+								</div>
+								<span class="validateError" id="bNameError"></span>
 							</div>
 
 							<div>
@@ -73,50 +80,74 @@
 						</div>
 
 						<div class="input-box">
-							<div>
-								<label for="subTitle">SubTitle</label>
-								<input type="text" name="subTitle" value="<%= product.subTitle %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="subTitle">SubTitle</label>
+									<input type="text" name="subTitle" id="subTitle" value="<%= product.subTitle %>">
+								</div>
+								<span class="validateError" id="subTitleError"></span>
 							</div>
 
-							<div>
-								<label for="descriptionHead">Description Heading</label>
-								<input type="text" name="descriptionHead" value="<%= product.descriptionHead %>">
-							</div>
-						</div>
-
-						<div class="input-box">
-							<div>
-								<label for="description">Description</label>
-								<input name="description" class="description" value="<%= product.description %>" required>
-							</div>
-						</div>
-
-						<div class="input-box">
-							<div>
-								<label for="firstPrice">First Price</label>
-								<input type="number" name="firstPrice" value="<%= product.firstPrice %>" required>
-							</div>
-
-							<div>
-								<label for="lastPrice">Last Price</label>
-								<input type="number" name="lastPrice" value="<%= product.lastPrice %>" required>
-							</div>
-
-							<div>
-								<label for="discount">Discount</label>
-								<input type="number" name="discount" value="<%= product.discount %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="descriptionHead">Description Heading</label>
+									<input type="text" id="descriptionHead" name="descriptionHead" value="<%= product.descriptionHead %>">
+								</div>
+								<span class="validateError" id="descriptionHeadError"></span>
 							</div>
 						</div>
 
 						<div class="input-box">
-							<div>
-								<label for="colour">Colour</label>
-								<input type="text" name="colour" value="<%= product.colour %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="description">Description</label>
+									<input name="description" id="description" class="description" value="<%= product.description %>">
+								</div>
+								<span class="validateError" id="descriptionError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="firstPrice">First Price</label>
+									<input type="number" name="firstPrice" id="firstPrice" value="<%= product.firstPrice %>">
+								</div>
+								<span class="validateError" id="firstPriceError"></span>
 							</div>
 
-							<div>
-								<label for="inStock">In Stock</label>
-								<input type="number" name="inStock" value="<%= product.inStock %>" required>
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="lastPrice">Last Price</label>
+									<input type="number" name="lastPrice" id="lastPrice" value="<%= product.lastPrice %>">
+								</div>
+								<span class="validateError" id="lastPriceError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="discount">Discount</label>
+									<input type="number" name="discount" id="discount" value="<%= product.discount %>">
+								</div>
+								<span class="validateError" id="discountError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="colour">Colour</label>
+									<input type="text" name="colour" id="colour" value="<%= product.colour %>">
+								</div>
+								<span class="validateError" id="colourError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="inStock">In Stock</label>
+									<input type="number" name="inStock" id="inStock" value="<%= product.inStock %>">
+								</div>
+								<span class="validateError" id="inStockError"></span>
 							</div>
 						</div>
 
@@ -128,6 +159,7 @@
 										<span class="select">Browse</span></span>
 									<input type="file" name="pImage" multiple>
 								</div>
+								<span class="validateError" id="imageError"></span>
 							</div>
 
 							<div>
@@ -149,7 +181,7 @@
 						</div>
 
 						<div class="btn-container">
-							<button class="btn" type="submit">Submit</button>
+							<button class="btn submit-btn" type="button">Submit</button>
 						</div>
 
 					</div>
@@ -163,7 +195,7 @@
 
 
 		<script src="js/admin_css.js"></script>
-		<script src="/js/admin_imageUploadMultiple_update.js"></script>
+		<script src="/js/admin_imageUploadMultiple_updateAndValidation.js"></script>
 </body>
 
 </html>

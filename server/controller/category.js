@@ -6,9 +6,18 @@ const productDb = require("../model/productSchema");
 exports.categorySave = async (req, res) => {
   try {
 
-    const file = req.file;
+    const categorydb = await categoryDb.find({ cName: req.body.cName });
 
-    console.log(file);
+    if (categorydb) {
+
+      const message = { error: "Category alredy exists!" };
+      req.flash('message', message);
+      res.redirect("/admin/add-category");
+
+      return
+    }
+
+    const file = req.file;
 
     const image = "/img/" + file.filename
 
@@ -57,15 +66,35 @@ exports.find = (req, res) => {
 
 exports.update = async (req, res) => {
 
-  const id = req.query.id;
-
-  const file = req.file;
-
-  // console.log(file);
-
-  let image;
-
+  
   try {
+    
+    const id = req.query.id;
+    
+    const categorydb = await categoryDb.find({
+      $and: [
+        { _id: { $ne: id } },  // _id should not match the specified id
+        { cName: req.body.cName }  // cName should match req.body.cName
+      ]
+    });
+  
+    console.log(categorydb);
+
+    if (categorydb.length > 0) {
+  
+      const message = { error: "Category alredy exists!" };
+      req.flash('message', message);
+      res.redirect("/admin/add-category");
+  
+      return
+    }
+  
+  
+    const file = req.file;
+  
+    // console.log(file);
+  
+    let image;
 
     if (file) {
       image = "/img/" + file.filename;
@@ -202,8 +231,8 @@ exports.findProducts = async (req, res) => {
 
       let { sort, priceAbove, priceBelow } = req.query;
 
-      priceAbove? priceAbove=Number(priceAbove) : priceAbove=0;
-      priceBelow? priceBelow=Number(priceBelow) : priceBelow=Infinity;
+      priceAbove ? priceAbove = Number(priceAbove) : priceAbove = 0;
+      priceBelow ? priceBelow = Number(priceBelow) : priceBelow = Infinity;
 
       console.log(priceBelow);
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,101 +13,116 @@
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Add Coupon</h1>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
+
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Add Coupon</h1>
+					</div>
+
 				</div>
-				
-			</div>
 
-			<form action="/admin/add-coupon" method="POST" >
-				<div class="container">
-					<div class="input-box">
-						<div>
-							<label for="couponCode">Coupon Code</label>
-							<input type="text" name="couponCode" required>
+				<form id="form" action="/admin/add-coupon" method="POST">
+					<div class="container">
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="couponCode">Coupon Code</label>
+									<input type="text" name="couponCode" id="couponCode">
+								</div>
+								<span class="validateError" id="couponCodeError"></span>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="discount">Discount</label>
+									<input type="number" name="discount" id="discount">
+								</div>
+								<span class="validateError" id="discountError"></span>
+							</div>
+
 						</div>
-						
-						<div>
-							<label for="discount">Discount</label>
-							<input type="number" name="discount" required>
+
+						<div class="input-box">
+							<div>
+								<label for="start">From</label>
+								<input type="date" name="start">
+							</div>
+
+							<div>
+								<div>
+									<label for="end">To</label>
+									<input type="date" name="end" id="endDate">
+								</div>
+								<span class="validateError" id="endDateError"></span>
+							</div>
+						</div>
+
+						<div class="input-box">
+
+							<div>
+								<label for="category">Category</label>
+								<select name="category" id="category">
+									<option value="all">All</option>
+									<% for(let i=0 ; i<category.length ; i++){ %>
+										<option value="<%= category[i].cName %>">
+											<%= category[i].cName %>
+										</option>
+										<% } %>
+								</select>
+							</div>
+
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="priceAbove">Price Above</label>
+									<input type="number" name="priceAbove" id="priceAbove">
+								</div>
+								<span class="validateError" id="priceAboveError"></span>
+							</div>
+
+						</div>
+
+						<div class="btn-container">
+							<button type="submit" class="btn">Submit</button>
 						</div>
 
 					</div>
-	
-					<div class="input-box">
-						<div>
-							<label for="start">From</label>
-							<input type="date" name="start">
-						</div>
-	
-						<div>
-							<label for="end">To</label>
-							<input type="date" name="end" required>
-						</div>
-					</div>
-	
-					<div class="input-box">
+				</form>
 
-						<div>
-							<label for="category">Category</label>
-							<select name="category" id="category">
-								<option value="all">All</option>
-							<% for(let i=0 ; i<category.length ; i++){ %>
-							<option value="<%= category[i].cName %>"><%= category[i].cName %></option>
-							<% } %>
-							</select>
-						</div>
+			</main>
+			<!-- MAIN -->
 
-						<div>
-							<label for="priceAbove">Price Above</label>
-							<input type="number" name="priceAbove">
-						</div>
-						
-					</div>
-	
-					<div class="btn-container">
-						<button class="btn submit-btn">Submit</button>
-					</div>
-	
-				</div>
-			</form>
+		</section>
+		<!-- CONTENT -->
 
-		</main>
-		<!-- MAIN -->
 
-	</section>
-	<!-- CONTENT -->
-	
-
-	<script src="/js/admin_css.js"></script>
-	<script src="/js/admin_imageUploadMultiple.js"></script>
-	<script src="/js/admin_addProduct"></script>
+		<script src="/js/admin_css.js"></script>
+		<script src="/js/admin_couponManageValidation.js"></script>
 </body>
+
 </html>

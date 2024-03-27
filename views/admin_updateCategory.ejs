@@ -1,95 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
 	<!-- My CSS -->
 	<link rel="stylesheet" href="/css/admin_dash.css">
 	<link rel="stylesheet" href="/css/addProduct.css">
 
 	<title>AdminHub</title>
 </head>
+
 <body>
 
 
 	<!-- SIDEBAR -->
 	<%- include("include/_admin_sidebar") %>
-	<!-- SIDEBAR -->
+		<!-- SIDEBAR -->
 
 
 
-	<!-- CONTENT -->
-	<section id="content">
-		<!-- NAVBAR -->
-		<nav>
-			
-			<a href="#" class="notification">
-				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
-			</a>
-			<a href="#" class="profile">
-				<img src="img/people.png">
-			</a>
-		</nav>
-		<!-- NAVBAR -->
+		<!-- CONTENT -->
+		<section id="content">
+			<!-- NAVBAR -->
+			<nav>
 
-		<!-- MAIN -->
-		<main>
-			<div class="head-title">
-				<div class="left">
-					<h1>Edit Category</h1>
-				</div>
-				
-			</div>
+				<a href="#" class="notification">
+					<i class='bx bxs-bell'></i>
+					<span class="num">8</span>
+				</a>
+				<a href="#" class="profile">
+					<img src="img/people.png">
+				</a>
+			</nav>
+			<!-- NAVBAR -->
 
-			<form action="/admin/api/category/update?id=<%= category._id %>" method="POST" enctype="multipart/form-data">
-				<div class="container">
-					<div class="input-box">
-						<div>
-							<label for="cName">Category Name</label>
-							<input type="text" name="cName" value="<%= category.cName %>" required>
-						</div>
+			<!-- MAIN -->
+			<main>
+				<div class="head-title">
+					<div class="left">
+						<h1>Edit Category</h1>
 					</div>
 
-					<div class="input-box">
-						<div>
-							<label for="image">Image Upload</label>
-							<div class="image-upload">
-								<span class="inner">Drag & drop images here or 
-									<span class="select">Browse</span></span>
-								<input type="file" name="cImage">
+				</div>
+
+				<form action="/admin/api/category/update?id=<%= category._id %>" method="POST" enctype="multipart/form-data">
+					<div class="container">
+						<div class="input-box">
+							<div style="display: flex;flex-direction: column;justify-content: end;">
+								<div>
+									<label for="cName">Category Name</label>
+									<input type="text" id="cName" name="cName" value="<%= category.cName %>">
+								</div>
+								<span class="validateError" id="cNameError"></span>
 							</div>
 						</div>
 
-						<div class="container1">
-						
+						<div class="input-box">
+							<div>
+								<label for="image">Image Upload</label>
+								<div class="image-upload">
+									<span class="inner">Drag & drop images here or
+										<span class="select">Browse</span></span>
+									<input type="file" name="cImage">
+								</div>
+								<span class="validateError" id="imageError"></span>
+							</div>
+
+							<div class="container1">
+
+							</div>
 						</div>
-					</div>
-					<label>Current Image</label>
-					<div class="container2">
-						<div class="image">
-							<img src="<%= category.image %>" >
+						<label>Current Image</label>
+						<div class="container2">
+							<div class="image">
+								<img src="<%= category.image %>">
+							</div>
 						</div>
+
+						<div class="btn-container">
+							<button type="button" class="btn submit-btn">Submit</button>
+						</div>
+
 					</div>
-	
-					<div class="btn-container">
-						<button type="submit" class="btn">Submit</button>
-					</div>
-	
-				</div>
-			</form>
+				</form>
 
-		</main>
-		<!-- MAIN -->
+			</main>
+			<!-- MAIN -->
 
-	</section>
-	<!-- CONTENT -->
-	
+		</section>
+		<!-- CONTENT -->
 
-	<script src="js/admin_css.js"></script>
-	<script src="/js/admin_imageUploadSingle.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+			integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+		<% if (message) { %>
+			<script>
+				console.log("hi");
+				$(function () {
+
+					toastr.options = {
+						"closeButton": true,
+						"debug": false,
+						"newestOnTop": true,
+						"progressBar": true,
+						"positionClass": "toast-top-right",
+						"preventDuplicates": false,
+						"onclick": null,
+						"showDuration": "300",
+						"hideDuration": "1000",
+						"timeOut": "5000",
+						"extendedTimeOut": "1000",
+						"showEasing": "swing",
+						"hideEasing": "linear",
+						"showMethod": "fadeIn",
+						"hideMethod": "fadeOut"
+					}
+
+					if ('<%=message[0]?.success%>') {
+
+						// Display an info toast with no title
+						toastr.success("<%=message[0]?.success%>")
+					}
+
+					if ('<%=message[0]?.info%>') {
+						// Display an info toast with no title
+						toastr.info("<%=message[0]?.info%>")
+					}
+
+					if ('<%=message[0]?.error%>') {
+
+						// Display an info toast with no title
+						toastr.error("<%=message[0]?.error%>")
+					}
+
+				});
+			</script>
+			<% } %>
+
+				<script src="js/admin_css.js"></script>
+				<script src="/js/admin_imageUploadSingleAndValidation.js"></script>
 </body>
+
 </html>
