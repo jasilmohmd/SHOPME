@@ -217,7 +217,7 @@ exports.continuePayment = async (req, res) => {
 
   let amount = order.orderItems.reduce((total, item) => {
     if (item.orderStatus !== "cancelled") {
-      return total += item.price
+      return total += (item.price-item.couponDiscount)
     } else {
       return total
     }
@@ -259,7 +259,7 @@ exports.continuePayment = async (req, res) => {
 
         await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
 
-        await orderDb.findOneAndUpdate({ _id: id }, { payMethod: "wallet" });
+        await orderDb.findOneAndUpdate({ _id: id }, { $set:{paymentMethod: "wallet" }});
 
         await orderDb.findOneAndUpdate({ _id: id }, { $set: { "orderItems.$[].orderStatus": "ordered" , "orderItems.$[].paymentStatus": "payed" } });
 
@@ -293,9 +293,10 @@ exports.continuePayment = async (req, res) => {
         await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
       })
 
-      await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed", payMethod: "COD" });
+      await orderDb.findOneAndUpdate({ _id: id }, { $set: { paymentMethod: "COD" }});
 
       await orderDb.findOneAndUpdate({ _id: id }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
+      
 
       res.json({ response: true, method: "COD" });
 
