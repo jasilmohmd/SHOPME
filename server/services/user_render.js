@@ -21,7 +21,7 @@ exports.home = (req, res) => {
   let message;
   let isNewLogin = req.session?.newLogin;
 
-  if(!isNewLogin){
+  if(!isNewLogin && req.session.passport?.user){
     req.session.newLogin = true;
     message = {
       success: "Successfully Logged in"
@@ -222,12 +222,13 @@ exports.ordersPage = (req, res) => {
 }
 
 exports.orderDetails = (req, res) => {
+  const message = req.flash('message');
   const uId = req.session.passport.user;
   const oId = req.query.oId;
   axios.get(`http://localhost:${PORT}/api/showOrders/${uId}/${oId}`,)
     .then(function (response) {
       console.log(response.data);
-      res.render("orderDetails_page", { order: response.data });
+      res.render("orderDetails_page", { order: response.data, message });
     })
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -239,11 +240,12 @@ exports.orderDetails = (req, res) => {
 exports.updateAccount = (req, res) => {
 
   try {
-
+    const message = req.flash('message');
+    console.log(message);
     const id = req.session.passport.user;
     axios.get(`http://localhost:${PORT}/api/user?id=${id}`)
       .then(function (response) {
-        res.render("update_account", { user: response.data });
+        res.render("update_account", { user: response.data, message });
       })
       .catch(err => {
         res.render("errorPage", { status: 500 });
@@ -258,8 +260,9 @@ exports.updateAccount = (req, res) => {
 exports.changePassword = (req,res) => {
 
   try{
-
-    res.render("change_password");
+    const message = req.flash('message');
+    console.log(message);
+    res.render("change_password",{message});
 
   }catch(err){
 

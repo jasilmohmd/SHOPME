@@ -71,6 +71,10 @@ const orderSchema = new Schema({
       type: String,
       default:"pending",
       required: true
+    },
+    paymentStatus:{
+      type: String,
+      default: "pending"
     }
   }],
   appliedCoupon:{
@@ -80,10 +84,6 @@ const orderSchema = new Schema({
   paymentMethod:{
     type: String,
     required: true
-  },
-  paymentStatus:{
-    type: String,
-    default: "pending"
   },
   orderDate:{
     type: Date,

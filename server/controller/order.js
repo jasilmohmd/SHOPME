@@ -137,7 +137,7 @@ exports.placeOrder = async (req, res) => {
 
             wallet.save();
 
-            await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
+            await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" , "orderItems.$[].paymentStatus": "payed" } });
 
             items.forEach(async (product) => {
               await productDb.updateMany({ _id: product.cartItems.productId }, { $inc: { inStock: -product.cartItems.quantity } })
@@ -186,9 +186,9 @@ exports.rzpHandler = async (req, res) => {
 
       const order = await orderDb.findById(oId);
 
-      await orderDb.findOneAndUpdate({ _id: oId }, { paymentStatus: "payed" })
+      await orderDb.findOneAndUpdate({ _id: oId }, { paymentStatus: "payed", payMethod: "OP" })
 
-      await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
+      await orderDb.findOneAndUpdate({ _id: oId }, { $set: { "orderItems.$[].orderStatus": "ordered" , "orderItems.$[].paymentStatus": "payed" } });
 
       order.orderItems.forEach(async (product) => {
         await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
@@ -259,7 +259,9 @@ exports.continuePayment = async (req, res) => {
 
         await walletDb.findOneAndUpdate({ userId: uId }, { $inc: { balance: -amount } });
 
-        await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed" });
+        await orderDb.findOneAndUpdate({ _id: id }, { payMethod: "wallet" });
+
+        await orderDb.findOneAndUpdate({ _id: id }, { $set: { "orderItems.$[].orderStatus": "ordered" , "orderItems.$[].paymentStatus": "payed" } });
 
         wallet.transactions.push({ transactType: false, amount: amount, source: `payed for order id ${id}` });
 
@@ -291,7 +293,9 @@ exports.continuePayment = async (req, res) => {
         await productDb.updateMany({ _id: product.productId }, { $inc: { inStock: -product.quantity } })
       })
 
-      await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed" });
+      await orderDb.findOneAndUpdate({ _id: id }, { paymentStatus: "payed", payMethod: "COD" });
+
+      await orderDb.findOneAndUpdate({ _id: id }, { $set: { "orderItems.$[].orderStatus": "ordered" } });
 
       res.json({ response: true, method: "COD" });
 
@@ -408,7 +412,7 @@ exports.update = async (req, res) => {
     const pId = req.query.pId;
     const status = req.body.status;
 
-    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId });
+    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId }, { "orderItems.$": 1 });
 
     const uId = order.userId;
 
@@ -421,7 +425,7 @@ exports.update = async (req, res) => {
     if (status === "pickedup") {
 
 
-      const amount = order.orderItems[0].price;
+      const amount = (order.orderItems[0].price - order.orderItems[0].couponDiscount)*order.orderItems[0].quantity;
 
       let wallet = await walletDb.findOne({ userId: uId });
 
@@ -431,7 +435,12 @@ exports.update = async (req, res) => {
 
       await wallet.save();
 
-      await orderDb.updateOne({ _id: id }, { paymentStatus: "refunded" });
+      await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
+        $set:
+        {
+          "orderItems.$.paymentStatus": "refunded"
+        }
+      });
 
     }
 
@@ -460,14 +469,14 @@ exports.cancelOrder = async (req, res) => {
     const id = req.query.id;
     const pId = req.query.pId;
 
-    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId });
+    const order = await orderDb.findOne({ _id: id, "orderItems.productId": pId }, { "orderItems.$": 1 });
 
 
     console.log(order);
 
-    if (order.paymentStatus === "payed") {
+    if (order.orderItems[0].paymentStatus === "payed") {
 
-      const amount = order.orderItems[0].price;
+      const amount = (order.orderItems[0].price - order.orderItems[0].couponDiscount)*order.orderItems[0].quantity;
 
       let wallet = await walletDb.findOne({ userId: uId });
 
@@ -477,9 +486,17 @@ exports.cancelOrder = async (req, res) => {
 
       await wallet.save();
 
-      await orderDb.updateOne({ _id: id }, { paymentStatus: "refunded" });
+      await orderDb.updateOne({ _id: id, "orderItems.productId": pId }, {
+        $set:
+        {
+          "orderItems.$.paymentStatus": "refunded"
+        }
+      });
 
-      res.send(`refund amound of ${amount} added to your wallet`)
+      const message = { success: `refund amound of ${amount} added to your wallet` };
+      req.flash('message', message);
+
+      res.redirect(`/orderDetails_page?oId=${id}`);
 
     }
 
@@ -583,7 +600,7 @@ exports.topProducts = async (req, res) => {
         if (!productCounts[productId]) {
           productCounts[productId] = quantity; // If brand not in counts, initialize with quantity
         } else {
-          productCounts[productId]+=quantity; // Increment count by quantity if brand already exists
+          productCounts[productId] += quantity; // Increment count by quantity if brand already exists
         }
       });
     });

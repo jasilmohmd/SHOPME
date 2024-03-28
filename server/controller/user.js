@@ -33,13 +33,13 @@ exports.find = (req, res) => {
 exports.block = async (req, res) => {
   const id = req.query.id;
 
-  try{
+  try {
 
     await Userdb.updateOne({ _id: id }, { $set: { isBlocked: true } });
-  
+
     res.redirect("/admin/user-manage")
 
-  }catch(err){
+  } catch (err) {
 
     res.render("errorPage", { status: 500 });
 
@@ -51,13 +51,13 @@ exports.block = async (req, res) => {
 exports.unblock = async (req, res) => {
   const id = req.query.id;
 
-  try{
-    
+  try {
+
     await Userdb.updateOne({ _id: id }, { $set: { isBlocked: false } });
-  
+
     res.redirect("/admin/user-manage")
 
-  }catch(err){
+  } catch (err) {
 
     res.render("errorPage", { status: 500 });
 
@@ -65,49 +65,58 @@ exports.unblock = async (req, res) => {
 
 }
 
-exports.update = async (req,res)=> {
+exports.update = async (req, res) => {
 
-  try{
+  try {
 
     const id = req.session.passport.user;
-    const {name,phone} = req.body;
+    const { name, phone } = req.body;
 
     await Userdb.updateOne({ _id: id }, { $set: { name: name, phone: phone } });
 
-    res.send("details updated");
+    const message = { success: "details updated" };
+    req.flash('message', message);
 
-  }catch(err){
+    res.redirect("/update_account");
+
+  } catch (err) {
     res.render("errorPage", { status: 500 });
   }
 
 }
 
-exports.changePassword = async (req,res) => {
+exports.changePassword = async (req, res) => {
 
-  try{
+  try {
 
     const id = req.session.passport.user;
-    const {oldPassword,password} = req.body;
+    const { oldPassword, password } = req.body;
 
     const user = await Userdb.findById(id);
 
-    if(await bcrypt.compare(oldPassword,user.password)){
+    if (await bcrypt.compare(oldPassword, user.password)) {
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      await Userdb.findOneAndUpdate({_id: id},{$set:{password: hashedPassword}});
+      await Userdb.findOneAndUpdate({ _id: id }, { $set: { password: hashedPassword } });
 
-      res.send("password changed");
+      const message = { success: "Password changed" };
+      req.flash('message', message);
 
-    }
-    else{
-
-      res.send("old password doesnt match");
+      res.redirect("/change_password");
 
     }
+    else {
+
+      const message = { error: "old password doesnt match" };
+      req.flash('message', message);
+
+      res.redirect("/change_password");
+
+    }
 
 
-  }catch(err){
+  } catch (err) {
 
     res.render("errorPage", { status: 500 });
 

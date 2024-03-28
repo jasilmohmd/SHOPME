@@ -56,6 +56,7 @@
             <p>Payment Method : <%= order[0].paymentMethod %>
             </p>
             <p>Payment Status : <%= order[0].paymentStatus %></p>
+            <p>Applied Coupon : <%= order[0].appliedCoupon?order[0].appliedCoupon: "None" %></p>
             <p>Order Date : <%= order[0].orderDate %></p>
             <br>
             <h4>User Details</h4>
@@ -92,7 +93,7 @@
                   <div class="details">
                     <p>Product Name : <%= order[0].orderItems[i].pName %></p>
                     <p>Category: <%= order[0].orderItems[i].category %></p>
-                    <p>Price : <%= order[0].orderItems[i].price %></p>
+                    <p>Price : <%= order[0].orderItems[i].price-order[0].orderItems[i].couponDiscount %></p>
                     <p>Quantity: <%= order[0].orderItems[i].quantity %></p>
                   </div>
                 </div>

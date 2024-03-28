@@ -2,6 +2,8 @@
 <%- include("include/_header") %>
   <!--/ include header -->
 
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
   <!-- main site -->
   <main>
 
@@ -79,7 +81,8 @@
           </p>
           <p>Payment Method : <%= order.paymentMethod %>
           </p>
-          <p>Applied Coupon : <%= order.appliedCoupon?order.appliedCoupon: "None" %></p>
+          <p>Applied Coupon : <%= order.appliedCoupon?order.appliedCoupon: "None" %>
+          </p>
           <p>Order Date : <%= order.orderDate %>
           </p>
           <% let itemsPayement=false %>
@@ -150,8 +153,8 @@
                 <!-- Return Prompt -->
 
                 <!-- Modal -->
-                <div class="modal modal-sm fade" id="staticBackdrop1<%= i %>" data-bs-backdrop="static" data-bs-keyboard="false"
-                  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal modal-sm fade" id="staticBackdrop1<%= i %>" data-bs-backdrop="static"
+                  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -177,10 +180,9 @@
                   </div>
                 </div>
                 <!-- End of Return Prompt -->
-                <% }else if(order.orderItems[i].orderStatus==="pending" || order.orderItems[i].orderStatus=="shipped" || order.orderItems[i].orderStatus=="ordered" ){
-                  %>
-                    <button class="btn" data-bs-toggle="modal"
-                  data-bs-target="#staticBackdrop2<%= i %>">Cancel</button>
+                <% }else if(order.orderItems[i].orderStatus==="pending" || order.orderItems[i].orderStatus=="shipped" ||
+                  order.orderItems[i].orderStatus=="ordered" ){ %>
+                  <button class="btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop2<%= i %>">Cancel</button>
 
                   <!-- Cancel Prompt -->
 
@@ -213,7 +215,7 @@
                   </div>
                   <!-- End of Cancel Prompt -->
 
-                  <% }else if(order.paymentStatus==="refunded" ) {%>
+                  <% }else if(order.orderItems[i].paymentStatus==="refunded" ) {%>
                     <p style="color: rgb(10, 121, 10);">Refunded</p>
                     <% } %>
                       <p>Order Status : <%= order.orderItems[i].orderStatus %>
@@ -231,72 +233,123 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-  <script>
 
-    $(document).ready(() => {
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+    integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-      $(".pay-form").submit((e) => {
+  <% if (message) { %>
+    <script>
+
+      console.log("hi");
+
+      $(function () {
+
+        toastr.options = {
+          "closeButton": true,
+          "debug": false,
+          "newestOnTop": true,
+          "progressBar": true,
+          "positionClass": "toast-top-right",
+          "preventDuplicates": false,
+          "onclick": null,
+          "showDuration": "300",
+          "hideDuration": "1000",
+          "timeOut": "5000",
+          "extendedTimeOut": "1000",
+          "showEasing": "swing",
+          "hideEasing": "linear",
+          "showMethod": "fadeIn",
+          "hideMethod": "fadeOut"
+        }
+
+        if ('<%=message[0]?.success%>') {
+
+          // Display an info toast with no title
+          toastr.success("<%=message[0]?.success%>")
+        }
+
+        if ('<%=message[0]?.info%>') {
+          // Display an info toast with no title
+          toastr.info("<%=message[0]?.info%>")
+        }
+
+        if ('<%=message[0]?.error%>') {
+
+          // Display an info toast with no title
+          toastr.error("<%=message[0]?.error%>")
+        }
+
+      });
+    </script>
+  <% } %>
+
+      <script>
+
+        $(document).ready(() => {
+
+          $(".pay-form").submit((e) => {
 
 
 
-        e.preventDefault();
+            e.preventDefault();
 
-        var formData = $('.pay-form').serialize();
-        console.log(formData);
+            var formData = $('.pay-form').serialize();
+            console.log(formData);
 
-        $.ajax({
-          url: "/api/continuePayment",
-          type: "POST",
-          data: formData,
-          success: (res) => {
-            console.log(res);
-            if (res.orders) {
+            $.ajax({
+              url: "/api/continuePayment",
+              type: "POST",
+              data: formData,
+              success: (res) => {
+                console.log(res);
+                if (res.orders) {
 
 
-              var options = {
-                "key": res.key_id,
-                "amount": res.orders.amount,
-                "currency": res.orders.currency,
-                "name": "SHOPME",
-                "order_id": res.orders.id,
-                "callback_url": "/api/razorpay",
-                "prefill": {
-                  "name": res.order.address.name,
-                  "contact": res.order.address.phone
-                },
-                "theme": {
-                  color: "#1f1f14"
+                  var options = {
+                    "key": res.key_id,
+                    "amount": res.orders.amount,
+                    "currency": res.orders.currency,
+                    "name": "SHOPME",
+                    "order_id": res.orders.id,
+                    "callback_url": "/api/razorpay",
+                    "prefill": {
+                      "name": res.order.address.name,
+                      "contact": res.order.address.phone
+                    },
+                    "theme": {
+                      color: "#1f1f14"
+                    }
+
+                  }
+
+
+                  var razorpayObject = new Razorpay(options);
+                  razorpayObject.on("payment.failed", function (response) {
+                    res.send("Payment Failed!")
+                  });
+
+                  razorpayObject.open();
+
+
+
+
+                } else if (res.response) {
+                  location.href = '/orderPlaced';
+                } else if (res.method === "wallet") {
+                  const message = res.message
+                  location.href = "/walletError?message=" + encodeURIComponent(message);
+                } else if (res.method === "COD") {
+                  const message = res.message;
+                  location.href = "/walletError?message=" + encodeURIComponent(message);
                 }
-
               }
-
-
-              var razorpayObject = new Razorpay(options);
-              razorpayObject.on("payment.failed", function (response) {
-                res.send("Payment Failed!")
-              });
-
-              razorpayObject.open();
-
-
-
-
-            } else if (res.response) {
-              location.href = '/orderPlaced';
-            } else if (res.method === "wallet") {
-              const message = res.message
-              location.href = "/walletError?message=" + encodeURIComponent(message);
-            } else if (res.method === "COD") {
-              const message = res.message;
-              location.href = "/walletError?message=" + encodeURIComponent(message);
-            }
-          }
+            })
+          })
         })
-      })
-    })
 
-  </script>
+      </script>
 
-  <!-- footer -->
-  <%- include("include/_footer") %>
-    <!--/ footer -->
+      <!-- footer -->
+      <%- include("include/_footer") %>
+        <!--/ footer -->

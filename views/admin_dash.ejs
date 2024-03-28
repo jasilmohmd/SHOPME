@@ -48,17 +48,7 @@
 					</div>
 
 				</div>
-
 				<div>
-					<button style="padding: 20px;" onclick="generatechartitem('daily')">Daily</button>
-					<button style="padding: 20px;" onclick="generatechartitem('currentyearbtn')">Monthly</button>
-					<button style="padding: 20px;" onclick="generatechartitem('yearly')">Yearly</button>
-					<button style="padding: 20px;" onclick="generatechartitem('weekly')">Weekly</button>
-				</div>
-				<div>
-					<canvas id="myChart"></canvas>
-				</div>
-
 				<ul class="box-info">
 					<li style="display: flex;flex-direction: column;">
 						<span class="text">
@@ -95,126 +85,21 @@
 					</li>
 				</ul>
 
-				<!-- <div class="table-data">
-				<div class="order">
-					<div class="head">
-						<h3>Recent Orders</h3>
-						<i class='bx bx-search' ></i>
-						<i class='bx bx-filter' ></i>
-					</div>
-					<table>
-						<thead>
-							<tr>
-								<th>User</th>
-								<th>Date Order</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status process">Process</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status pending">Pending</span></td>
-							</tr>
-							<tr>
-								<td>
-									<img src="img/people.png">
-									<p>John Doe</p>
-								</td>
-								<td>01-10-2021</td>
-								<td><span class="status completed">Completed</span></td>
-							</tr>
-						</tbody>
-					</table>
-				</div> -->
-				<!-- <div class="todo">
-					<div class="head">
-						<h3>Todos</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
-					</div>
-					<ul class="todo-list">
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-					</ul>
-				</div> -->
+				<div style="margin: 30px;">
+					<button style="padding: 20px;" onclick="generatechartitem('daily')">Daily</button>
+					<button style="padding: 20px;" onclick="generatechartitem('currentyearbtn')">Monthly</button>
+					<button style="padding: 20px;" onclick="generatechartitem('yearly')">Yearly</button>
+					<button style="padding: 20px;" onclick="generatechartitem('weekly')">Weekly</button>
+				</div>
+				<div>
+					<canvas id="myChart"></canvas>
+				</div>
+
 				</div>
 			</main>
 			<!-- MAIN -->
 		</section>
 		<!-- CONTENT -->
-
-		<script>
-			$(document).ready(function () {
-
-				var counters = $(".count");
-				var countersQuantity = counters.length;
-				var counter = [];
-
-				for (i = 0; i < countersQuantity; i++) {
-					counter[i] = parseInt(counters[i].innerHTML);
-				}
-
-				var count = function (start, value, id) {
-					var localStart = start;
-					setInterval(function () {
-						if (localStart < value) {
-							localStart++;
-							counters[id].innerHTML = localStart;
-						}
-					}, 40);
-				}
-
-				for (j = 0; j < countersQuantity; j++) {
-					count(0, counter[j], j);
-				}
-			});
-		</script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
