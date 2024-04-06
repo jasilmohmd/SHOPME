@@ -1,4 +1,4 @@
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
 const fs = require("fs-extra");
 const path = require("path");
 const ejs = require("ejs");
@@ -41,7 +41,9 @@ async function generatePdf(template, data, browser) {
 exports.invoice = async (req, res) => {
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: "new",
+    executablePath: '/usr/bin/chromium-browser', });
+    // const browser = await puppeteer.launch();
 
     const id = req.query.id;
 
@@ -65,7 +67,9 @@ exports.invoice = async (req, res) => {
 
 exports.salesReport = async (req, res) => {
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: "new",
+    executablePath: '/usr/bin/chromium-browser', });
+    // const browser = await puppeteer.launch();
     
     // Fetch orders with status "delivered" only
     const orders = await orderDb.find({ 'orderItems.orderStatus': 'delivered' });
