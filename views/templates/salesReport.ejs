@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Report</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .summary {
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Sales Report</h1>
+
+  <div class="summary">
+    <p>Total Number of Orders: <%= totalDeliveredOrders %></p>
+    <p>Total Amount Collected: $<%= totalAmountDelivered %></p>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>User ID</th>
+        <th>Order Date</th>
+        <th>Total Amount</th>
+        <th>Payment Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let totalOrders=0; %>
+        <% let totalAmountCollected=0; %>
+          <% orders.forEach(order=> { %>
+            <tr>
+              <td>
+                <%= order._id %>
+              </td>
+              <td>
+                <%= order.userId %>
+              </td>
+              <td>
+                <%= order.orderDate %>
+              </td>
+              <% let total = 0;
+              order.orderItems.forEach(item => {
+                // Calculate the total amount for each item including coupon discount
+                total += (item.price - item.couponDiscount) * item.quantity;
+              }); %>
+              <td>$<%= total %>
+              </td>
+              <td>
+                <%= order.paymentMethod %>
+              </td>
+            </tr>
+          <% }); %>  
+    </tbody>
+  </table>
+
+</body>
+
+</html>

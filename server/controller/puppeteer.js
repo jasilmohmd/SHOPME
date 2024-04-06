@@ -19,7 +19,7 @@ async function generatePdf(template, data, browser) {
   try {
     const page = await browser.newPage();
 
-    const content = await compile(template, { order: data });
+    const content = await compile(template, data );
 
     await page.setContent(content);
 
@@ -46,7 +46,8 @@ exports.invoice = async (req, res) => {
     const id = req.query.id;
 
     const order = await orderDb.findOne({ _id: id });
-    const pdfBuffer = await generatePdf("invoice", order, browser);
+    const data = { order };
+    const pdfBuffer = await generatePdf("invoice", data, browser);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", "attachment; filename=invoice.pdf");
@@ -60,4 +61,52 @@ exports.invoice = async (req, res) => {
   }
 
 
+}
+
+exports.salesReport = async (req, res) => {
+  try {
+    const browser = await puppeteer.launch();
+    
+    // Fetch orders with status "delivered" only
+    const orders = await orderDb.find({ 'orderItems.orderStatus': 'delivered' });
+
+    let totalDeliveredOrders = 0;
+    let totalAmountDelivered = 0;
+
+    orders.forEach(order => {
+      totalDeliveredOrders++;
+      totalAmountDelivered += calculateTotalAmount(order);
+    });
+
+    
+    const data = {
+      orders,
+      totalDeliveredOrders,
+      totalAmountDelivered
+    }
+    
+    console.log(data);
+    
+    const pdfBuffer = await generatePdf("salesReport", data, browser);
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=sales_report.pdf");
+
+    res.end(pdfBuffer);
+
+    await browser.close();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("An error occurred while generating the sales report.");
+  }
+};
+
+
+function calculateTotalAmount(order) {
+  let total = 0;
+  order.orderItems.forEach(item => {
+      // Calculate the total amount for each item including coupon discount
+      total += (item.price - item.couponDiscount) * item.quantity;
+  });
+  return total;
 }

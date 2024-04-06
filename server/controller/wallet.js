@@ -11,25 +11,66 @@ const razorpayInstance = new Razorpay({
   key_secret: RAZORPAY_SECRET_KEY
 });
 
+// exports.showWallet = async (req, res) => {
+//   const uId = req.query.uId;
+//   try {
+//     const wallet = await walletDb.findOne({ userId: uId });
+
+//     // console.log(wallet);
+
+//     if (wallet) {
+
+//       // Manually format the transaction dates
+//       wallet.transactions.forEach(transaction => {
+//         transaction.formattedDate = moment(transaction.date).tz("Asia/Kolkata").format("DD/MM/YYYY - hh:mm A");
+//       });
+
+//       res.send(wallet);
+//     } else {
+//       res.send(false);
+//     }
+
+//   } catch (err) {
+//     console.log(err);
+//     res.render("errorPage", { status: 500 });
+//   }
+// }
+
 exports.showWallet = async (req, res) => {
   const uId = req.query.uId;
+  const page = parseInt(req.query.page) || 1; // Default to page 1 if not specified
+  const pageSize = 5; // Default page size to 10 if not specified
+
   try {
     const wallet = await walletDb.findOne({ userId: uId });
 
-    // console.log(wallet);
-
     if (wallet) {
 
+      // Reverse transactions to show the latest transactions first
+      const reversedTransactions = wallet.transactions.slice().reverse();
+
+      // Paginate transactions
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = page * pageSize;
+      const paginatedTransactions = reversedTransactions.slice(startIndex, endIndex);
+      const balance = wallet.balance;
       // Manually format the transaction dates
-      wallet.transactions.forEach(transaction => {
+      paginatedTransactions.forEach(transaction => {
         transaction.formattedDate = moment(transaction.date).tz("Asia/Kolkata").format("DD/MM/YYYY - hh:mm A");
       });
 
-      res.send(wallet);
+      // Calculate total number of pages
+      const totalPages = Math.ceil(wallet.transactions.length / pageSize);
+
+      res.send({
+        transactions: paginatedTransactions,
+        totalPages: totalPages,
+        currentPage: page,
+        balance: balance
+      });
     } else {
       res.send(false);
     }
-
   } catch (err) {
     console.log(err);
     res.render("errorPage", { status: 500 });

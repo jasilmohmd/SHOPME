@@ -21,18 +21,19 @@ p {
 
 .account-body {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 
 .account-info {
   padding: 40px;
-  box-shadow: 10px 10px 30px -10px #aaa9a9;
+  border: 1px solid #00000020;
+  /* box-shadow: 10px 10px 30px -10px #aaa9a9; */
   border-radius: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 50vh;
-  width: 40vw;
+  max-width: 7000px;
+  margin: 30px;
 }
 
 .personal-info span {
@@ -44,6 +45,10 @@ p {
   grid-template-columns: 1fr 1fr;
   column-gap: 20px;
   row-gap: 20px;
+  justify-content: center;
+  /* Center the grid items horizontally */
+  margin: 0 auto;
+  /* Center the grid container horizontally within its parent */
 }
 
 .manage-btn {
@@ -55,8 +60,10 @@ p {
   border: none;
   box-shadow: 10px 10px 30px -10px #aaa9a9;
   border-radius: 30px;
-  height: 15vh;
-  width: 15vw;
+  margin: 20px;
+  padding: 30px;
+  height: 150px;
+  width: 200px;
 }
 
 .manage-btn svg {
@@ -140,7 +147,6 @@ p {
 .add-address-body .phone,
 .add-address-body .district,
 .add-address-body .pincode {
-  width: 20vw;
   padding: 5px;
 }
 
@@ -216,7 +222,7 @@ p {
 
 .address-page .modal-body,
 .order-page .modal-body,
-.account-info .modal-body{
+.account-info .modal-body {
   display: flex;
   justify-content: center;
   text-align: center;
@@ -248,4 +254,135 @@ p {
   border: none;
   border-radius: 30px;
 
+}
+
+.pagination{
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  align-items: center;
+  gap: 30px;
+}
+.pagination > * {
+  margin-right: 0px; 
+}
+.pagination span{
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+@media (max-width:903px) {
+  .account-body {
+    flex-direction: column;
+  }
+
+  .manage-btn {
+    margin: 8px;
+    padding: 15px;
+    width: 160px;
+  }
+}
+
+@media (max-width:603px) {
+  .add-address-body {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .address-interactions {
+    flex-direction: column;
+    margin: 0px;
+  }
+}
+
+@media (max-width:483px) {
+
+  .order-body{
+    padding: 15px;
+  }
+
+  .order-body p {
+    font-size: 0.6rem;
+  }
+  .order-details{
+    gap: 5px;
+  }
+
+  .pagination{
+    font-size: 0.7rem;
+  }
+  .pagination > * {
+    margin-right: -10px; /* Adjust the margin value as needed */
+  }
+
+  .pagination span{
+    font-size: 1rem;
+  }
+
+
+  .address-body {
+    flex-direction: column;
+  }
+
+  .address-interactions {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .account {
+    margin: 20px;
+    padding: 15px;
+  }
+
+  .account-info {
+    padding: 20px;
+    margin: 10px;
+    margin-bottom: 20px;
+  }
+
+  .manage-btn {
+    margin: 5px;
+    padding: 10px;
+    width: 120px;
+  }
+}
+
+@media (max-width:373px) {
+
+  .order-body{
+    padding: 8px;
+  }
+
+  .order-body p {
+    font-size: 0.45rem;
+  }
+  .order-details{
+    gap: 2px;
+  }
+
+  .image img {
+    width: 50px
+  }
+
+  .account-manage {
+    gap: 8px;
+    /* grid-template-columns: 1fr */
+  }
+
+  .account-info {
+    padding: 12px;
+    margin: 5px;
+  }
+
+  .account {
+    margin: 15px;
+    padding: 12px;
+  }
+
+  .manage-btn {
+    margin: 5px;
+    padding: 8px;
+    width: 100px;
+  }
 }

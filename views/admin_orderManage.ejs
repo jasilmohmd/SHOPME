@@ -12,6 +12,8 @@
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 
+	<link rel="stylesheet" href="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
+
 	<title>AdminHub</title>
 </head>
 <body>
@@ -51,35 +53,61 @@
 				<div class="container-head">
 					
 				</div>
-				<div class="container-body">
+				<div class="container-body" >
 					<% if(order==false||order.length<1){ %>
 						<div style="display: flex; justify-content: center;" class="product-box">
 							<p>No Orders</p>
 						</div>
 					<% } %>
-					<% for(let i=0 ; i<order.length ; i++){ %>
-						<a href="/admin/order-page?id=<%= order[i]._id %>">
+					<!-- <%# for(let i=0 ; i<order.length ; i++){ %>
+						<a href="/admin/order-page?id=<%#= order[i]._id %>">
 							<div class="product-box">
 								
 								<div class="product">
 									<div class="image">
-										<% for(let j=0 ; j<order[i].orderItems.length ; j++){ %>
-											<img src="<%= order[i].orderItems[j].image[0] %>">
-										<% } %>
+										<%# for(let j=0 ; j<order[i].orderItems.length ; j++){ %>
+											<img src="<%#= order[i].orderItems[j].image[0] %>">
+										<%# } %>
 									</div>
 		
 									<div class="details">
-										<p>Order Id : <%= order[i]._id %></p>
-										<p>Payment Method : <%= order[i].paymentMethod %></p>
-										<p>User : <%= order[i].userDetails[0].name %></p>
-										<p>Email : <%= order[i].userDetails[0].email %></p>
+										<p>Order Id : <%#= order[i]._id %></p>
+										<p>Payment Method : <%#= order[i].paymentMethod %></p>
+										<p>User : <%#= order[i].userDetails[0].name %></p>
+										<p>Email : <%#= order[i].userDetails[0].email %></p>
 									</div>
 									
 								</div>
 
 							</div>
 						</a>
-					<% } %>
+					<%# } %> -->
+					<table id="orderTable" class="display cell-border">
+						<thead>
+							<tr>
+								<th>Image</th>
+								<th>Order ID</th>
+								<th>Payment Method</th>
+								<th>User</th>
+								<th>Email</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% for(let i=0 ; i<order.length ; i++){ %>
+								<tr>
+									<td>
+										<% for(let j=0 ; j<order[i].orderItems.length ; j++){ %>
+											<img style="width: 75px;" src="<%= order[i].orderItems[j].image[0] %>" alt="Product Image">
+										<% } %>
+									</td>
+									<td><a href="/admin/order-page?id=<%= order[i]._id %>"><%= order[i]._id %></a></td>
+									<td><%= order[i].paymentMethod %></td>
+									<td><%= order[i].userDetails[0].name %></td>
+									<td><%= order[i].userDetails[0].email %></td>
+								</tr>
+							<% } %>
+						</tbody>
+					</table>
 					
 				</div>
 			</div>
@@ -89,8 +117,18 @@
 
 	</section>
 	<!-- CONTENT -->
+	<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
 	
 
+	<script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
 	<script src="js/admin_css.js"></script>
+
+	<script>
+		// Initialize DataTable
+		document.addEventListener('DOMContentLoaded', function() {
+    		new DataTable('#orderTable');
+		});
+	</script>
+
 </body>
 </html>

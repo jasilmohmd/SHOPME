@@ -546,6 +546,8 @@ exports.returnProduct = async (req, res) => {
 exports.showOrders = async (req, res) => {
   const uId = req.params.uId;
   const oId = req.params.oId;
+  const page = parseInt(req.query.page); // Default to page 1 if not specified
+  const pageSize = 5; // Default page size to 10 if not specified
 
   try {
 
@@ -557,12 +559,20 @@ exports.showOrders = async (req, res) => {
 
     } else {
 
-      let orders = await orderDb.find({ userId: uId }).sort({ orderDate: -1 });
+      console.log("hiiiii");
+
+      const totalOrders = await orderDb.countDocuments({ userId: uId });
+      const totalPages = Math.ceil(totalOrders / pageSize);
+
+      let orders = await orderDb.find({ userId: uId })
+                                 .sort({ orderDate: -1 })
+                                 .skip((page - 1) * pageSize)
+                                 .limit(pageSize);
 
       if (orders === null) {
         res.send(false);
       } else {
-        res.send(orders);
+        res.send({ orders, totalPages, currentPage: page });
       }
 
 

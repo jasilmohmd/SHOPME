@@ -532,7 +532,12 @@ body {
 /* CONTENT */
 
 
-
+.butn{
+  background-color: #1f1f14;
+  padding: 8px 20px;
+  color: #F9F9F9;
+  border-radius: 20px;
+}
 
 
 

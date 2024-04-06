@@ -33,7 +33,7 @@
 /* Adjustments to the wallet and its contents */
 .wallet {
   /* max-width: 900px; */
-  margin: 20px auto;
+  margin: 20px;
   padding: 20px;
   border-radius: 20px;
   box-shadow: 10px 10px 30px -10px #aaa9a9;
@@ -54,4 +54,56 @@
 .transact-head button {
   padding: 8px 20px;
   font-size: 14px;
+}
+
+
+@media (max-width:835px) {
+  .wallet{
+    font-size: 0.7rem;
+  }
+  .transact-head button{
+    font-size: 0.7rem !important;
+  }
+}
+
+@media (max-width:424px) {
+  .wallet{
+    font-size: 0.6rem;
+    margin: 10px;
+    padding: 10px;
+  }
+  .transact-head button{
+    font-size: 0.6rem !important;
+  }
+  .transact-page th{
+    padding: 5px 10px;
+  }
+  .transact-page td {
+    padding: 10px 10px;
+  }
+  .transact-body{
+    margin: 5px;
+    padding: 10px 10px;
+  }
+}
+
+@media (max-width:364px) {
+  .wallet{
+    font-size: 0.5rem;
+    margin: 8px;
+    padding: 8px;
+  }
+  .transact-head button{
+    font-size: 0.5rem !important;
+  }
+  .transact-page th{
+    padding: 5px 8px;
+  }
+  .transact-page td {
+    padding: 8px 8px;
+  }
+  .transact-body{
+    margin: 5px;
+    padding: 8px 8px;
+  }
 }

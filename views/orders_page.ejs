@@ -47,7 +47,39 @@
         <% } %>
       <% } %>
 
-  </div>
+      
+    </div>
+    <div class="pagination" style="display: flex;gap: 30px;justify-content: center;margin-top: 10px;align-items: center;">
+      <a href="/orders_page?page=<%= currentPage-3 %>&max=<%= totalPages %>">
+        <div style="color: rgb(152, 151, 151);"><i class="fa-solid fa-angles-left"></i></div>
+      </a>
+
+      <a href="/orders_page?page=<%= currentPage-1 %>&max=<%= totalPages %>">
+        <div style="color: rgb(152, 151, 151);"><i class="fa-solid fa-angle-left"></i></div>
+      </a>
+
+      <% if(currentPage>1){ %>
+        <a href="/orders_page?max=<%= totalPages %>">
+          <div style="color: rgb(152, 151, 151);">1</div>
+        </a>
+      <% } %>
+
+      <div><span><%= currentPage %></span></div>
+
+      <% if(totalPages!==currentPage){ %>
+        <a href="/orders_page?page=<%= totalPages %>&max=<%= totalPages %>">
+          <div style="color: rgb(152, 151, 151);"><%= totalPages %></div>
+        </a>
+      <% } %>
+
+      <a href="/orders_page?page=<%= currentPage+1 %>&max=<%= totalPages %>">
+        <div style="color: rgb(152, 151, 151);"><i class="fa-solid fa-angle-right"></i></div>
+      </a>
+
+      <a href="/orders_page?page=<%= currentPage+3 %>&max=<%= totalPages %>">
+        <div style="color: rgb(152, 151, 151);"><i class="fa-solid fa-angles-right"></i></div>
+      </a>
+    </div>
 
 </main>
 <!--/ main site -->

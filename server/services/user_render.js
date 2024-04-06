@@ -99,10 +99,14 @@ exports.myAccount = (req, res) => {
 
 exports.walletPage = (req, res) => {
   const uId = req.session.passport.user;
-  axios.get(`http://localhost:${PORT}/api/showWallet?uId=${uId}`)
+  let page = parseInt(req.query.page) || 1;
+  const max = parseInt(req.query.max);
+  page>max?page=max:"";
+  page<1?page=1:"";
+  axios.get(`http://localhost:${PORT}/api/showWallet?uId=${uId}&page=${page}`)
     .then(function (response) {
-      // console.log(response.data);
-      res.render("walletPage", { wallet: response.data });
+      const { transactions, totalPages, currentPage ,balance} = response.data;
+      res.render("walletPage", { transactions, totalPages, currentPage, balance });
     })
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -210,10 +214,15 @@ exports.walletError = (req, res) => {
 
 exports.ordersPage = (req, res) => {
   const uId = req.session.passport.user;
-  axios.get(`http://localhost:${PORT}/api/showOrders/${uId}`,)
+  let page = parseInt(req.query.page) || 1;
+  const max = parseInt(req.query.max);
+  page>max?page=max:"";
+  page<1?page=1:"";
+  axios.get(`http://localhost:${PORT}/api/showOrders/${uId}?page=${page}`,)
     .then(function (response) {
-      console.log(response.data);
-      res.render("orders_page", { orders: response.data });
+      const { orders, totalPages, currentPage } = response.data;
+      console.log(orders);
+      res.render("orders_page", { orders, totalPages, currentPage });
     })
     .catch(err => {
       res.render("errorPage", { status: 500 });

@@ -7,6 +7,7 @@ const product = require("../controller/product");
 const category = require("../controller/category");
 const user = require("../controller/user");
 const order = require("../controller/order");
+const puppeteer=require("../controller/puppeteer");
 const coupon = require("../controller/coupon");
 const store = require("../middleware/multer");
 const middleware = require("../middleware/middleware");
@@ -143,6 +144,9 @@ route.get("/api/topCategories", order.topCategories);
 
 //top Brands
 route.get("/api/topBrands", order.topBrands);
+
+//sales report
+route.get("/api/salesReport", puppeteer.salesReport);
 
 
 //get coupons
