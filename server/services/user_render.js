@@ -58,6 +58,7 @@ exports.productPage = (req, res) => {
 };
 
 exports.productSearch = (req, res) => {
+  const id = req.query?.id;
   let search = req.body.q
   axios.all([
     axios.get(`http://localhost:${PORT}/api/category`),
@@ -65,7 +66,7 @@ exports.productSearch = (req, res) => {
   ])
     .then(axios.spread((response1, response2) => {
       search ? search : search = "All products"
-      res.render("category", { category: response1.data, product: response2.data, search })
+      res.render("category", { category: response1.data, product: response2.data, search, id })
     }))
     .catch(err => {
       res.render("errorPage", { status: 500 });
@@ -73,13 +74,14 @@ exports.productSearch = (req, res) => {
 }
 
 exports.categoryPage = (req, res) => {
+  const id = req.query?.id
   axios.all([
     axios.get(`http://localhost:${PORT}/api/category`),
     axios.get(`http://localhost:${PORT}/api/categoryProducts`, { params: { id: req.query?.id, sort: req.query?.sort, priceAbove: req.query?.priceAbove, priceBelow: req.query?.priceBelow } })
   ])
     .then(axios.spread((response1, response2) => {
-      // console.log(response2.data);
-      res.render("category", { category: response1.data, product: response2.data, search: false, req: req })
+      console.log(id);
+      res.render("category", { category: response1.data, product: response2.data, search: false, id })
     }))
     .catch(err => {
       res.render("errorPage", { status: 500 });
